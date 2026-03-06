@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('dosen', function (Blueprint $table) {
+            $table->id();
+            $table->string('nip')->nullable()->unique();
+            $table->string('nidn')->nullable()->unique();
+            $table->string('nama');
+            $table->string('email')->unique();
+            $table->string('jabatan')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('nik')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->text('alamat')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('dosen');
+    }
+};
