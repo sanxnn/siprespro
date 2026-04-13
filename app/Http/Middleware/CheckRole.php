@@ -17,7 +17,6 @@ class CheckRole
     {
         $user = $request->user();
 
-        // ✅ Kalau user nggak login ATAU role nggak match → 403
         if (!$user || !in_array($user->role, $roles)) {
             abort(403, 'Akses ditolak.');
         }

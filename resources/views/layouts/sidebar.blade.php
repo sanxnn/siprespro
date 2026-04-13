@@ -3,8 +3,7 @@
     setActiveMenu(menu) {
       this.activeMenu = this.activeMenu === menu ? null : menu;  /* Toggle */
     }
-  }" 
-  x-cloak
+  }" x-cloak
   class="fixed top-0 left-0 h-full bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 z-40 flex flex-col transition-all duration-300 overflow-hidden"
   :class="[
     sidebarCollapse ? 'lg:w-20' : 'lg:w-64',
@@ -27,7 +26,7 @@
   <nav class="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
 
     <!-- Dashboard -->
-    <a href="#"
+    <a href="{{ route(auth()->user()->getDashboardRoute()) }}"
       class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 dark:text-slate-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400">
       <i class="fas fa-home w-5 text-center shrink-0"></i>
       <span class="whitespace-nowrap transition-opacity duration-200" x-show="sidebarOpen || !sidebarCollapse"

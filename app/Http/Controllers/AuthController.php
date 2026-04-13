@@ -19,39 +19,34 @@ class AuthController extends Controller
     }
 
     public function authenticate(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-        ]);
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:6',
+    ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+    if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $request->session()->regenerate();
 
-            // 🎯 Redirect berdasarkan role user
-            $user = Auth::user();
+        $user = Auth::user();
 
-            if ($user->isAdmin()) {
-                return redirect()->route('admin.dashboard')->with('success', 'Login berhasil! Selamat datang, Admin.');
-            }
-
-            if ($user->isDosen()) {
-                return redirect()->route('dosen.dashboard')->with('success', 'Login berhasil! Selamat datang, Dosen.');
-            }
-
-            if ($user->isMahasiswa()) {
-                return redirect()->route('mahasiswa.dashboard')->with('success', 'Login berhasil! Selamat datang, Mahasiswa.');
-            }
-
-            // Fallback kalau role nggak dikenali (security)
+        // Cek apakah user aktif (opsional, tapi bagus buat keamanan)
+        if (isset($user->is_active) && !$user->is_active) {
             Auth::logout();
-            return back()->withErrors(['email' => 'Role user tidak valid. Hubungi admin.']);
+            return back()->withErrors(['email' => 'Akun Anda dinonaktifkan. Hubungi admin.']);
         }
 
-        throw ValidationException::withMessages([
-            'email' => 'Email atau password yang Anda masukkan salah.',
-        ]);
+        // REDIRECT MAGIC: Pakai method dari Model User
+        $route = $user->getDashboardRoute();
+
+        return redirect()->intended(route($route))
+            ->with('success', "Login berhasil! Selamat datang, {$user->role_label}.");
     }
+
+    throw ValidationException::withMessages([
+        'email' => 'Email atau password yang Anda masukkan salah.',
+    ]);
+}
 
     public function logout(Request $request)
     {
@@ -59,7 +54,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // ✅ Redirect ke ROOT (/) karena login page lu di situ
         return redirect('/')->with('success', 'Anda telah logout.');
     }
 

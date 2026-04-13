@@ -58,21 +58,17 @@ class Mahasiswa extends Model
     {
         $currentYear = date('Y');
         $currentMonth = date('n');
-        $angkatanYear = $this->angkatan; // 2022, 2023, 2024, 2025
+        $angkatanYear = $this->angkatan;
 
-        // Hitung selisih tahun
         $yearDiff = $currentYear - $angkatanYear;
 
-        // Semester ganjil (Agustus - Desember)
         if ($currentMonth >= 8) {
             $semester = ($yearDiff * 2) + 1;
         }
-        // Semester genap (Januari - Juli)
         else {
             $semester = $yearDiff * 2;
         }
 
-        // Batasi max 8 semester (4 tahun)
         return min($semester, 8);
     }
 
@@ -87,7 +83,6 @@ class Mahasiswa extends Model
 
     public function isSemesterAktif(): bool
     {
-        // Mahasiswa aktif jika semester 1-8
         return $this->semester_aktif <= 8;
     }
 }

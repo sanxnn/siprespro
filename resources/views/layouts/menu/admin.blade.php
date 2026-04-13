@@ -13,7 +13,7 @@
     <div class="flex items-center gap-3">
       <i class="fas fa-users-gear w-5 text-center shrink-0"></i>
       <span class="whitespace-nowrap transition-opacity duration-200 text-left" x-show="sidebarOpen || !sidebarCollapse"
-        x-transition.opacity.duration.200ms>Users & Role</span>
+        x-transition.opacity.duration.200ms>User & Access</span>
     </div>
     <i class="fas fa-chevron-down text-xs transition-transform duration-200" x-show="sidebarOpen || !sidebarCollapse"
       :class="activeMenu === 'users' ? 'rotate-180' : ''"></i>
@@ -22,20 +22,20 @@
   <!-- Submenu -->
   <div x-show="activeMenu === 'users' && (sidebarOpen || !sidebarCollapse)" x-collapse class="overflow-hidden">
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
-      <a href="#"
+      <a href="{{ route('admin.users.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-users w-5 text-center shrink-0"></i>
         <span class="ml-2">Semua Users</span>
       </a>
-      <a href="#"
+      <a href="{{ route('admin.dosen.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-user-plus w-5 text-center shrink-0"></i>
-        <span class="ml-2">Tambah User</span>
+        <span class="ml-2">Data Dosen</span>
       </a>
-      <a href="#"
+      <a href="{{ route('admin.mahasiswa.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-user-tag w-5 text-center shrink-0"></i>
-        <span class="ml-2">Manajemen Role</span>
+        <span class="ml-2">Data Mahasiswa</span>
       </a>
     </div>
   </div>
