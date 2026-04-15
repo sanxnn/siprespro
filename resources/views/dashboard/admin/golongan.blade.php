@@ -110,9 +110,9 @@
           </div>
           <div class="mt-8 flex gap-3">
             <button type="button" data-micromodal-close
-              class="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 rounded-xl font-bold">Batal</button>
+              class="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-all hover:bg-slate-200 dark:hover:bg-slate-600">Batal</button>
             <button type="submit"
-              class="flex-1 py-3 bg-primary-600 text-white rounded-xl font-bold shadow-lg shadow-primary-200">Simpan
+              class="flex-1 py-3 bg-primary-600 text-white rounded-xl font-bold shadow-lg shadow-primary-200 dark:shadow-primary-900">Simpan
               Data</button>
           </div>
         </form>
@@ -184,7 +184,8 @@
           </div>
           <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Hapus Golongan?</h2>
           <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 px-4 leading-relaxed">
-            Yakin mau hapus <b>{{ $golongan->nama }}</b>? Data mahasiswa yang terhubung mungkin akan bermasalah, Aksi ini tidak bisa dibatalkan!
+            Yakin mau hapus <b>{{ $golongan->nama }}</b>? Data mahasiswa yang terhubung mungkin akan bermasalah, Aksi ini
+            tidak bisa dibatalkan!
           </p>
           <form action="{{ route('admin.golongan.destroy', $golongan->id) }}" method="POST" class="flex gap-3 px-2">
             @csrf
