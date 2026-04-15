@@ -72,16 +72,6 @@
         <i class="fas fa-book w-5 text-center shrink-0"></i>
         <span class="ml-2">Mata Kuliah</span>
       </a>
-      <a href="#"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-chalkboard-teacher w-5 text-center shrink-0"></i>
-        <span class="ml-2">Data Dosen</span>
-      </a>
-      <a href="#"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-user-graduate w-5 text-center shrink-0"></i>
-        <span class="ml-2">Data Mahasiswa</span>
-      </a>
     </div>
   </div>
 </div>
