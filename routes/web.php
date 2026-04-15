@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('semester', Admin\SemesterController::class);
         Route::resource('golongan', Admin\GolonganController::class);
         Route::resource('mata-kuliah', Admin\MataKuliahController::class);
+        Route::resource('ruang', Admin\RuangController::class);
     });
 
     Route::middleware('role:dosen')->prefix('dosen')->name('dosen.')->group(function () {
