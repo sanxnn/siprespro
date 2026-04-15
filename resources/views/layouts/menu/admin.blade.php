@@ -57,17 +57,17 @@
   <!-- Submenu -->
   <div x-show="activeMenu === 'akademik' && (sidebarOpen || !sidebarCollapse)" x-collapse class="overflow-hidden">
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
-      <a href="#"
+      <a href="{{ route('admin.semester.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-calendar-days w-5 text-center shrink-0"></i>
         <span class="ml-2">Semester</span>
       </a>
-      <a href="#"
+      <a href="{{ route('admin.golongan.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-tags w-5 text-center shrink-0"></i>
         <span class="ml-2">Golongan</span>
       </a>
-      <a href="#"
+      <a href="{{ route('admin.mata-kuliah.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-book w-5 text-center shrink-0"></i>
         <span class="ml-2">Mata Kuliah</span>
@@ -107,11 +107,6 @@
         <i class="fas fa-door-open w-5 text-center shrink-0"></i>
         <span class="ml-2">Data Ruang</span>
       </a>
-      <a href="#"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-location-dot w-5 text-center shrink-0"></i>
-        <span class="ml-2">Lokasi Presensi</span>
-      </a>
     </div>
   </div>
 </div>
@@ -146,6 +141,11 @@
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-pen-to-square w-5 text-center shrink-0"></i>
         <span class="ml-2">Koreksi Presensi</span>
+      </a>
+      <a href="#"
+        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
+        <i class="fas fa-location-dot w-5 text-center shrink-0"></i>
+        <span class="ml-2">Lokasi Presensi</span>
       </a>
     </div>
   </div>

@@ -30,11 +30,13 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
-
         Route::resource('mahasiswa', Admin\MahasiswaController::class);
         Route::resource('dosen', Admin\DosenController::class);
         Route::get('users/export/excel', [Admin\UserController::class, 'exportExcel'])->name('users.export.excel');
         Route::resource('users', Admin\UserController::class);
+        Route::resource('semester', Admin\SemesterController::class);
+        Route::resource('golongan', Admin\GolonganController::class);
+        Route::resource('mata-kuliah', Admin\MataKuliahController::class);
     });
 
     Route::middleware('role:dosen')->prefix('dosen')->name('dosen.')->group(function () {
