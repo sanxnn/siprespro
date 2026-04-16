@@ -69,7 +69,7 @@
                 <td colspan="4" class="px-6 py-20 text-center">
                   <div class="flex flex-col items-center justify-center">
                     <i class="fas fa-book-open text-slate-300 dark:text-slate-600 text-5xl mb-4"></i>
-                    <p class="text-slate-400 italic">Data mata kuliah belum tersedia jancok!</p>
+                    <p class="text-slate-400 italic">Data mata kuliah belum tersedia!</p>
                   </div>
                 </td>
               </tr>
