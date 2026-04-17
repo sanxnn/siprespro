@@ -1,7 +1,16 @@
 <aside x-data="{ 
-    activeMenu: null,  /* Track dropdown mana yang aktif */
+    sidebarCollapse: false,
+    /* Auto-detect menu mana yang harus terbuka berdasarkan Route Group */
+    activeMenu: '{{ 
+        request()->routeIs('admin.users.*', 'admin.dosen.*', 'admin.mahasiswa.*') ? 'users' :
+  (request()->routeIs('admin.semester.*', 'admin.golongan.*', 'admin.mata-kuliah.*', 'admin.ruang.*', 'admin.lokasi.*') ? 'akademik' :
+    (request()->routeIs('admin.kelas-perkuliahan.*') ? 'kelas' :
+      (request()->routeIs('admin.presensi.*') ? 'presensi' :
+        (request()->routeIs('dosen.kelas.*', 'dosen.jadwal.*', 'dosen.mahasiswa.*') ? 'dosen_kelas' :
+          (request()->routeIs('dosen.pertemuan.*', 'dosen.presensi.*') ? 'dosen_presensi' : 'null'))))) 
+    }}',
     setActiveMenu(menu) {
-      this.activeMenu = this.activeMenu === menu ? null : menu;  /* Toggle */
+      this.activeMenu = this.activeMenu === menu ? null : menu;
     }
   }" x-cloak
   class="fixed top-0 left-0 h-full bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 z-40 flex flex-col transition-all duration-300 overflow-hidden"
@@ -11,7 +20,6 @@
     'w-72 lg:translate-x-0'
   ]">
 
-  <!-- Brand -->
   <a href="#"
     class="flex items-center gap-3 px-4 py-4 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
     <div
@@ -22,35 +30,33 @@
       x-show="sidebarOpen || !sidebarCollapse" x-transition.opacity.duration.200ms>siprespro</span>
   </a>
 
-  <!-- Nav Menu -->
-  <nav class="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
+  <nav class="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar text-left">
 
-    <!-- Dashboard -->
-    <a href="{{ route(auth()->user()->getDashboardRoute()) }}"
-      class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 dark:text-slate-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary-600 dark:hover:text-primary-400">
+    @php $dashboardRoute = auth()->user()->getDashboardRoute(); @endphp
+    <a href="{{ route($dashboardRoute) }}"
+      class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 
+      {{ request()->routeIs($dashboardRoute)
+  ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 font-bold'
+  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
       <i class="fas fa-home w-5 text-center shrink-0"></i>
       <span class="whitespace-nowrap transition-opacity duration-200" x-show="sidebarOpen || !sidebarCollapse"
         x-transition.opacity.duration.200ms>Dashboard</span>
     </a>
 
-    <!-- ADMIN MENU -->
     @if(auth()->user()?->isAdmin())
       @include('layouts.menu.admin')
     @endif
 
-    <!-- DOSEN MENU -->
     @if(auth()->user()?->isDosen())
       @include('layouts.menu.dosen')
     @endif
 
-    <!-- MAHASISWA MENU -->
     @if(auth()->user()?->isMahasiswa())
       @include('layouts.menu.mahasiswa')
     @endif
 
   </nav>
 
-  <!-- Collapse Toggle (Bottom) -->
   <div class="hidden md:flex p-3 border-t border-slate-200 dark:border-slate-700 overflow-hidden">
     <button @click="sidebarCollapse = !sidebarCollapse"
       class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-slate-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-sm font-medium">
@@ -60,5 +66,4 @@
       </span>
     </button>
   </div>
-
 </aside>
