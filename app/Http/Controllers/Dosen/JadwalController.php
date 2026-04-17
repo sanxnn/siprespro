@@ -19,7 +19,7 @@ class JadwalController extends Controller
         // Buat daftar hari sesuai Enum di DB lu
         $hari_list = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'];
 
-        return view('dashboard.admin.jadwal', compact('jadwals', 'kelases', 'lokasis', 'hari_list'));
+        return view('dashboard.dosen.jadwal', compact('jadwals', 'kelases', 'lokasis', 'hari_list'));
     }
 
     public function store(Request $request)

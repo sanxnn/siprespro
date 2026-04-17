@@ -13,7 +13,7 @@ class PertemuanController extends Controller
     {
         $pertemuans = Pertemuan::with('kelasPerkuliahan.mataKuliah')->latest()->paginate(10);
         $kelases = KelasPerkuliahan::with('mataKuliah')->get();
-        return view('dashboard.admin.pertemuan', compact('pertemuans', 'kelases'));
+        return view('dashboard.dosen.pertemuan', compact('pertemuans', 'kelases'));
     }
 
     public function store(Request $request)
