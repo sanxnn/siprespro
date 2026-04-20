@@ -11,7 +11,7 @@
         <button @click="MicroModal.show('modal-create-semester')"
           class="flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-primary-200 dark:shadow-none">
           <i class="fas fa-plus-circle"></i>
-          <span>Tambah Semester</span>
+          <span>Tambah Semester cuy</span>
         </button>
       </div>
     </div>
