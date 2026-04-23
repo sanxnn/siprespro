@@ -65,12 +65,12 @@ class User extends Authenticatable
 
     public function mahasiswa()
     {
-        return $this->hasOne(Mahasiswa::class, 'id', 'mahasiswa_id');
+    return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');
     }
 
     public function dosen()
     {
-        return $this->hasOne(Dosen::class, 'id', 'dosen_id');
+    return $this->belongsTo(Dosen::class, 'dosen_id');
     }
 
     public function getRoleLabelAttribute()

@@ -40,7 +40,7 @@
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Mahasiswa</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Total Mahasiswaaa</p>
           <p class="text-2xl font-bold mt-1">{{ number_format($totalMahasiswa) }}</p>
           <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
             <i class="fas fa-arrow-up text-[10px]"></i>
