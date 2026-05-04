@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
         // manajemen user
         Route::get('users/export/excel', [Admin\UserController::class, 'exportExcel'])->name('users.export.excel');
         Route::resource('users', Admin\UserController::class);
+        Route::get('mahasiswa/export/excel', [Admin\MahasiswaController::class, 'exportExcel'])->name('mahasiswa.export.excel');
         Route::resource('mahasiswa', Admin\MahasiswaController::class);
         Route::resource('dosen', Admin\DosenController::class);
 

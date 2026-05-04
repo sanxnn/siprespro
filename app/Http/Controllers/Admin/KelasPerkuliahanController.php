@@ -7,6 +7,7 @@ use App\Models\Dosen;
 use App\Models\KelasPerkuliahan;
 use App\Models\MataKuliah;
 use App\Models\Ruang;
+use App\Models\Golongan;
 use Illuminate\Http\Request;
 
 class KelasPerkuliahanController extends Controller
@@ -14,27 +15,43 @@ class KelasPerkuliahanController extends Controller
     public function index()
     {
         // Pake eager loading biar gak berat
-        $kelases = KelasPerkuliahan::with(['mataKuliah', 'dosen', 'ruang'])->latest()->paginate(10);
-        
+        $kelases = KelasPerkuliahan::with(['mataKuliah', 'dosen', 'ruang', 'golongans'])->latest()->paginate(10);
+
         // Data buat dropdown di modal
         $matkuls = MataKuliah::all();
         $dosens = Dosen::all();
         $ruangs = Ruang::all();
+        $golongans = Golongan::all();
 
-        return view('dashboard.admin.kelas-perkuliahan', compact('kelases', 'matkuls', 'dosens', 'ruangs'));
+        return view('dashboard.admin.kelas-perkuliahan', compact('kelases', 'matkuls', 'dosens', 'ruangs', 'golongans'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'mata_kuliah_id' => 'required|exists:mata_kuliah,id',
-            'dosen_id'       => 'required|exists:dosen,id',
-            'ruang_id'       => 'required|exists:ruang,id',
-            'nama_kelas'     => 'required|string|max:100',
-            'tipe_kelas'     => 'required|in:reguler,gabungan', // Sesuai Enum lu
+            'dosen_id' => 'required|exists:dosen,id',
+            'ruang_id' => 'required|exists:ruang,id',
+            'nama_kelas' => 'required|string|max:100',
+            'tipe_kelas' => 'required|in:reguler,gabungan',
+            'golongan_ids' => 'required|array',
+            'golongan_ids.*' => 'exists:golongan,id',
         ]);
 
-        KelasPerkuliahan::create($request->all());
+        // Simpan dulu ke variabel
+        $kelas = new KelasPerkuliahan();
+        $kelas->mata_kuliah_id = $request->mata_kuliah_id;
+        $kelas->dosen_id = $request->dosen_id;
+        $kelas->ruang_id = $request->ruang_id;
+        $kelas->nama_kelas = $request->nama_kelas;
+        $kelas->tipe_kelas = $request->tipe_kelas;
+        $kelas->save(); // Simpan ke database biar dapet ID
+
+        // Baru sync ke table pivot setelah $kelas->id dipastikan ada
+        if ($request->has('golongan_ids')) {
+            $kelas->golongans()->sync($request->golongan_ids);
+        }
+
         return back()->with('success', 'Kelas perkuliahan berhasil dibuat!');
     }
 
@@ -44,13 +61,16 @@ class KelasPerkuliahanController extends Controller
         // dd($request->all(), $kela->id);
         $request->validate([
             'mata_kuliah_id' => 'required|exists:mata_kuliah,id',
-            'dosen_id'       => 'required|exists:dosen,id',
-            'ruang_id'       => 'required|exists:ruang,id',
-            'nama_kelas'     => 'required|string|max:100',
-            'tipe_kelas'     => 'required|in:reguler,gabungan',
+            'dosen_id' => 'required|exists:dosen,id',
+            'ruang_id' => 'required|exists:ruang,id',
+            'nama_kelas' => 'required|string|max:100',
+            'tipe_kelas' => 'required|in:reguler,gabungan',
+            'golongan_ids' => 'required|array',
+            'golongan_ids.*' => 'exists:golongan,id',
         ]);
 
         $kela->update($request->all());
+        $kela->golongans()->sync($request->golongan_ids);
         return back()->with('success', 'Data kelas berhasil diupdate!');
     }
 
