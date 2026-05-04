@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', Admin\UserController::class);
         Route::get('mahasiswa/export/excel', [Admin\MahasiswaController::class, 'exportExcel'])->name('mahasiswa.export.excel');
         Route::resource('mahasiswa', Admin\MahasiswaController::class);
+        Route::get('dosen/export/excel', [Admin\DosenController::class, 'exportExcel'])->name('dosen.export.excel');
         Route::resource('dosen', Admin\DosenController::class);
 
         // master akademik

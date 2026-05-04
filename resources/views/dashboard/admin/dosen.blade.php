@@ -18,6 +18,37 @@
       </div>
     </div>
 
+    <form method="GET" action="{{ route('admin.dosen.index') }}"
+      class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 flex flex-wrap gap-3 items-center">
+
+      {{-- Search Input --}}
+      <div class="relative flex-1 min-w-60">
+        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari NIP, Nama, atau Email..."
+          class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:ring-2 focus:ring-primary-500 outline-none transition">
+      </div>
+
+      {{-- Filter Status Akun --}}
+      <select name="status"
+        class="px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-primary-500">
+        <option value="">Semua Status</option>
+        <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Aktif</option>
+        <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Nonaktif</option>
+      </select>
+
+      <button type="submit"
+        class="px-6 py-2.5 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition shadow-lg shadow-primary-200 dark:shadow-none">
+        Apply
+      </button>
+
+      {{-- Tombol Export --}}
+      <a href="{{ route('admin.dosen.export.excel', request()->query()) }}"
+        class="inline-flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl text-sm font-bold transition">
+        <i class="fas fa-file-excel text-emerald-600"></i>
+        <span>Export Dosen</span>
+      </a>
+    </form>
+
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
       <div class="overflow-x-auto">
@@ -27,6 +58,7 @@
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Profil Dosen</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">NIP / NIDN</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Jabatan</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Kontak</th>
               <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Aksi</th>
             </tr>
@@ -41,7 +73,7 @@
                       {{ substr($dosen->nama, 0, 1) }}
                     </div>
                     <div>
-                      <p class="font-bold text-slate-800 dark:text-slate-100">{{ $dosen->nama }}</p>
+                      <p class="font-bold text-slate-800 dark:text-slate-100 leading-none mb-1">{{ $dosen->nama }}</p>
                       <p class="text-[11px] text-slate-400 font-mono">{{ $dosen->user->email ?? '-' }}</p>
                     </div>
                   </div>
@@ -53,10 +85,28 @@
                 </td>
                 <td class="px-6 py-4">
                   <span
-                    class="inline-flex items-center px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase mb-1 border border-indigo-100 dark:border-indigo-800">
+                    class="inline-flex items-center px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase border border-indigo-100 dark:border-indigo-800">
                     {{ $dosen->jabatan ?? 'N/A' }}
                   </span>
                 </td>
+
+                {{-- KOLOM STATUS AKTIF --}}
+                <td class="px-6 py-4">
+                  @if($dosen->user && $dosen->user->is_active)
+                    <span
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Aktif
+                    </span>
+                  @else
+                    <span
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold border border-slate-200 dark:border-slate-700">
+                      <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                      Nonaktif
+                    </span>
+                  @endif
+                </td>
+
                 <td class="px-6 py-4">
                   <p class="text-xs text-slate-600 dark:text-slate-300"><i
                       class="fas fa-phone text-[10px] mr-1 text-primary-500"></i> {{ $dosen->no_hp ?? '-' }}</p>
@@ -66,11 +116,11 @@
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
                     <button @click="MicroModal.show('modal-edit-{{ $dosen->id }}')"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition-all duration-300 shadow-sm border border-blue-100 dark:border-blue-800">
+                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-sm border border-blue-100 dark:border-blue-800">
                       <i class="fas fa-edit text-xs"></i>
                     </button>
                     <button @click="MicroModal.show('modal-delete-{{ $dosen->id }}')"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition-all duration-300 shadow-sm border border-red-100 dark:border-red-800">
+                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all duration-300 shadow-sm border border-red-100 dark:border-red-800">
                       <i class="fas fa-trash text-xs"></i>
                     </button>
                   </div>
@@ -78,7 +128,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="5" class="px-6 py-20 text-center">
+                <td colspan="6" class="px-6 py-20 text-center"> {{-- Update colspan jadi 6 --}}
                   <p class="text-slate-400 italic">Data dosen belum tersedia.</p>
                 </td>
               </tr>
