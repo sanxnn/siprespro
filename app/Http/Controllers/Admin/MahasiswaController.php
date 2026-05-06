@@ -90,7 +90,7 @@ class MahasiswaController extends Controller
         ]);
 
         DB::transaction(function () use ($request, $mahasiswa) {
-            $mahasiswa->update($request->only(['nama', 'angkatan', 'semester_id']));
+            $mahasiswa->update($request->only(['nama', 'angkatan', 'semester_id', 'golongan_id', 'nik', 'no_hp', 'alamat']));
             $mahasiswa->user->update(['email' => $request->email]);
         });
 
