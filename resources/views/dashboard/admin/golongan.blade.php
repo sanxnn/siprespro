@@ -26,6 +26,7 @@
             <tr>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">No</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Nama Golongan</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Jumlah Mahasiswa</th>
               <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Semester Terkait</th>
               <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Aksi</th>
             </tr>
@@ -33,26 +34,40 @@
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
             @forelse($golongans as $golongan)
               <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-all group">
-                <td class="px-6 py-4 font-mono text-sm text-slate-400">{{ $loop->iteration }}</td>
+                <td class="px-6 py-4 font-mono text-sm text-slate-400">
+                  {{ ($golongans->currentPage() - 1) * $golongans->perPage() + $loop->iteration }}
+                </td>
                 <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">
                   {{ $golongan->nama }}
                 </td>
+
+                {{-- KOLOM JUMLAH MAHASISWA --}}
+                <td class="px-6 py-4">
+                  <div
+                    class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800/50">
+                    <i class="fas fa-users text-[10px]"></i>
+                    <span class="text-xs font-bold">{{ $golongan->mahasiswas_count }}</span>
+                    <span class="text-[9px] uppercase tracking-tighter opacity-70">Mahasiswa</span>
+                  </div>
+                </td>
+
                 <td class="px-6 py-4">
                   <div
                     class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800">
                     <i class="fas fa-calendar-alt text-[10px]"></i>
                     <span class="text-xs font-bold uppercase">{{ $golongan->semester->nama ?? 'N/A' }}</span>
                   </div>
-                  <span class="text-[10px] text-slate-400 ml-2 italic">{{ $golongan->semester->tahun_ajaran }}</span>
+                  <span class="text-[10px] text-slate-400 ml-2 italic">{{ $golongan->semester->tahun_ajaran ?? '-' }}</span>
                 </td>
+
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
                     <button @click="MicroModal.show('modal-edit-{{ $golongan->id }}')"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition-all border border-blue-100 dark:border-blue-800">
+                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all border border-blue-100 dark:border-blue-800">
                       <i class="fas fa-edit text-xs"></i>
                     </button>
                     <button @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition-all border border-red-100 dark:border-red-800">
+                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-800">
                       <i class="fas fa-trash text-xs"></i>
                     </button>
                   </div>
@@ -60,8 +75,9 @@
               </tr>
             @empty
               <tr>
-                <td colspan="4" class="px-6 py-20 text-center text-slate-400 italic font-medium">Data golongan masih kosong
-                  jancok!</td>
+                <td colspan="5" class="px-6 py-10 text-center text-slate-400 italic">
+                  Belum ada data golongan.
+                </td>
               </tr>
             @endforelse
           </tbody>

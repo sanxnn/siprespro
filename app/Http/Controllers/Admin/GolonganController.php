@@ -11,8 +11,14 @@ class GolonganController extends Controller
 {
     public function index()
     {
-        $golongans = Golongan::with('semester')->latest()->paginate(10);
-        $semesters = Semester::all(); // Buat pilihan di modal
+        // Pake withCount biar dapet variabel $golongan->mahasiswas_count
+        $golongans = Golongan::with('semester')
+            ->withCount('mahasiswas')
+            ->latest()
+            ->paginate(10);
+
+        $semesters = Semester::all();
+
         return view('dashboard.admin.golongan', compact('golongans', 'semesters'));
     }
 
