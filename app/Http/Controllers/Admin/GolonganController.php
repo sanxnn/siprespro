@@ -47,7 +47,7 @@ class GolonganController extends Controller
     public function destroy(Golongan $golongan)
     {
         // Cek relasi ke mahasiswa atau kelas sebelum hapus
-        if ($golongan->mahasiswa()->exists()) {
+        if ($golongan->mahasiswas()->exists()) {
             return back()->with('error', 'Gagal hapus! Masih ada mahasiswa di golongan ini.');
         }
 

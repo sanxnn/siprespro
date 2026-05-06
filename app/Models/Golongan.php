@@ -23,7 +23,7 @@ class Golongan extends Model
 
     public function mahasiswas()
     {
-        return $this->hasMany(Mahasiswa::class);
+        return $this->hasMany(Mahasiswa::class, 'golongan_id');
     }
 
     public function kelasPerkuliahan()

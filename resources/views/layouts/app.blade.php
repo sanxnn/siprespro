@@ -34,8 +34,13 @@
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
 
   <style>
-    [x-cloak] { display: none !important; }
-    body { font-family: 'Poppins', sans-serif; }
+    [x-cloak] {
+      display: none !important;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
 
     /* --- FIX MODAL JADI CENTER --- */
     .modal {
@@ -55,9 +60,12 @@
       bottom: 0;
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(4px);
-      display: flex; /* Pakai Flexbox */
-      justify-content: center; /* Horisontal Center */
-      align-items: center; /* Vertikal Center */
+      display: flex;
+      /* Pakai Flexbox */
+      justify-content: center;
+      /* Horisontal Center */
+      align-items: center;
+      /* Vertikal Center */
       z-index: 1000;
     }
 
@@ -78,27 +86,56 @@
     }
 
     /* ANIMASI */
-    @keyframes mmFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes mmSlideIn { 
-        from { transform: scale(0.95) translateY(10px); opacity: 0; } 
-        to { transform: scale(1) translateY(0); opacity: 1; } 
+    @keyframes mmFadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
-    .modal.is-open .modal__overlay { animation: mmFadeIn 0.3s ease-out; }
-    .modal.is-open .modal__container { animation: mmSlideIn 0.3s ease-out; }
+    @keyframes mmSlideIn {
+      from {
+        transform: scale(0.95) translateY(10px);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal.is-open .modal__overlay {
+      animation: mmFadeIn 0.3s ease-out;
+    }
+
+    .modal.is-open .modal__container {
+      animation: mmSlideIn 0.3s ease-out;
+    }
 
     /* Custom Scrollbar */
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
   </style>
 
   @yield('styles')
 </head>
 
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 antialiased"
-  x-data="{ sidebarOpen:false, sidebarCollapse:false, darkMode:false }" 
-  x-init="() => {
+  x-data="{ sidebarOpen:false, sidebarCollapse:false, darkMode:false }" x-init="() => {
     MicroModal.init({
       openClass: 'is-open',
       disableScroll: true,
@@ -118,23 +155,31 @@
   <div class="flex min-h-screen">
     @include('layouts.sidebar')
 
-    <div x-cloak class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" @click="sidebarOpen = false"></div>
+    <div x-cloak class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" @click="sidebarOpen = false">
+    </div>
 
-    <div class="flex-1 flex flex-col lg:ml-64 transition-all duration-300" :class="sidebarCollapse ? 'lg:ml-20' : 'lg:ml-64'">
+    <div class="flex-1 flex flex-col lg:ml-64 transition-all duration-300"
+      :class="sidebarCollapse ? 'lg:ml-20' : 'lg:ml-64'">
       @include('layouts.topbar')
 
       <main class="flex-1 p-6">
-        @if (session('success'))
-          <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 p-4 rounded-xl mb-4 flex items-center gap-2">
-            <i class="fas fa-check-circle text-emerald-500"></i>
-            <span>{{ session('success') }}</span>
+        @if(session('error'))
+          <div
+            class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-r-xl shadow-sm animate-shake">
+            <div class="flex items-center">
+              <i class="fas fa-exclamation-circle mr-3"></i>
+              <span class="font-bold text-sm">{{ session('error') }}</span>
+            </div>
           </div>
         @endif
 
-        @if ($errors->any())
-          <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 p-4 rounded-xl mb-4 flex items-center gap-2 text-red-600">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>{{ $errors->first() }}</span>
+        @if(session('success'))
+          <div
+            class="mb-4 p-4 bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-r-xl shadow-sm">
+            <div class="flex items-center">
+              <i class="fas fa-check-circle mr-3"></i>
+              <span class="font-bold text-sm">{{ session('success') }}</span>
+            </div>
           </div>
         @endif
 
@@ -149,4 +194,5 @@
 
   @yield('scripts')
 </body>
+
 </html>

@@ -53,12 +53,17 @@ class SemesterController extends Controller
 
     public function destroy(Semester $semester)
     {
-        // Cek dulu apakah ada golongan atau matkul yang pakai semester ini
-        if ($semester->golongan()->exists() || $semester->mataKuliah()->exists()) {
-            return back()->with('error', 'Gagal hapus! Semester ini masih digunakan di data lain.');
+        // 1. Cek status aktif
+        if ($semester->status === 'aktif') {
+            return back()->with('error', 'Gagal hapus! Semester yang sedang AKTIF tidak boleh dihapus.');
+        }
+
+        // 2. Cek apakah ada data mahasiswa atau matkul di dalamnya
+        if ($semester->mahasiswas()->exists() || $semester->mataKuliahs()->exists()) {
+            return back()->with('error', 'Gagal hapus! Semester ini masih memiliki data Mahasiswa atau Mata Kuliah terkait.');
         }
 
         $semester->delete();
-        return back()->with('success', 'Data Semester berhasil dihapus!');
+        return back()->with('success', 'Semester berhasil dihapus.');
     }
 }

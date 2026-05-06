@@ -18,6 +18,23 @@
     </div>
 
     <div
+      class="mb-6 flex items-start gap-4 p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-2xl">
+      <div
+        class="w-10 h-10 shrink-0 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div>
+        <h4 class="text-sm font-bold text-red-900 dark:text-red-100">Aturan Penghapusan Semester</h4>
+        <ul class="text-[11px] text-red-700 dark:text-red-400 mt-1 list-disc list-inside space-y-1">
+          <li>Semester dengan status <span class="font-black underline uppercase">Aktif</span> tidak dapat dihapus.</li>
+          <li>Semester yang sudah memiliki data <span class="font-bold">Mata Kuliah</span> atau <span
+              class="font-bold">Mahasiswa</span> terikat tidak dapat dihapus.</li>
+          <li>Menghapus semester akan berdampak pada seluruh riwayat presensi di periode tersebut.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">

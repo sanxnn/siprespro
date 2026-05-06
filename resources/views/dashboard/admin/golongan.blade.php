@@ -4,6 +4,7 @@
 
 @section('content')
   <div class="space-y-6">
+
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Master Golongan</h1>
@@ -15,6 +16,21 @@
           <i class="fas fa-plus-circle"></i>
           <span>Tambah Golongan</span>
         </button>
+      </div>
+    </div>
+
+    <div
+      class="mb-6 flex items-start gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
+      <div
+        class="w-10 h-10 shrink-0 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400">
+        <i class="fas fa-shield-alt text-lg"></i>
+      </div>
+      <div>
+        <h4 class="text-sm font-bold text-amber-900 dark:text-amber-100 italic">Proteksi Penghapusan Data</h4>
+        <p class="text-[11px] text-amber-800 dark:text-amber-400 mt-1 leading-relaxed">
+          Sistem memblokir fitur hapus pada golongan yang <b>masih memiliki mahasiswa aktif</b> untuk mencegah <i>orphan
+            data</i> (data mahasiswa tanpa golongan). Pindahkan atau hapus mahasiswa terlebih dahulu untuk membuka kunci.
+        </p>
       </div>
     </div>
 
@@ -66,10 +82,20 @@
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all border border-blue-100 dark:border-blue-800">
                       <i class="fas fa-edit text-xs"></i>
                     </button>
-                    <button @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-800">
-                      <i class="fas fa-trash text-xs"></i>
-                    </button>
+                    @if($golongan->mahasiswas_count > 0)
+                      {{-- Kalau ada mahasiswa, tombol hapus dimatiin/dikasi tanda --}}
+                      <button type="button"
+                        class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
+                        title="Tidak bisa dihapus karena masih ada mahasiswa">
+                        <i class="fas fa-lock text-xs"></i>
+                      </button>
+                    @else
+                      {{-- Kalau kosong, baru muncul tombol hapus --}}
+                      <button @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
+                        class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-800">
+                        <i class="fas fa-trash text-xs"></i>
+                      </button>
+                    @endif
                   </div>
                 </td>
               </tr>

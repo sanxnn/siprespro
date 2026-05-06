@@ -9,11 +9,27 @@ use Illuminate\Http\Request;
 
 class MataKuliahController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $matkuls = MataKuliah::with('semester')->latest()->paginate(10);
+        // 1. Ambil semester yang lagi aktif
+        $semesterAktif = Semester::where('status', 'aktif')->first();
+
+        // 2. Mulai query matkul
+        $query = MataKuliah::with('semester');
+
+        // 3. Logic Filter:
+        // Jika ada request semester tertentu, tampilin itu.
+        // Jika tidak ada request, default tampilkan semester aktif.
+        if ($request->filled('semester_id')) {
+            $query->where('semester_id', $request->semester_id);
+        } elseif ($semesterAktif) {
+            $query->where('semester_id', $semesterAktif->id);
+        }
+
+        $matkuls = $query->latest()->paginate(10)->withQueryString();
         $semesters = Semester::all();
-        return view('dashboard.admin.mata-kuliah', compact('matkuls', 'semesters'));
+
+        return view('dashboard.admin.mata-kuliah', compact('matkuls', 'semesters', 'semesterAktif'));
     }
 
     public function store(Request $request)
