@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Semester;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SemesterController extends Controller
 {
@@ -34,6 +35,20 @@ class SemesterController extends Controller
 
         $semester->update($request->all());
         return back()->with('success', 'Data Semester berhasil diupdate!');
+    }
+
+    public function setAktif($id)
+    {
+        DB::transaction(function () use ($id) {
+            // Step 1: Setel SEMUA jadi nonaktif dulu
+            Semester::query()->update(['status' => 'nonaktif']);
+
+            // Step 2: Setel yang dipilih jadi aktif
+            $semester = Semester::findOrFail($id);
+            $semester->update(['status' => 'aktif']);
+        });
+
+        return back()->with('success', 'Semester ' . Semester::find($id)->nama . ' sekarang menjadi semester aktif.');
     }
 
     public function destroy(Semester $semester)

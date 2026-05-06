@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('dosen', Admin\DosenController::class);
 
         // master akademik
+        Route::post('semester/{semester}/set-aktif', [Admin\SemesterController::class, 'setAktif'])->name('semester.set-aktif');
         Route::resource('semester', Admin\SemesterController::class);
         Route::resource('golongan', Admin\GolonganController::class);
         Route::resource('mata-kuliah', Admin\MataKuliahController::class);
