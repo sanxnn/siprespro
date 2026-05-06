@@ -268,7 +268,7 @@
     <div class="modal" id="modal-edit-{{ $matkul->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div
-          class="modal__container w-full max-w-md bg-white dark:bg-slate-800 border-none dark:border dark:border-slate-700 shadow-2xl rounded-4xl"
+          class="modal__container w-full max-w-xl bg-white dark:bg-slate-800 border-none dark:border dark:border-slate-700 shadow-2xl rounded-4xl"
           role="dialog" @click.stop>
           <header class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700/50">
             <div>

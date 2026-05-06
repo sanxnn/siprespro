@@ -65,17 +65,14 @@ class MataKuliahController extends Controller
     {
 
         // dd($matkul);
-        // 1. Cek manual relasi yang lu tau
         if ($matkul->kelasPerkuliahan()->exists()) {
             return back()->with('error', 'Gagal hapus! Mata kuliah ini masih digunakan di jadwal kelas.');
         }
 
         try {
-            // 2. Coba hapus
             $matkul->delete();
             return back()->with('success', 'Mata Kuliah berhasil dihapus!');
         } catch (\Illuminate\Database\QueryException $e) {
-            // 3. Kalau ada Foreign Key lain yang nyangkut, pesan errornya bakal keluar di sini
             return back()->with('error', 'Gagal hapus! Masih ada data lain yang terikat dengan matkul ini di database.');
         }
     }
