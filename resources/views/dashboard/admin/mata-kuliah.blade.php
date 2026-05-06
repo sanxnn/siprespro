@@ -27,16 +27,6 @@
             </p>
           </div>
         </div>
-
-        <div class="mt-4 sm:mt-0 relative z-10">
-          @if(request('semester_id'))
-            <a href="{{ route('admin.mata-kuliah.index') }}"
-              class="flex items-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-indigo-600 hover:text-white text-slate-600 dark:text-slate-200 rounded-xl font-bold text-xs transition-all">
-              <i class="fas fa-undo-alt"></i>
-              Reset Filter
-            </a>
-          @endif
-        </div>
       </div>
 
       {{-- Stats Ringkas --}}
@@ -56,21 +46,41 @@
     </div>
 
     {{-- Filter Row --}}
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
-      <form action="{{ route('admin.mata-kuliah.index') }}" method="GET" class="flex-1 flex gap-2">
-        <div class="relative flex-1">
-          <i class="fas fa-filter absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+    <div class="flex flex-col md:flex-row gap-4 mb-8">
+      {{-- Dropdown Filter Semester --}}
+      <form action="{{ route('admin.mata-kuliah.index') }}" method="GET" class="flex-1 md:flex-none md:w-80">
+        <div class="relative group">
+          <i
+            class="fas fa-filter absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm group-focus-within:text-indigo-500 transition-colors"></i>
           <select name="semester_id" onchange="this.form.submit()"
-            class="w-full pl-10 pr-4 py-3 text-sm rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none appearance-none">
-            <option value="">-- Pilih Semester Lain --</option>
+            class="w-full pl-11 pr-10 py-3.5 text-sm rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none appearance-none cursor-pointer shadow-sm">
+            <option value="" disabled {{ !request('semester_id') ? 'selected' : '' }}>-- Pilih Semester --</option>
             @foreach($semesters as $s)
               <option value="{{ $s->id }}" {{ request('semester_id') == $s->id ? 'selected' : '' }}>
                 Semester {{ $s->nama }} {{ $s->status == 'aktif' ? '(Aktif)' : '' }}
               </option>
             @endforeach
           </select>
+          <i
+            class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 text-[10px] pointer-events-none"></i>
         </div>
       </form>
+
+      {{-- Tombol Tampilkan Semua (Terpisah) --}}
+      <a href="{{ route('admin.mata-kuliah.index', ['view' => 'all']) }}"
+        class="flex items-center justify-center gap-2 px-6 py-3.5 {{ request('view') == 'all' ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }} rounded-2xl font-bold text-sm transition-all shadow-sm hover:shadow-md active:scale-95">
+        <i class="fas fa-layer-group"></i>
+        <span>Tampilkan Semua Mata Kuliah</span>
+      </a>
+
+      {{-- Indikator Reset (Hanya muncul kalau lagi filter sesuatu) --}}
+      @if(request('semester_id') || request('view') == 'all')
+        <a href="{{ route('admin.mata-kuliah.index') }}"
+          class="flex items-center justify-center gap-2 px-4 py-3.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl text-sm font-bold transition-all">
+          <i class="fas fa-times"></i>
+          <span class="hidden md:inline">Reset</span>
+        </a>
+      @endif
     </div>
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
@@ -181,7 +191,7 @@
   <div class="modal" id="modal-create-matkul" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div
-        class="modal__container w-full max-w-md bg-white dark:bg-slate-800 border-none dark:border dark:border-slate-700 shadow-2xl rounded-4xl"
+        class="modal__container w-full max-w-xl bg-white dark:bg-slate-800 border-none dark:border dark:border-slate-700 shadow-2xl rounded-4xl"
         role="dialog" @click.stop>
         <header class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700/50">
           <div>
@@ -229,7 +239,10 @@
                     class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary-500/50 outline-none appearance-none transition-all">
                     <option value="" disabled selected>Pilih...</option>
                     @foreach($semesters as $sem)
-                      <option value="{{ $sem->id }}">{{ $sem->nama }}</option>
+                      <option value="{{ $sem->id }}" {{ $sem->status == 'aktif' ? 'selected' : 'disabled' }}
+                        class="{{ $sem->status == 'aktif' ? 'text-primary-600 font-bold' : 'text-slate-400' }}">
+                        {{ $sem->nama }} {{ $sem->status == 'aktif' ? '(Aktif)' : '' }}
+                      </option>
                     @endforeach
                   </select>
                   <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
@@ -302,7 +315,9 @@
                     <select name="semester_id" required
                       class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500/50 outline-none appearance-none transition-all">
                       @foreach($semesters as $sem)
-                        <option value="{{ $sem->id }}" {{ $matkul->semester_id == $sem->id ? 'selected' : '' }}>{{ $sem->nama }}
+                        <option value="{{ $sem->id }}" {{ $sem->status == 'aktif' ? 'selected' : 'disabled' }}
+                          class="{{ $sem->status == 'aktif' ? 'text-primary-600 font-bold' : 'text-slate-400' }}">
+                          {{ $sem->nama }} {{ $sem->status == 'aktif' ? '(Aktif)' : '' }}
                         </option>
                       @endforeach
                     </select>

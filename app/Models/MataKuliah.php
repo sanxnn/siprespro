@@ -29,6 +29,6 @@ class MataKuliah extends Model
 
     public function kelasPerkuliahan()
     {
-        return $this->hasMany(KelasPerkuliahan::class);
+        return $this->hasMany(KelasPerkuliahan::class, 'mata_kuliah_id');
     }
 }

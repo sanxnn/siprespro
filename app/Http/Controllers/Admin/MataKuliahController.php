@@ -11,23 +11,22 @@ class MataKuliahController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil semester yang lagi aktif
         $semesterAktif = Semester::where('status', 'aktif')->first();
 
-        // 2. Mulai query matkul
         $query = MataKuliah::with('semester');
 
-        // 3. Logic Filter:
-        // Jika ada request semester tertentu, tampilin itu.
-        // Jika tidak ada request, default tampilkan semester aktif.
-        if ($request->filled('semester_id')) {
+        if ($request->get('view') === 'all') {
+        } elseif ($request->filled('semester_id')) {
             $query->where('semester_id', $request->semester_id);
-        } elseif ($semesterAktif) {
-            $query->where('semester_id', $semesterAktif->id);
+        } else {
+            if ($semesterAktif) {
+                $query->where('semester_id', $semesterAktif->id);
+            }
         }
 
         $matkuls = $query->latest()->paginate(10)->withQueryString();
-        $semesters = Semester::all();
+
+        $semesters = Semester::orderBy('nama', 'desc')->get();
 
         return view('dashboard.admin.mata-kuliah', compact('matkuls', 'semesters', 'semesterAktif'));
     }
@@ -54,18 +53,30 @@ class MataKuliahController extends Controller
             'semester_id' => 'required|exists:semester,id',
         ]);
 
-        $matkul->update($request->all());
-        return back()->with('success', 'Data Mata Kuliah berhasil diupdate!');
+        try {
+            $matkul->update($request->all());
+            return back()->with('success', 'Data Mata Kuliah berhasil diupdate!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal update data! Pesan: ' . $e->getMessage());
+        }
     }
 
     public function destroy(MataKuliah $matkul)
     {
-        // Cek jika matkul sudah masuk ke kelas perkuliahan
+
+        // dd($matkul);
+        // 1. Cek manual relasi yang lu tau
         if ($matkul->kelasPerkuliahan()->exists()) {
-            return back()->with('error', 'Gagal hapus! Mata kuliah ini sudah digunakan dalam jadwal kelas.');
+            return back()->with('error', 'Gagal hapus! Mata kuliah ini masih digunakan di jadwal kelas.');
         }
 
-        $matkul->delete();
-        return back()->with('success', 'Mata Kuliah berhasil dihapus!');
+        try {
+            // 2. Coba hapus
+            $matkul->delete();
+            return back()->with('success', 'Mata Kuliah berhasil dihapus!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // 3. Kalau ada Foreign Key lain yang nyangkut, pesan errornya bakal keluar di sini
+            return back()->with('error', 'Gagal hapus! Masih ada data lain yang terikat dengan matkul ini di database.');
+        }
     }
 }
