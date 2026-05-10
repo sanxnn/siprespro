@@ -53,7 +53,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('lokasi', Admin\LokasiController::class);
 
         // assign kelas perkuliahan
-        Route::resource('kelas-perkuliahan', Admin\KelasPerkuliahanController::class);
+        Route::resource('kelas-perkuliahan', Admin\KelasPerkuliahanController::class)
+            ->parameters(['kelas-perkuliahan' => 'kela']);
 
         // presensi
         Route::resource('presensi', Admin\PresensiController::class)->only(['index', 'destroy']);

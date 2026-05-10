@@ -63,7 +63,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-20 text-center text-slate-400 italic font-medium">Belum ada pertemuan yang dibuat jancok!</td>
+                        <td colspan="5" class="px-6 py-20 text-center text-slate-400 italic font-medium">Belum ada pertemuan yang dibuat!</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -170,7 +170,7 @@
         </div>
         <h2 class="text-xl text-slate-800 dark:text-white mb-2 font-bold">Hapus Pertemuan?</h2>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-          Semua data presensi pada pertemuan ke-{{ $p->pertemuan_ke }} kelas {{ $p->kelasPerkuliahan->nama_kelas }} akan ikut terhapus jancok!
+          Semua data presensi pada pertemuan ke-{{ $p->pertemuan_ke }} kelas {{ $p->kelasPerkuliahan->nama_kelas }} akan ikut terhapus!
         </p>
         <form action="{{ route('admin.pertemuan.destroy', $p->id) }}" method="POST" class="flex gap-3">
           @csrf @method('DELETE')

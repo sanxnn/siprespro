@@ -92,7 +92,7 @@
               <tr>
                 <td colspan="4" class="px-6 py-20 text-center">
                   <i class="fas fa-map-location text-slate-300 dark:text-slate-600 text-5xl mb-4 block text-center"></i>
-                  <p class="text-slate-400 italic">Data lokasi belum diatur jancok!</p>
+                  <p class="text-slate-400 italic">Data lokasi belum diatur!</p>
                 </td>
               </tr>
             @endforelse
@@ -249,7 +249,7 @@
           </div>
           <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Hapus Lokasi?</h2>
           <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
-            Menghapus <b>{{ $lokasi->nama }}</b> akan memutus relasi pada jadwal kuliah yang menggunakan titik ini jancok!
+            Menghapus <b>{{ $lokasi->nama }}</b> akan memutus relasi pada jadwal kuliah yang menggunakan titik ini!
           </p>
           <form action="{{ route('admin.lokasi.destroy', $lokasi->id) }}" method="POST" class="flex gap-3">
             @csrf

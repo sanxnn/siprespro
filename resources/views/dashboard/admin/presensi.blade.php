@@ -88,7 +88,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-6 py-20 text-center text-slate-400 italic">Data presensi belum ada jancok!</td>
+                        <td colspan="5" class="px-6 py-20 text-center text-slate-400 italic">Data presensi belum ada!</td>
                     </tr>
                     @endforelse
                 </tbody>

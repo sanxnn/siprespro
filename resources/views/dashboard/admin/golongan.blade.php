@@ -246,7 +246,6 @@
 
 @push('styles')
   <style>
-    /* Pake style yang sama persis kayak halaman Semester lu cok */
     .modal {
       display: none;
     }
