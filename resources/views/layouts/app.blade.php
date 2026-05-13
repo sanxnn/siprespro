@@ -173,6 +173,21 @@
           </div>
         @endif
 
+        @if($errors->any())
+          <div
+            class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-r-xl shadow-sm animate-shake">
+            <div class="flex items-center mb-1">
+              <i class="fas fa-exclamation-circle mr-3"></i>
+              <span class="font-bold text-sm">Terjadi Kesalahan:</span>
+            </div>
+            <ul class="list-disc list-inside text-xs ml-7">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+
         @if(session('success'))
           <div
             class="mb-4 p-4 bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-r-xl shadow-sm">

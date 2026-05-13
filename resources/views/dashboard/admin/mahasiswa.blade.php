@@ -119,8 +119,6 @@
                         @empty
                             <tr>
                                 <td colspan="5" class="px-6 py-20 text-center">
-                                    <img src="https://illustrations.popsy.co/slate/shaking-hands.svg"
-                                        class="w-32 mx-auto mb-4 opacity-50 dark:invert">
                                     <p class="text-slate-400 italic">Belum ada data mahasiswa yang terdaftar.</p>
                                 </td>
                             </tr>
@@ -138,7 +136,7 @@
 
     <div class="modal" id="modal-create-mhs" aria-hidden="true">
         <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-            <div class="modal__container w-full max-w-2xl" role="dialog" @click.stop>
+            <div class="modal__container w-full max-w-3xl" role="dialog" @click.stop>
                 <header class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                     <div>
                         <h2 class="text-xl font-bold text-slate-800 dark:text-white">Registrasi Mahasiswa</h2>

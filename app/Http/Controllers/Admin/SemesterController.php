@@ -17,48 +17,78 @@ class SemesterController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'nama.required' => 'Nama semester wajib diisi.',
+            'nama.string' => 'Nama semester harus berupa teks.',
+            'nama.max' => 'Nama semester maksimal 255 karakter.',
+            'tahun_ajaran.required' => 'Tahun ajaran tidak boleh kosong.',
+            'tahun_ajaran.unique' => 'Tahun ajaran sudah terdaftar.',
+            'tahun_ajaran.max' => 'Tahun ajaran maksimal 20 karakter.',
+        ];
+
         $request->validate([
             'nama' => 'required|string|max:255',
-            'tahun_ajaran' => 'required|string|max:20', // Contoh: 2023/2024
-        ]);
+            'tahun_ajaran' => 'required|string|max:20|unique:semester,tahun_ajaran',
+        ], $messages);
 
-        Semester::create($request->all());
-        return back()->with('success', 'Data Semester berhasil ditambah!');
+        try {
+            Semester::create($request->all());
+
+            return back()->with('success', 'Data Semester berhasil ditambah!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menambah data: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, Semester $semester)
     {
+        $messages = [
+            'nama.required' => 'Nama semester wajib diisi.',
+            'nama.string' => 'Nama semester harus berupa teks.',
+            'nama.max' => 'Nama semester maksimal 255 karakter.',
+            'tahun_ajaran.required' => 'Tahun ajaran tidak boleh kosong.',
+            'tahun_ajaran.max' => 'Tahun ajaran maksimal 20 karakter.',
+        ];
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'tahun_ajaran' => 'required|string|max:20',
-        ]);
+        ], $messages);
 
-        $semester->update($request->all());
-        return back()->with('success', 'Data Semester berhasil diupdate!');
+        try {
+            $semester->update($request->all());
+            return back()->with('success', 'Data Semester berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+        }
     }
 
     public function setAktif($id)
     {
-        DB::transaction(function () use ($id) {
-            // Step 1: Setel SEMUA jadi nonaktif dulu
-            Semester::query()->update(['status' => 'nonaktif']);
+        try {
+            DB::transaction(function () use ($id) {
+                Semester::query()->update(['status' => 'nonaktif']);
 
-            // Step 2: Setel yang dipilih jadi aktif
-            $semester = Semester::findOrFail($id);
-            $semester->update(['status' => 'aktif']);
-        });
+                $semester = Semester::findOrFail($id);
+                $semester->update(['status' => 'aktif']);
+            });
 
-        return back()->with('success', 'Semester ' . Semester::find($id)->nama . ' sekarang menjadi semester aktif.');
+            $namaSemester = Semester::find($id)->nama;
+            return back()->with('success', "Semester {$namaSemester} sekarang menjadi semester aktif.");
+
+        } catch (\Exception $e) {
+            return back()->with('error', "Gagal mengubah status semester: " . $e->getMessage());
+        }
     }
 
     public function destroy(Semester $semester)
     {
-        // 1. Cek status aktif
         if ($semester->status === 'aktif') {
             return back()->with('error', 'Gagal hapus! Semester yang sedang AKTIF tidak boleh dihapus.');
         }
 
-        // 2. Cek apakah ada data mahasiswa atau matkul di dalamnya
         if ($semester->mahasiswas()->exists() || $semester->mataKuliahs()->exists()) {
             return back()->with('error', 'Gagal hapus! Semester ini masih memiliki data Mahasiswa atau Mata Kuliah terkait.');
         }
