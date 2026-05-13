@@ -48,11 +48,6 @@ class KelasPerkuliahan extends Model
         );
     }
 
-    public function jadwals()
-    {
-        return $this->hasMany(Jadwal::class);
-    }
-
     public function pertemuans()
     {
         return $this->hasMany(Pertemuan::class)->orderBy('pertemuan_ke');

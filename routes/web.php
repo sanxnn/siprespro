@@ -68,17 +68,11 @@ Route::middleware('auth')->group(function () {
         // dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Centralized Class Management
-        // kela = parameter binding untuk KelasPerkuliahan
         Route::resource('kelas', KelasController::class);
 
-        // Operational Actions inside Class Hub
-        Route::post('/kelas/{kela}/jadwal', [KelasController::class, 'storeJadwal'])->name('kelas.jadwal.store');
         Route::post('/kelas/{kela}/pertemuan', [KelasController::class, 'storePertemuan'])->name('kelas.pertemuan.store');
         Route::patch('/pertemuan/{pertemuan}/toggle', [KelasController::class, 'togglePertemuan'])->name('pertemuan.toggle');
 
-        // Presensi & Rekap
-        // Route::get('/rekap-kehadiran', [DosenRekapController::class, 'index'])->name('rekap.index');
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {

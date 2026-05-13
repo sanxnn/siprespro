@@ -4,12 +4,6 @@
   <div x-show="sidebarCollapse && !sidebarOpen" class="border-t border-slate-200 dark:border-slate-700 mx-2 mt-2"></div>
 </div>
 
-<!-- Menu Utama: Dashboard -->
-<a href="{{ route('dosen.dashboard') }}"
-  class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('dosen.dashboard') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
-  <i class="fas fa-grid-2 w-5 text-center shrink-0"></i>
-  <span class="whitespace-nowrap transition-opacity duration-200 text-left" x-show="sidebarOpen || !sidebarCollapse">Dashboard</span>
-</a>
 
 <!-- Menu Utama: Kelas Saya (The Hub) -->
 <div x-data="{ open: {{ request()->routeIs('dosen.kelas.*') ? 'true' : 'false' }} }">

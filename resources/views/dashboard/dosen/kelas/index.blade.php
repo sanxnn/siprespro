@@ -97,7 +97,7 @@
                         class="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-300 mb-4 text-3xl">
                         <i class="fas fa-folder-open"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-400 uppercase">Gak ada kelas cok!</h3>
+                    <h3 class="text-xl font-black text-slate-400 uppercase">Gak ada kelas!</h3>
                     <p class="text-sm text-slate-400 italic">Admin belum nambahin jadwal buat lu.</p>
                 </div>
             @endforelse

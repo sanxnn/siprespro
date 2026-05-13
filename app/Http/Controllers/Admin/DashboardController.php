@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Mahasiswa, Dosen, Presensi, MataKuliah, Golongan, Lokasi, Jadwal, Semester, KelasPerkuliahan};
+use App\Models\{Mahasiswa, Dosen, Presensi, MataKuliah, Golongan, Lokasi, Jadwal, Semester, KelasPerkuliahan, Pertemuan};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -137,26 +137,34 @@ class DashboardController extends Controller
     private function getJadwalHariIni(): array
     {
         $now = Carbon::now();
-        $hari = Str::lower($now->translatedFormat('l'));
+        $today = $now->format('Y-m-d'); // 2026-05-13
         $time = $now->format('H:i:s');
 
-        return Jadwal::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
-            ->where('hari', $hari)->orderBy('jam_mulai')->get()
-            ->map(function ($j) use ($time) {
+        // Sekarang query ke Model Pertemuan
+        return Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
+            ->where('tanggal', $today) // Filter berdasarkan tanggal hari ini
+            ->orderBy('jam_mulai')
+            ->get()
+            ->map(function ($p) use ($time) {
                 $status = 'mendatang';
-                if ($time >= $j->jam_mulai && $time <= $j->jam_selesai)
+
+                // Logic status berdasarkan jam operasional pertemuan
+                if ($time >= $p->jam_mulai && $time <= $p->jam_selesai) {
                     $status = 'berlangsung';
-                elseif ($time > $j->jam_selesai)
+                } elseif ($time > $p->jam_selesai) {
                     $status = 'selesai';
+                }
 
                 return [
-                    'matkul_nama' => $j->kelasPerkuliahan->mataKuliah->nama ?? '-',
-                    'kelas_nama' => $j->kelasPerkuliahan->nama_kelas ?? '-',
-                    'ruangan' => $j->kelasPerkuliahan->ruang->nama ?? '-',
-                    'jam_mulai' => substr($j->jam_mulai, 0, 5),
-                    'jam_selesai' => substr($j->jam_selesai, 0, 5),
-                    'lokasi_detail' => ($j->lokasi->nama ?? '-') . ', ' . ($j->kelasPerkuliahan->ruang->gedung ?? ''),
-                    'status' => $status
+                    'matkul_nama' => $p->kelasPerkuliahan->mataKuliah->nama ?? '-',
+                    'kelas_nama' => $p->kelasPerkuliahan->nama_kelas ?? '-',
+                    'ruangan' => $p->kelasPerkuliahan->ruang->nama ?? '-',
+                    'jam_mulai' => substr($p->jam_mulai, 0, 5),
+                    'jam_selesai' => substr($p->jam_selesai, 0, 5),
+                    // Karena lokasi_id sudah ada di table pertemuan, langsung panggil $p->lokasi
+                    'lokasi_detail' => ($p->lokasi->nama ?? '-') . ', ' . ($p->kelasPerkuliahan->ruang->gedung ?? ''),
+                    'status' => $status,
+                    'pertemuan_ke' => $p->pertemuan_ke // Tambahan info buat admin
                 ];
             })->toArray();
     }

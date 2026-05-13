@@ -26,14 +26,6 @@
       <i class="fas fa-sun text-amber-400" x-show="darkMode" x-transition x-cloak></i>
     </button>
 
-    <!-- Notifications -->
-    <button
-      class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-slate-600 dark:text-slate-300 relative">
-      <i class="fas fa-bell"></i>
-      <span
-        class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-800"></span>
-    </button>
-
     <!-- User Dropdown (Alpine.js) -->
     <div class="relative" x-data="{ open: false }">
       <button @click="open = !open" @click.outside="open = false"

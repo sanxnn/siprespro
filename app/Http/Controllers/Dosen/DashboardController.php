@@ -32,12 +32,13 @@ class DashboardController extends Controller
             ->latest()->take(10)->get();
 
         // Jadwal Hari Ini
-        $hariIni = strtolower(now()->translatedFormat('l'));
-        $jadwalHariIni = \App\Models\Jadwal::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang'])
+        $hariIni = now()->format('Y-m-d');
+        $jadwalHariIni = \App\Models\Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
             ->whereHas('kelasPerkuliahan', function ($q) use ($dosenId) {
                 $q->where('dosen_id', $dosenId);
             })
-            ->where('hari', $hariIni)
+            ->where('tanggal', $hariIni) // Ganti dari 'hari' ke 'tanggal'
+            ->orderBy('jam_mulai')
             ->get();
 
         // Data Tambahan
