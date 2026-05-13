@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Dosen;
+use App\Http\Controllers\Dosen\DashboardController;
+use App\Http\Controllers\Dosen\KelasController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -64,11 +66,19 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:dosen')->prefix('dosen')->name('dosen.')->group(function () {
 
         // dashboard
-        Route::get('/dashboard', fn() => view('dashboard.dosen.index'))->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // manajemen kelas
-        Route::resource('jadwal', Dosen\JadwalController::class);
-        Route::resource('pertemuan', Dosen\PertemuanController::class);
+        // Centralized Class Management
+        // kela = parameter binding untuk KelasPerkuliahan
+        Route::resource('kelas', KelasController::class);
+
+        // Operational Actions inside Class Hub
+        Route::post('/kelas/{kela}/jadwal', [KelasController::class, 'storeJadwal'])->name('kelas.jadwal.store');
+        Route::post('/kelas/{kela}/pertemuan', [KelasController::class, 'storePertemuan'])->name('kelas.pertemuan.store');
+        Route::patch('/pertemuan/{pertemuan}/toggle', [KelasController::class, 'togglePertemuan'])->name('pertemuan.toggle');
+
+        // Presensi & Rekap
+        // Route::get('/rekap-kehadiran', [DosenRekapController::class, 'index'])->name('rekap.index');
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {

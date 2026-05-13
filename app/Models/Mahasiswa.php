@@ -85,4 +85,6 @@ class Mahasiswa extends Model
     {
         return $this->semester_aktif <= 8;
     }
+
+    
 }
