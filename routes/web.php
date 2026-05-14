@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Dosen;
 use App\Http\Controllers\Dosen\DashboardController;
 use App\Http\Controllers\Dosen\KelasController;
+use App\Http\Controllers\Dosen\RekapController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -69,9 +70,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('kelas', KelasController::class);
-
         Route::post('/kelas/{kela}/pertemuan', [KelasController::class, 'storePertemuan'])->name('kelas.pertemuan.store');
+        Route::patch('/pertemuan/{pertemuan}', [KelasController::class, 'updatePertemuan'])->name('pertemuan.update');
+        Route::delete('/pertemuan/{pertemuan}', [KelasController::class, 'destroyPertemuan'])->name('pertemuan.destroy');
         Route::patch('/pertemuan/{pertemuan}/toggle', [KelasController::class, 'togglePertemuan'])->name('pertemuan.toggle');
+        Route::get('/pertemuan/{pertemuan}', [KelasController::class, 'showPertemuan'])->name('pertemuan.show');
+
+        Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
 
     });
 

@@ -7,15 +7,25 @@
         <!-- Header Section -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">KELAS SAYA</h1>
-                <p class="text-sm text-slate-500 font-bold uppercase tracking-widest italic text-primary-600">
-                    Tahun Ajaran {{ $semesterAktif->tahun_ajaran ?? '-' }}
+                <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    Kelas Saya
+                </h1>
+                <p class="text-xs font-medium text-slate-500 mt-1">Semester
+                    <span class="text-slate-800 dark:text-slate-200 font-bold">{{ $semesterAktif->nama ?? '-' }}</span>
                 </p>
             </div>
             <div
-                class="px-6 py-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Mengampu:</span>
-                <span class="ml-2 font-black text-slate-800 dark:text-white">{{ $kelases->count() }} Kelas</span>
+                class="flex items-center gap-3 px-5 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm">
+                <div
+                    class="w-10 h-10 rounded-xl bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Total Mengampu
+                    </p>
+                    <p class="text-lg font-black text-slate-800 dark:text-white">{{ $kelases->count() }} <span
+                            class="text-xs font-bold text-slate-400">Kelas</span></p>
+                </div>
             </div>
         </div>
 
@@ -43,7 +53,8 @@
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Kode
                                 MK: {{ $kelas->mataKuliah->kode_mk }}</p>
                             <h2 class="text-xl font-black text-slate-800 dark:text-white leading-tight">KELAS
-                                {{ $kelas->nama_kelas }}</h2>
+                                {{ $kelas->nama_kelas }}
+                            </h2>
                         </div>
                     </div>
 
@@ -51,7 +62,8 @@
                     <div class="mb-6">
                         <h3
                             class="text-lg font-bold text-slate-700 dark:text-slate-200 group-hover:text-primary-600 transition-colors">
-                            {{ $kelas->mataKuliah->nama }}</h3>
+                            {{ $kelas->mataKuliah->nama }}
+                        </h3>
                     </div>
 
                     <!-- Stats/Info -->
@@ -92,13 +104,56 @@
                 </div>
             @empty
                 <div
-                    class="col-span-full py-32 flex flex-col items-center justify-center bg-white dark:bg-slate-800 rounded-[3rem] border-4 border-dashed border-slate-100 dark:border-slate-700">
-                    <div
-                        class="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-300 mb-4 text-3xl">
-                        <i class="fas fa-folder-open"></i>
+                    class="col-span-full py-24 flex flex-col items-center justify-center bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
+                    {{-- Background Decoration --}}
+                    <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
+                        <svg class="h-full w-full" fill="currentColor">
+                            <pattern id="pattern-empty" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M0 40L40 0H20L0 20M40 40V20L20 40H40Z" />
+                            </pattern>
+                            <rect width="100%" height="100%" fill="url(#pattern-empty)" />
+                        </svg>
                     </div>
-                    <h3 class="text-xl font-black text-slate-400 uppercase">Gak ada kelas!</h3>
-                    <p class="text-sm text-slate-400 italic">Admin belum nambahin jadwal buat lu.</p>
+
+                    {{-- Icon with Soft Glow --}}
+                    <div class="relative flex items-center justify-center mb-6">
+                        <div class="absolute inset-0 bg-primary-500/20 blur-2xl rounded-full scale-150 opacity-20"></div>
+                        <div
+                            class="relative w-24 h-24 bg-slate-50 dark:bg-slate-900 rounded-3xl flex items-center justify-center text-slate-300 dark:text-slate-600 border border-slate-100 dark:border-slate-700 shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c1.097 0 2.16.192 3.142.546m4.5 0A8.967 8.967 0 0118 18c1.051 0 2.061.18 3 .512V4.262A8.987 8.987 0 0018 3.75c-1.097 0-2.16.192-3.142.546m0 14.25v-14.25" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    {{-- Content --}}
+                    <div class="text-center relative z-10">
+                        <h3 class="text-lg font-extrabold text-slate-800 dark:text-slate-100 tracking-tight uppercase">
+                            Data Perkuliahan Belum Tersedia
+                        </h3>
+                        <p
+                            class="text-xs text-slate-500 dark:text-slate-400 mt-2 max-w-[280px] leading-relaxed mx-auto font-medium">
+                            Sistem tidak menemukan jadwal mengampu untuk semester ini. Silakan hubungi bagian akademik untuk
+                            konfigurasi jadwal.
+                        </p>
+                    </div>
+
+                    {{-- Help Button / Status Badge --}}
+                    <div class="mt-8">
+                        <div
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-full">
+                            <span class="flex h-2 w-2 relative">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                            </span>
+                            <span
+                                class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Sinkronisasi
+                                Jadwal Standby</span>
+                        </div>
+                    </div>
                 </div>
             @endforelse
         </div>

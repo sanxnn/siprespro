@@ -31,6 +31,7 @@ class Pertemuan extends Model
     ];
 
     // RELASI
+
     public function kelasPerkuliahan()
     {
         return $this->belongsTo(KelasPerkuliahan::class);

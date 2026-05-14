@@ -208,6 +208,7 @@
   @include('layouts.components.modal.logout')
 
   @yield('scripts')
+
 </body>
 
 </html>

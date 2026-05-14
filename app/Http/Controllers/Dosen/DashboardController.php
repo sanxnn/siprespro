@@ -10,44 +10,62 @@ class DashboardController extends Controller
     public function index()
     {
         $dosenId = auth()->user()->dosen_id;
-        $semesterAktif = \App\Models\Semester::where('status', 'aktif')->first(); // Sesuaikan flag aktif lo
+        $semesterAktif = \App\Models\Semester::where('status', 'aktif')->first();
+        $hariIni = now()->format('Y-m-d');
 
-        // Statistik
+        // 1. Stats Cards
         $totalKelas = \App\Models\KelasPerkuliahan::where('dosen_id', $dosenId)->count();
+
         $pertemuanSelesai = \App\Models\Pertemuan::whereHas('kelasPerkuliahan', function ($q) use ($dosenId) {
             $q->where('dosen_id', $dosenId);
-        })->count();
+        })->where('status', 'selesai')->count(); // Pastiin ada kolom status di Pertemuan
 
-        // Presensi Hari Ini di Kelas Dosen Ini
-        $presensiHariIni = \App\Models\Presensi::whereDate('waktu_presensi', date('Y-m-d'))
+        $presensiHariIni = \App\Models\Presensi::whereDate('waktu_presensi', $hariIni)
             ->whereHas('pertemuan.kelasPerkuliahan', function ($q) use ($dosenId) {
                 $q->where('dosen_id', $dosenId);
             })->count();
 
-        // Log Presensi Terbaru
-        $recentPresensi = \App\Models\Presensi::with(['mahasiswa.golongan', 'pertemuan.kelasPerkuliahan.mataKuliah'])
-            ->whereHas('pertemuan.kelasPerkuliahan', function ($q) use ($dosenId) {
-                $q->where('dosen_id', $dosenId);
-            })
-            ->latest()->take(10)->get();
-
-        // Jadwal Hari Ini
-        $hariIni = now()->format('Y-m-d');
-        $jadwalHariIni = \App\Models\Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
-            ->whereHas('kelasPerkuliahan', function ($q) use ($dosenId) {
-                $q->where('dosen_id', $dosenId);
-            })
-            ->where('tanggal', $hariIni) // Ganti dari 'hari' ke 'tanggal'
-            ->orderBy('jam_mulai')
-            ->get();
-
-        // Data Tambahan
-        // DI CONTROLLER
         $totalMahasiswaDiampu = \App\Models\Mahasiswa::whereHas('golongan.kelasPerkuliahan', function ($q) use ($dosenId) {
             $q->where('dosen_id', $dosenId);
         })->distinct()->count();
 
-        $avgKehadiran = 85; // Ini contoh, lo bisa hitung pake query avg presensi
+        // 2. Jadwal Mengajar Hari Ini
+        $jadwalHariIni = \App\Models\Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
+            ->whereHas('kelasPerkuliahan', function ($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId);
+            })
+            ->whereDate('tanggal', $hariIni)
+            ->orderBy('jam_mulai')
+            ->get();
+
+        // 3. Aktivitas Presensi Terbaru (Real-time Feed)
+        $recentPresensi = \App\Models\Presensi::with(['mahasiswa', 'pertemuan.kelasPerkuliahan.mataKuliah'])
+            ->whereHas('pertemuan.kelasPerkuliahan', function ($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId);
+            })
+            ->latest()
+            ->take(8)
+            ->get()
+            ->map(function ($presensi) {
+                // Kita tambahin diffForHumans buat 'time_diff' kayak di Admin tadi
+                $presensi->time_diff = $presensi->waktu_presensi->diffForHumans();
+                return $presensi;
+            });
+
+        // Hitung Rata-Rata Kehadiran Dinamis
+        $totalPresensiInput = \App\Models\Presensi::whereHas('pertemuan.kelasPerkuliahan', function ($q) use ($dosenId) {
+            $q->where('dosen_id', $dosenId);
+        })->count();
+
+        $totalHadir = \App\Models\Presensi::where('status', 'hadir')
+            ->whereHas('pertemuan.kelasPerkuliahan', function ($q) use ($dosenId) {
+                $q->where('dosen_id', $dosenId);
+            })->count();
+
+        // Hindari Division by Zero (pembagian dengan nol)
+        $avgKehadiran = $totalPresensiInput > 0
+            ? round(($totalHadir / $totalPresensiInput) * 100)
+            : 0;
 
         return view('dashboard.dosen.index', compact(
             'semesterAktif',
