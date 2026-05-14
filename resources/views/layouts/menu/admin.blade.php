@@ -97,9 +97,6 @@
       <a href="{{ route('admin.presensi.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('admin.presensi.*') ? 'text-primary-600 font-bold' : 'text-slate-500 dark:text-slate-400' }}">
         <i class="fas fa-list-check w-4"></i> <span class="ml-2">Log Kehadiran</span>
       </a>
-      <a href="#" class="flex items-center px-4 py-2 text-sm rounded-lg text-slate-500 dark:text-slate-400">
-        <i class="fas fa-file-invoice w-4"></i> <span class="ml-2">Rekap Global</span>
-      </a>
     </div>
   </div>
 </div>

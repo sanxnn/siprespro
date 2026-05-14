@@ -18,26 +18,30 @@ class KelasPerkuliahanController extends Controller
 {
     public function index()
     {
-        // 1. Ambil Semester Aktif (Pondasi Utama)
-        $semesterAktif = Semester::aktif()->first();
+        // Pake scope 'aktif' (pastiin di model Semester ada scopeAktif)
+        $semesterAktif = Semester::where('status', 'aktif')->first();
 
-        // 2. Query Kelas dengan Eager Loading & Pagination (Hanya yang semester aktif)
+        // Query Kelas Perkuliahan - Tambahin pagination filter biar konsisten
         $kelases = KelasPerkuliahan::with(['mataKuliah', 'dosen', 'ruang', 'golongans'])
-            ->whereHas('mataKuliah', function ($q) use ($semesterAktif) {
-                $q->where('semester_id', $semesterAktif?->id);
+            ->when($semesterAktif, function ($q) use ($semesterAktif) {
+                return $q->whereHas('mataKuliah', function ($query) use ($semesterAktif) {
+                    $query->where('semester_id', $semesterAktif->id);
+                });
             })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
-        // 3. Dropdown Mata Kuliah (Hanya yang Aktif di Semester ini)
-        $matkulFiltered = MataKuliah::where('semester_id', $semesterAktif?->id)->get();
+        // Filter Matkul cuma buat semester aktif
+        $matkulFiltered = $semesterAktif
+            ? MataKuliah::where('semester_id', $semesterAktif->id)->get()
+            : collect();
 
-        // 4. Data Master Standar
         $dosens = Dosen::all();
         $ruangs = Ruang::all();
-        $golongans = Golongan::all(); // Untuk fallback atau keperluan lain
+        $golongans = Golongan::all();
 
-        // 5. Logic Mapping Angkatan & Golongan (Kunci Filter lo)
+        // --- LOGIC ANGKATAN (Optimasi dikit biar gak terlalu banyak query) ---
         $currentYear = date('Y');
         $currentMonth = date('n');
         $isGanjil = ($currentMonth >= 8);
@@ -49,19 +53,15 @@ class KelasPerkuliahanController extends Controller
             $semAngka = $isGanjil ? ($yearDiff * 2) + 1 : ($yearDiff * 2);
 
             if ($semAngka > 0 && $semAngka <= 8) {
-                // Tarik ID Golongan yang emang ada mahasiswanya di angkatan ini
-                $golonganIds = Mahasiswa::where('angkatan', $tahun)
-                    ->whereNotNull('golongan_id')
-                    ->distinct()
-                    ->pluck('golongan_id');
+                // Ambil golongan yang emang ada mahasiswanya di angkatan itu
+                $golonganFiltered = Golongan::whereHas('mahasiswas', function ($q) use ($tahun) {
+                    $q->where('angkatan', $tahun);
+                })->get();
 
-                // Ambil data golongannya
-                $golonganFiltered = Golongan::whereIn('id', $golonganIds)->get();
-
-                if ($golonganFiltered->count() > 0) {
+                if ($golonganFiltered->isNotEmpty()) {
                     $angkatanList[] = [
                         'tahun' => $tahun,
-                        'semester_nama' => $semAngka,
+                        'semester_nama' => "Semester " . $semAngka, // Tambahin teks biar jelas di view
                         'data_golongan' => $golonganFiltered
                     ];
                 }
@@ -81,6 +81,17 @@ class KelasPerkuliahanController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'mata_kuliah_id.required' => 'Mata kuliah wajib dipilih.',
+            'mata_kuliah_id.exists' => 'Data mata kuliah tidak ditemukan.',
+            'dosen_id.required' => 'Dosen pengajar harus ditentukan.',
+            'ruang_id.required' => 'Ruangan kelas wajib dipilih.',
+            'nama_kelas.required' => 'Nama kelas tidak boleh kosong.',
+            'tipe_kelas.required' => 'Tipe kelas harus ditentukan.',
+            'golongan_ids.required' => 'Silakan pilih minimal satu golongan.',
+            'golongan_ids.array' => 'Format data golongan tidak valid.',
+        ];
+
         $request->validate([
             'mata_kuliah_id' => 'required|exists:mata_kuliah,id',
             'dosen_id' => 'required|exists:dosen,id',
@@ -89,11 +100,12 @@ class KelasPerkuliahanController extends Controller
             'tipe_kelas' => 'required|in:reguler,gabungan',
             'golongan_ids' => 'required|array|min:1',
             'golongan_ids.*' => 'exists:golongan,id',
-        ]);
+        ], $messages);
 
-        // ATURAN KETAT: Reguler cuma boleh 1 golongan
         if ($request->tipe_kelas === 'reguler' && count($request->golongan_ids) > 1) {
-            return back()->with('error', 'Tipe kelas Reguler hanya diperbolehkan memilih 1 golongan.');
+            return back()
+                ->withInput()
+                ->with('error', 'Tipe kelas reguler hanya diperbolehkan untuk satu golongan.');
         }
 
         DB::beginTransaction();
@@ -109,15 +121,29 @@ class KelasPerkuliahanController extends Controller
             $kelas->golongans()->sync($request->golongan_ids);
 
             DB::commit();
-            return back()->with('success', 'Kelas perkuliahan berhasil dibuka!');
+            return back()->with('success', 'Kelas perkuliahan berhasil dibuat.');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal membuat kelas: ' . $e->getMessage());
+            \Log::error("Error Store Kelas: " . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan sistem saat menyimpan data.');
         }
     }
 
     public function update(Request $request, KelasPerkuliahan $kela)
     {
+        $messages = [
+            'mata_kuliah_id.required' => 'Mata kuliah wajib dipilih.',
+            'dosen_id.required' => 'Dosen pengajar wajib dipilih.',
+            'ruang_id.required' => 'Ruangan kelas wajib ditentukan.',
+            'nama_kelas.required' => 'Nama kelas wajib diisi.',
+            'tipe_kelas.required' => 'Tipe kelas wajib ditentukan.',
+            'golongan_ids.required' => 'Pilih minimal satu golongan.',
+        ];
+
         $request->validate([
             'mata_kuliah_id' => 'required|exists:mata_kuliah,id',
             'dosen_id' => 'required|exists:dosen,id',
@@ -126,13 +152,12 @@ class KelasPerkuliahanController extends Controller
             'tipe_kelas' => 'required|in:reguler,gabungan',
             'golongan_ids' => 'required|array|min:1',
             'golongan_ids.*' => 'exists:golongan,id',
-        ]);
+        ], $messages);
 
-        // ATURAN KETAT: Update pun harus validasi jumlah golongan
         if ($request->tipe_kelas === 'reguler' && count($request->golongan_ids) > 1) {
-            throw ValidationException::withMessages([
-                'golongan_ids' => 'Perubahan gagal! Tipe reguler tidak boleh memiliki lebih dari 1 golongan.'
-            ]);
+            return back()
+                ->withInput()
+                ->with('error', 'Perubahan gagal. Tipe kelas reguler hanya diperbolehkan memiliki satu golongan.');
         }
 
         DB::beginTransaction();
@@ -148,10 +173,15 @@ class KelasPerkuliahanController extends Controller
             $kela->golongans()->sync($request->golongan_ids);
 
             DB::commit();
-            return back()->with('success', 'Data kelas berhasil diperbarui!');
+            return back()->with('success', 'Data kelas perkuliahan berhasil diperbarui.');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal update data: ' . $e->getMessage());
+            \Log::error("Update Kelas Error: " . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan sistem saat memperbarui data.');
         }
     }
 
@@ -159,12 +189,10 @@ class KelasPerkuliahanController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Cek dulu apakah kelas ini sudah punya jadwal atau presensi
             if ($kela->jadwals()->exists() || $kela->pertemuans()->exists()) {
                 return back()->with('error', 'Kelas tidak bisa dihapus karena sudah memiliki jadwal atau data pertemuan!');
             }
 
-            // Hapus relasi pivot dulu (otomatis sebenernya kalo di DB pake cascade, tapi ini buat safety)
             $kela->golongans()->detach();
             $kela->delete();
 

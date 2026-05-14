@@ -33,38 +33,74 @@ class MataKuliahController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'kode_mk.required' => 'Kode MK wajib diisi!',
+            'kode_mk.unique' => 'Kode MK ini sudah ada yang punya.',
+            'nama.required' => 'Nama mata kuliah jangan dikosongin.',
+            'nama.max' => 'Nama MK maksimal 255 karakter.',
+            'sks.required' => 'SKS wajib diisi.',
+            'sks.integer' => 'SKS harus berupa angka.',
+            'sks.min' => 'SKS minimal 1.',
+            'sks.max' => 'SKS maksimal 6.',
+            'semester_id.required' => 'Pilih semester dulu!',
+            'semester_id.exists' => 'Semester tidak ditemukan.',
+        ];
+
         $request->validate([
             'kode_mk' => 'required|string|unique:mata_kuliah,kode_mk',
             'nama' => 'required|string|max:255',
             'sks' => 'required|integer|min:1|max:6',
             'semester_id' => 'required|exists:semester,id',
-        ]);
+        ], $messages);
 
-        MataKuliah::create($request->all());
-        return back()->with('success', 'Mata Kuliah berhasil ditambahkan!');
+        try {
+            MataKuliah::create($request->all());
+
+            return back()->with('success', 'Mata Kuliah berhasil ditambahkan!');
+
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal simpan data: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, MataKuliah $matkul)
     {
+        $messages = [
+            'kode_mk.required' => 'Kode MK wajib diisi',
+            'kode_mk.unique' => 'Kode MK ini sudah dipakai mata kuliah lain.',
+            'nama.required' => 'Nama mata kuliah jangan dikosongin.',
+            'nama.max' => 'Nama MK maksimal 255 karakter.',
+            'sks.required' => 'SKS wajib diisi.',
+            'sks.integer' => 'SKS harus berupa angka.',
+            'sks.min' => 'SKS minimal 1.',
+            'sks.max' => 'SKS maksimal 6.',
+            'semester_id.required' => 'Pilih semester dulu!',
+            'semester_id.exists' => 'Semester tidak ditemukan di database.',
+        ];
+
         $request->validate([
             'kode_mk' => 'required|string|unique:mata_kuliah,kode_mk,' . $matkul->id,
             'nama' => 'required|string|max:255',
             'sks' => 'required|integer|min:1|max:6',
             'semester_id' => 'required|exists:semester,id',
-        ]);
+        ], $messages);
 
         try {
             $matkul->update($request->all());
+
             return back()->with('success', 'Data Mata Kuliah berhasil diupdate!');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal update data! Pesan: ' . $e->getMessage());
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal update data! ' . $e->getMessage());
         }
     }
 
     public function destroy(MataKuliah $matkul)
     {
 
-        // dd($matkul);
         if ($matkul->kelasPerkuliahan()->exists()) {
             return back()->with('error', 'Gagal hapus! Mata kuliah ini masih digunakan di jadwal kelas.');
         }
