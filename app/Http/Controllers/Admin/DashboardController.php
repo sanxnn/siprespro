@@ -12,28 +12,32 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        Carbon::setLocale('id');
-        date_default_timezone_set('Asia/Jakarta');
-        $today = Carbon::today();
-        $semesterAktif = Semester::latest()->first();
+        $today = now()->startOfDay();
+        $semesterAktif = Semester::where('status', 'aktif')->first() ?? Semester::latest()->first();
 
-        // 🔹 STATS UTAMA (Cek kehadiran hari ini dalam 1 query)
         $statsHariIni = Presensi::whereDate('waktu_presensi', $today)
-            ->selectRaw('COUNT(*) as total, SUM(CASE WHEN status = "hadir" THEN 1 ELSE 0 END) as hadir')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN status = "hadir" THEN 1 ELSE 0 END) as hadir')
             ->first();
 
-        $totalMahasiswa = Mahasiswa::count();
-        $totalDosen = Dosen::count();
+        $stats = [
+            'totalMahasiswa' => Mahasiswa::count(), // Key diganti agar sesuai Blade
+            'totalDosen' => Dosen::count(),     // Key diganti agar sesuai Blade
+            'totalMataKuliah' => MataKuliah::count(),// Key diganti agar sesuai Blade
+            'totalGolongan' => Golongan::count(),  // Key diganti agar sesuai Blade
+            'totalLokasi' => Lokasi::count(),    // Key diganti agar sesuai Blade
+        ];
+
         $presensiHariIni = $statsHariIni->total ?? 0;
-        $tingkatKehadiran = $presensiHariIni > 0 ? round(($statsHariIni->hadir / $presensiHariIni) * 100, 1) : 0;
+        $hadirHariIni = $statsHariIni->hadir ?? 0;
+        $tingkatKehadiran = $presensiHariIni > 0
+            ? round(($hadirHariIni / $presensiHariIni) * 100, 1)
+            : 0;
 
-        // 🔹 SECONDARY STATS
-        $totalMataKuliah = MataKuliah::count();
-        $kelasAktif = $semesterAktif ? KelasPerkuliahan::whereHas('mataKuliah', fn($q) => $q->where('semester_id', $semesterAktif->id))->count() : KelasPerkuliahan::count();
-        $totalGolongan = Golongan::count();
-        $totalLokasi = Lokasi::count();
+        $kelasAktif = $semesterAktif
+            ? KelasPerkuliahan::whereHas('mataKuliah', fn($q) => $q->where('semester_id', $semesterAktif->id))->count()
+            : KelasPerkuliahan::count();
 
-        // 🔹 RECENT ACTIVITIES (Mapping sesuai struktur $item lu di view)
         $recentPresensi = Presensi::with(['pertemuan.kelasPerkuliahan.mataKuliah', 'mahasiswa'])
             ->whereDate('waktu_presensi', $today)
             ->latest('waktu_presensi')
@@ -41,23 +45,40 @@ class DashboardController extends Controller
             ->get()
             ->map(function ($p) {
                 return [
-                    'mahasiswa_nama' => $p->mahasiswa?->nama ?? 'N/A',
-                    'mahasiswa_nim' => $p->mahasiswa?->nim ?? '-',
-                    'kelas_nama' => $p->pertemuan?->kelasPerkuliahan?->nama_kelas ?? '-',
-                    'matkul_nama' => $p->pertemuan?->kelasPerkuliahan?->mataKuliah?->nama ?? '-',
+                    'mahasiswa_nama' => optional($p->mahasiswa)->nama ?? 'Mahasiswa Dihapus',
+                    'mahasiswa_nim' => optional($p->mahasiswa)->nim ?? '-',
+                    'kelas_nama' => optional($p->pertemuan->kelasPerkuliahan)->nama_kelas ?? '-',
+                    'matkul_nama' => optional($p->pertemuan->kelasPerkuliahan->mataKuliah)->nama ?? '-',
                     'status' => $p->status,
                     'time_diff' => $p->waktu_presensi->diffForHumans()
                 ];
             });
 
-        // 🔹 ATTENDANCE TREND (Single Query Optimization)
-        $attendanceTrend = $this->getAttendanceTrend(7);
+        $data = [
+            'formattedDate' => now()->translatedFormat('l, j F Y'),
+            'hariIniEnum' => strtolower(now()->translatedFormat('l')),
+            'attendanceTrend' => $this->getAttendanceTrend(7),
+            'jadwalHariIni' => $this->getJadwalHariIni(),
+            'quickActions' => $this->getQuickActions(),
+        ];
 
-        // 🔹 JADWAL HARI INI
-        $jadwalHariIni = $this->getJadwalHariIni();
+        return view('dashboard.admin.index', array_merge(
+            $stats,
+            $data,
+            [
+                'semesterAktif' => $semesterAktif,
+                'presensiHariIni' => $presensiHariIni,
+                'hadirHariIni' => $hadirHariIni,
+                'tingkatKehadiran' => $tingkatKehadiran,
+                'kelasAktif' => $kelasAktif,
+                'recentPresensi' => $recentPresensi
+            ]
+        ));
+    }
 
-        // 🔹 QUICK ACTIONS (Mapping URL)
-        $quickActions = [
+    private function getQuickActions(): array
+    {
+        return [
             [
                 'title' => 'Kelola Mahasiswa',
                 'desc' => 'Tambah, edit, hapus data mahasiswa',
@@ -87,68 +108,55 @@ class DashboardController extends Controller
                 'can' => true
             ],
         ];
-
-        $formattedDate = $today->translatedFormat('l, j F Y');
-        $hariIniEnum = Str::lower($today->translatedFormat('l'));
-
-        return view('dashboard.admin.index', compact(
-            'semesterAktif',
-            'totalMahasiswa',
-            'totalDosen',
-            'presensiHariIni',
-            'tingkatKehadiran',
-            'totalMataKuliah',
-            'kelasAktif',
-            'totalGolongan',
-            'totalLokasi',
-            'recentPresensi',
-            'attendanceTrend',
-            'jadwalHariIni',
-            'quickActions',
-            'formattedDate',
-            'hariIniEnum'
-        ));
     }
 
     private function getAttendanceTrend(int $days): array
     {
-        $startDate = Carbon::today()->subDays($days - 1);
-        $rawStats = Presensi::whereDate('waktu_presensi', '>=', $startDate)
-            ->selectRaw('DATE(waktu_presensi) as date, COUNT(*) as total, SUM(CASE WHEN status = "hadir" THEN 1 ELSE 0 END) as hadir')
-            ->groupBy('date')->get()->keyBy('date');
+        $startDate = now()->subDays($days - 1)->startOfDay();
+
+        $rawStats = Presensi::where('waktu_presensi', '>=', $startDate)
+            ->selectRaw('DATE(waktu_presensi) as date')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('SUM(CASE WHEN status = "hadir" THEN 1 ELSE 0 END) as hadir')
+            ->groupBy('date')
+            ->get()
+            ->keyBy('date');
 
         $trend = [];
         for ($i = $days - 1; $i >= 0; $i--) {
-            $d = Carbon::today()->subDays($i);
+            $d = now()->subDays($i);
             $dateStr = $d->format('Y-m-d');
             $stat = $rawStats->get($dateStr);
+
+            $total = $stat->total ?? 0;
+            $hadir = (int) ($stat->hadir ?? 0);
+
             $trend[] = [
-                'date' => $d,
+                'label' => $d->translatedFormat('d M'),
                 'day_full' => $d->translatedFormat('l'),
                 'day_short' => $d->translatedFormat('D'),
-                'total' => $stat->total ?? 0,
-                'hadir' => $stat->hadir ?? 0,
-                'percentage' => ($stat && $stat->total > 0) ? round(($stat->hadir / $stat->total) * 100) : 0
+                'total' => $total,
+                'hadir' => $hadir,
+                'percentage' => ($total > 0) ? round(($hadir / $total) * 100) : 0
             ];
         }
+
         return $trend;
     }
 
     private function getJadwalHariIni(): array
     {
-        $now = Carbon::now();
-        $today = $now->format('Y-m-d'); // 2026-05-13
-        $time = $now->format('H:i:s');
+        $now = now();
+        $today = $now->toDateString();
+        $time = $now->toTimeString();
 
-        // Sekarang query ke Model Pertemuan
         return Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
-            ->where('tanggal', $today) // Filter berdasarkan tanggal hari ini
+            ->whereDate('tanggal', $today)
             ->orderBy('jam_mulai')
             ->get()
             ->map(function ($p) use ($time) {
                 $status = 'mendatang';
 
-                // Logic status berdasarkan jam operasional pertemuan
                 if ($time >= $p->jam_mulai && $time <= $p->jam_selesai) {
                     $status = 'berlangsung';
                 } elseif ($time > $p->jam_selesai) {
@@ -156,15 +164,14 @@ class DashboardController extends Controller
                 }
 
                 return [
-                    'matkul_nama' => $p->kelasPerkuliahan->mataKuliah->nama ?? '-',
-                    'kelas_nama' => $p->kelasPerkuliahan->nama_kelas ?? '-',
-                    'ruangan' => $p->kelasPerkuliahan->ruang->nama ?? '-',
+                    'matkul_nama' => $p->kelasPerkuliahan?->mataKuliah?->nama ?? 'Mata Kuliah Tidak Ditemukan',
+                    'kelas_nama' => $p->kelasPerkuliahan?->nama_kelas ?? '-',
+                    'ruangan' => $p->kelasPerkuliahan?->ruang?->nama ?? '-',
                     'jam_mulai' => substr($p->jam_mulai, 0, 5),
                     'jam_selesai' => substr($p->jam_selesai, 0, 5),
-                    // Karena lokasi_id sudah ada di table pertemuan, langsung panggil $p->lokasi
-                    'lokasi_detail' => ($p->lokasi->nama ?? '-') . ', ' . ($p->kelasPerkuliahan->ruang->gedung ?? ''),
+                    'lokasi_detail' => ($p->lokasi?->nama ?? '-') . ' (' . ($p->kelasPerkuliahan?->ruang?->gedung ?? 'Gedung -') . ')',
                     'status' => $status,
-                    'pertemuan_ke' => $p->pertemuan_ke // Tambahan info buat admin
+                    'pertemuan_ke' => $p->pertemuan_ke
                 ];
             })->toArray();
     }
