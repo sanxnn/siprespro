@@ -3,8 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Dosen;
+use App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Mahasiswa\DashboardController;
 use App\Http\Controllers\Mahasiswa\JadwalController;
+use App\Http\Controllers\Mahasiswa\PresensiController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -69,6 +71,12 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/jadwal-semester', [JadwalController::class, 'semester'])->name('jadwal.semester');
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
+    Route::get('/presensi/isi', [PresensiController::class, 'form'])->name('presensi.form');
+    Route::post('/presensi', [PresensiController::class, 'store'])->name('presensi.store');
+    Route::get('/profil', [Mahasiswa\ProfilController::class, 'index'])->name('profil.index');
+    Route::put('/profil', [Mahasiswa\ProfilController::class, 'update'])->name('profil.update');
     });
 });

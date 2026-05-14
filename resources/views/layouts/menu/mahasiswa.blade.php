@@ -22,12 +22,12 @@
   <!-- Submenu -->
   <div x-show="activeMenu === 'mhs_presensi' && (sidebarOpen || !sidebarCollapse)" x-collapse class="overflow-hidden">
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
-      <a href="#"
+      <a href="{{ route('mahasiswa.presensi.form') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-check-circle w-5 text-center shrink-0"></i>
         <span class="ml-2">Isi Presensi</span>
       </a>
-      <a href="#"
+      <a href="{{ route('mahasiswa.presensi.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-history w-5 text-center shrink-0"></i>
         <span class="ml-2">Riwayat Kehadiran</span>
@@ -57,12 +57,8 @@
   <!-- Submenu -->
   <div x-show="activeMenu === 'mhs_jadwal' && (sidebarOpen || !sidebarCollapse)" x-collapse class="overflow-hidden">
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
-      <a href="{{ route('mahasiswa.jadwal.index') }}"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-calendar-day w-5 text-center shrink-0"></i>
-        <span class="ml-2">Jadwal Minggu Ini</span>
-      </a>
-      <a href="#"
+      
+      <a href="{{ route('mahasiswa.jadwal.semester') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-calendar-alt w-5 text-center shrink-0"></i>
         <span class="ml-2">Jadwal Semester</span>
@@ -87,7 +83,7 @@
   <!-- Submenu -->
   <div x-show="activeMenu === 'mhs_akademik' && (sidebarOpen || !sidebarCollapse)" x-collapse class="overflow-hidden">
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
-      <a href="#"
+      <a href="{{ route('mahasiswa.profil.index') }}"
         class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
         <i class="fas fa-user-circle w-5 text-center shrink-0"></i>
         <span class="ml-2">Profil Saya</span>
