@@ -223,7 +223,40 @@
               </div>
             </div>
           @empty
-            <div class="p-8 text-center text-slate-500">Belum ada aktivitas hari ini</div>
+            <div class="flex flex-col items-center justify-center py-20 px-6">
+              <!-- Icon dengan Background Soft -->
+              <div
+                class="w-20 h-20 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-slate-300 dark:text-slate-600" fill="none"
+                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+
+              <!-- Textual Information -->
+              <div class="text-center space-y-1">
+                <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Tidak Ada Aktivitas Presensi
+                </h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+                  Data presensi mahasiswa untuk hari ini belum tersedia atau belum ada yang melakukan sinkronisasi.
+                </p>
+              </div>
+
+              <!-- System Status Badge -->
+              <div
+                class="mt-8 flex items-center gap-2 px-3 py-1 bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/30 rounded-md">
+                <span class="relative flex h-2 w-2">
+                  <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                </span>
+                <span class="text-[11px] font-medium text-primary-700 dark:text-primary-500 uppercase tracking-wider">
+                  ONLINE
+                </span>
+              </div>
+            </div>
           @endforelse
         </div>
       </div>
@@ -266,9 +299,11 @@
               <div class="flex justify-between items-start">
                 <div>
                   <p class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate max-w-[150px]">
-                    {{ $jadwal['matkul_nama'] }}</p>
+                    {{ $jadwal['matkul_nama'] }}
+                  </p>
                   <p class="text-[10px] text-slate-500 mt-1 uppercase font-bold">{{ $jadwal['kelas_nama'] }} •
-                    {{ $jadwal['jam_mulai'] }} - {{ $jadwal['jam_selesai'] }}</p>
+                    {{ $jadwal['jam_mulai'] }} - {{ $jadwal['jam_selesai'] }}
+                  </p>
                 </div>
 
                 @if($jadwal['status'] === 'berlangsung')
@@ -280,22 +315,81 @@
               </div>
             </div>
           @empty
-            <div class="p-8 text-center text-slate-400">Tidak ada jadwal hari ini</div>
+            <div class="flex flex-col items-center justify-center py-12 px-4">
+              <!-- Icon Agenda/Calendar -->
+              <div class="relative mb-4">
+                <div
+                  class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                  </svg>
+                </div>
+                <!-- Badge "Free" kecil -->
+                <span class="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span
+                    class="relative inline-flex rounded-full h-4 w-4 bg-slate-200 dark:bg-slate-700 text-[8px] items-center justify-center text-slate-500 dark:text-slate-400 font-bold border border-white dark:border-slate-900">0</span>
+                </span>
+              </div>
+
+              <div class="text-center">
+                <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-tight">Agenda Kosong</h4>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-[180px] leading-relaxed">
+                  Tidak ada jadwal perkuliahan yang terjadwal untuk hari ini.
+                </p>
+              </div>
+
+              <!-- Indikator Hari -->
+              <div class="mt-6 flex items-center gap-2">
+                <span class="h-px w-4 bg-slate-200 dark:bg-slate-700"></span>
+                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                  {{ now()->translatedFormat('l, d M') }}
+                </span>
+                <span class="h-px w-4 bg-slate-200 dark:bg-slate-700"></span>
+              </div>
+            </div>
           @endforelse
         </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl">
-        <div class="p-5 border-b border-slate-200 dark:border-slate-700 font-semibold">Aksi Cepat</div>
-        <div class="p-4 space-y-2">
+      <div
+        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm">
+        <div
+          class="p-5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+          <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <i class="fas fa-bolt text-amber-500 text-xs"></i>
+            Aksi Cepat
+          </h3>
+        </div>
+
+        <div class="p-3 space-y-1">
           @foreach($quickActions as $action)
             <a href="{{ $action['url'] }}"
-              class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors group">
-              <div
-                class="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center text-primary-600">
-                <i class="fas {{ $action['icon'] }}"></i>
+              class="flex items-center justify-between p-3 rounded-xl hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group">
+
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-11 h-11 bg-slate-100 dark:bg-slate-700 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/40 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors shadow-sm border border-transparent group-hover:border-primary-200 dark:group-hover:border-primary-800">
+                  <i class="fas {{ $action['icon'] }} text-lg"></i>
+                </div>
+
+                <div>
+                  <p
+                    class="text-sm font-bold text-slate-700 dark:text-slate-200 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors">
+                    {{ $action['title'] }}
+                  </p>
+                  <p
+                    class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                    {{ $action['desc'] }}
+                  </p>
+                </div>
               </div>
-              <div class="text-sm font-medium text-slate-800 dark:text-slate-100">{{ $action['title'] }}</div>
+
+              <div
+                class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary-500 dark:text-primary-400">
+                <i class="fas fa-chevron-right text-xs"></i>
+              </div>
             </a>
           @endforeach
         </div>
