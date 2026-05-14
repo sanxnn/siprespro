@@ -104,7 +104,7 @@
                 </div>
             @empty
                 <div
-                    class="col-span-full py-24 flex flex-col items-center justify-center bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
+                    class="col-span-full py-24 flex flex-col items-center justify-center bg-white dark:bg-slate-800 rounded-4xl border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
                     {{-- Background Decoration --}}
                     <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
                         <svg class="h-full w-full" fill="currentColor">

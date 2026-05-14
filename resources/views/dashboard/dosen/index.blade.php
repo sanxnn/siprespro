@@ -138,7 +138,7 @@
               <div class="flex items-center gap-4">
                 {{-- Avatar / Inisial --}}
                 <div
-                  class="w-11 h-11 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 font-bold shadow-sm group-hover:scale-105 transition-transform">
+                  class="w-11 h-11 bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 font-bold shadow-sm group-hover:scale-105 transition-transform">
                   {{ strtoupper(substr($item->mahasiswa->nama, 0, 1)) }}
                 </div>
 
