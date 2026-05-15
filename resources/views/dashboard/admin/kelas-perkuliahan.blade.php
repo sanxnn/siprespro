@@ -10,7 +10,7 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Pengaturan relasi matkul, dosen pengampu,
                     dan lokasi ruang</p>
             </div>
-            <button @click="MicroModal.show('modal-create-kelas')"
+            <button type="button" @click="MicroModal.show('modal-create-kelas')"
                 class="flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-primary-200 dark:shadow-none">
                 <i class="fas fa-plus-circle"></i>
                 <span>Buka Kelas Baru</span>
@@ -19,24 +19,25 @@
 
         <div
             class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-            <div class="overflow-x-auto">
+            <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
+            <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
                         <tr>
                             <th
-                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                                 Informasi Mata Kuliah & Kelas</th>
                             <th
-                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                                 Golongan</th>
                             <th
-                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                                 Dosen Pengampu</th>
                             <th
-                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">
+                                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center whitespace-nowrap">
                                 Ruang & Tipe</th>
                             <th
-                                class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                                 Aksi</th>
                         </tr>
                     </thead>
@@ -95,10 +96,10 @@
 
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end gap-2">
-                                        <button @click="MicroModal.show('modal-edit-{{ $kelas->id }}')"
+                                        <button type="button" @click="MicroModal.show('modal-edit-{{ $kelas->id }}')"
                                             class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 border border-blue-100"><i
                                                 class="fas fa-edit text-xs"></i></button>
-                                        <button @click="MicroModal.show('modal-delete-{{ $kelas->id }}')"
+                                        <button type="button" @click="MicroModal.show('modal-delete-{{ $kelas->id }}')"
                                             class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 border border-red-100"><i
                                                 class="fas fa-trash text-xs"></i></button>
                                     </div>
@@ -113,6 +114,69 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
+            <div class="block md:hidden p-4 space-y-3">
+                @forelse($kelases as $kelas)
+                    <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-10 h-10 shrink-0 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center font-black text-amber-600 dark:text-amber-400 text-sm border border-amber-200 dark:border-amber-800">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight truncate">{{ $kelas->mataKuliah->nama }}</h4>
+                                    <div class="flex items-center gap-1 mt-0.5">
+                                        <p class="text-[10px] font-mono text-slate-400 truncate font-bold uppercase tracking-wider">{{ $kelas->mataKuliah->kode_mk }}</p>
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-[9px] font-bold border border-indigo-100 dark:border-indigo-800">{{ $kelas->nama_kelas }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1">
+                            @foreach($kelas->golongans as $gol)
+                                <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold border border-slate-200 dark:border-slate-600">
+                                    {{ $gol->nama }}
+                                </span>
+                            @endforeach
+                        </div>
+
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-2 font-medium">
+                            <div class="flex flex-col gap-1 bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                                <span class="font-bold text-slate-700 dark:text-slate-300"><i class="fas fa-user-tie text-blue-500 mr-1.5"></i> Dosen:</span>
+                                <div>
+                                    <p class="font-semibold text-slate-800 dark:text-slate-200 text-xs">{{ $kelas->dosen->nama }}</p>
+                                    <p class="text-[10px] text-slate-400 italic">NIP: {{ $kelas->dosen->nip ?? '-' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                                <span class="font-bold text-slate-700 dark:text-slate-300"><i class="fas fa-door-closed text-emerald-500 mr-1.5"></i> Ruang & Tipe:</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-emerald-600 dark:text-emerald-400">{{ $kelas->ruang->nama }}</span>
+                                    <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded {{ $kelas->tipe_kelas == 'reguler' ? 'text-blue-600 bg-blue-50 border-blue-100' : 'text-purple-600 bg-purple-50 border-purple-100' }}">
+                                        {{ $kelas->tipe_kelas }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
+                            <button type="button" @click="MicroModal.show('modal-edit-{{ $kelas->id }}')"
+                                class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button type="button" @click="MicroModal.show('modal-delete-{{ $kelas->id }}')"
+                                class="px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-slate-400 italic font-medium">Data kelas masih kosong!</div>
+                @endforelse
+            </div>
         </div>
     </div>
 
@@ -120,7 +184,7 @@
     <div class="modal" id="modal-create-kelas" aria-hidden="true">
         <div class="modal__overlay" tabindex="-1" data-micromodal-close
             class="bg-slate-900/60 backdrop-blur-sm fixed inset-0 z-50 flex items-center justify-center">
-            <div class="modal__container w-full max-w-4xl bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden"
+            <div class="modal__container w-full max-w-4xl bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl md:overflow-hidden"
                 role="dialog" @click.stop>
 
                 <header
@@ -132,7 +196,7 @@
                             Periode: {{ $semesterAktif->nama ?? '-' }} ({{ $semesterAktif->tahun_ajaran ?? '-' }})
                         </p>
                     </div>
-                    <button
+                    <button type="button"
                         class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-sm text-slate-400 hover:text-red-500 transition-all"
                         data-micromodal-close>
                         <i class="fas fa-times text-lg"></i>
@@ -278,7 +342,7 @@
         <div class="modal" id="modal-edit-{{ $kelas->id }}" aria-hidden="true">
             <div class="modal__overlay" tabindex="-1" data-micromodal-close
                 class="bg-slate-900/60 backdrop-blur-sm fixed inset-0 z-50 flex items-center justify-center">
-                <div class="modal__container w-full max-w-4xl bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden"
+                <div class="modal__container w-full max-w-4xl bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl md:overflow-hidden"
                     role="dialog" @click.stop>
                     <header
                         class="px-10 py-3 bg-slate-50 dark:bg-slate-900/50 border-b dark:border-slate-700 flex justify-between items-center">
@@ -289,7 +353,7 @@
                                 Periode: {{ $semesterAktif->nama ?? '-' }} ({{ $semesterAktif->tahun_ajaran ?? '-' }})
                             </p>
                         </div>
-                        <button
+                        <button type="button"
                             class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white dark:bg-slate-800 shadow-sm text-slate-400 hover:text-red-500 transition-all"
                             data-micromodal-close>
                             <i class="fas fa-times text-lg"></i>

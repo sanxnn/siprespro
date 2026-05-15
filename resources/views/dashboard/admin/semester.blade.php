@@ -36,25 +36,26 @@
 
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <div class="overflow-x-auto">
+      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
             <tr>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">No</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Informasi Semester</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">Tahun Ajaran
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">No</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Informasi Semester</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center whitespace-nowrap">Tahun Ajaran
               </th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
-              <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Aksi</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Status</th>
+              <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
             @forelse($semesters as $semester)
               <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-all group">
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                   <span class="text-sm font-mono text-slate-400">{{ $loop->iteration }}</span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center gap-3">
                     <div
                       class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold border border-primary-200 dark:border-primary-800">
@@ -67,11 +68,11 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-center">
+                <td class="px-6 py-4 text-center whitespace-nowrap">
                   <span
                     class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ $semester->tahun_ajaran }}</span>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 whitespace-nowrap">
                   @if($semester->status === 'aktif')
                     <span
                       class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-bold uppercase border border-emerald-200">
@@ -88,7 +89,7 @@
                     </form>
                   @endif
                 </td>
-                <td class="px-6 py-4 text-right">
+                <td class="px-6 py-4 text-right whitespace-nowrap">
                   <div class="flex justify-end gap-2">
                     <button @click="MicroModal.show('modal-edit-{{ $semester->id }}')"
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition-all duration-300 shadow-sm border border-blue-100 dark:border-blue-800">
@@ -111,6 +112,52 @@
             @endforelse
           </tbody>
         </table>
+      </div>
+
+      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
+      <div class="block md:hidden p-4 space-y-3">
+        @forelse($semesters as $semester)
+          <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
+            <div class="flex justify-between items-start gap-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center font-black text-primary-600 dark:text-primary-400 text-sm">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight truncate">{{ $semester->nama }}</h4>
+                  <p class="text-[10px] font-mono text-slate-400 truncate mt-0.5 font-bold uppercase tracking-tighter">ID: SEM-0{{ $semester->id }}</p>
+                </div>
+              </div>
+              <div class="shrink-0 flex flex-col items-end gap-1.5">
+                @if($semester->status === 'aktif')
+                  <span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase bg-emerald-100 text-emerald-600 border border-emerald-200 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Aktif</span>
+                @else
+                  <form action="{{ route('admin.semester.set-aktif', $semester->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase bg-slate-200 text-slate-500 border border-slate-300 hover:bg-primary-100 hover:text-primary-600 transition-colors flex items-center gap-1"><i class="fas fa-power-off"></i> Set Aktif</button>
+                  </form>
+                @endif
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
+              <p><span class="font-bold text-slate-700 dark:text-slate-300">Tahun Ajaran:</span> <span class="font-semibold">{{ $semester->tahun_ajaran }}</span></p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
+              <button type="button" @click="MicroModal.show('modal-edit-{{ $semester->id }}')"
+                class="px-3 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button type="button" @click="MicroModal.show('modal-delete-{{ $semester->id }}')"
+                class="px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </div>
+        @empty
+          <div class="p-8 text-center text-slate-400 italic text-xs">Data semester belum tersedia.</div>
+        @endforelse
       </div>
       @if($semesters->hasPages())
         <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-700">

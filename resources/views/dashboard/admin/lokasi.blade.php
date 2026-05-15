@@ -10,7 +10,7 @@
         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Atur titik koordinat dan radius aman presensi
           mahasiswa</p>
       </div>
-      <button @click="MicroModal.show('modal-create-lokasi')"
+      <button type="button" @click="MicroModal.show('modal-create-lokasi')"
         class="flex items-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-200 dark:shadow-none">
         <i class="fas fa-map-location-dot"></i>
         <span>Tambah Titik</span>
@@ -19,19 +19,20 @@
 
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <div class="overflow-x-auto">
+      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
             <tr>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nama
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Nama
                 Lokasi</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                 Koordinat (Lat, Long)</th>
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">
+                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center whitespace-nowrap">
                 Radius Aman</th>
               <th
-                class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                 Aksi</th>
             </tr>
           </thead>
@@ -58,7 +59,7 @@
                         class="text-[11px] font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded border dark:border-slate-700">
                         {{ $lokasi->latitude }}, {{ $lokasi->longitude }}
                       </code>
-                      <button onclick="navigator.clipboard.writeText('{{ $lokasi->latitude }},{{ $lokasi->longitude }}')"
+                      <button type="button" onclick="navigator.clipboard.writeText('{{ $lokasi->latitude }},{{ $lokasi->longitude }}')"
                         class="opacity-0 group-hover/coord:opacity-100 text-slate-400 hover:text-primary-500 transition-all">
                         <i class="fas fa-copy text-[10px]"></i>
                       </button>
@@ -77,11 +78,11 @@
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100 dark:border-emerald-800">
                       <i class="fas fa-map text-xs"></i>
                     </a>
-                    <button @click="MicroModal.show('modal-edit-{{ $lokasi->id }}')"
+                    <button type="button" @click="MicroModal.show('modal-edit-{{ $lokasi->id }}')"
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all border border-blue-100 dark:border-blue-800">
                       <i class="fas fa-edit text-xs"></i>
                     </button>
-                    <button @click="MicroModal.show('modal-delete-{{ $lokasi->id }}')"
+                    <button type="button" @click="MicroModal.show('modal-delete-{{ $lokasi->id }}')"
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-800">
                       <i class="fas fa-trash text-xs"></i>
                     </button>
@@ -99,6 +100,61 @@
           </tbody>
         </table>
       </div>
+
+      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
+      <div class="block md:hidden p-4 space-y-3">
+        @forelse($lokasis as $lokasi)
+          <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
+            <div class="flex justify-between items-start gap-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-red-100 dark:bg-red-900/40 flex items-center justify-center font-black text-red-600 dark:text-red-400 text-sm border border-red-200 dark:border-red-800">
+                  <i class="fas fa-location-crosshairs"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight truncate">{{ $lokasi->nama }}</h4>
+                  <p class="text-[10px] font-mono text-slate-400 truncate mt-0.5 font-bold uppercase tracking-widest">ID: LOK-{{ str_pad($lokasi->id, 3, '0', STR_PAD_LEFT) }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-2 font-medium">
+              <div class="flex flex-col gap-1.5 bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div class="flex justify-between items-center w-full">
+                  <span class="font-bold text-slate-700 dark:text-slate-300"><i class="fas fa-satellite text-blue-500 mr-1.5"></i> GPS Coord:</span>
+                  <button type="button" onclick="navigator.clipboard.writeText('{{ $lokasi->latitude }},{{ $lokasi->longitude }}')" class="text-slate-400 hover:text-primary-500 transition-all px-2 py-0.5 bg-slate-100 dark:bg-slate-900 rounded"><i class="fas fa-copy"></i> Salin</button>
+                </div>
+                <code class="text-[10px] font-mono text-slate-600 dark:text-slate-300 text-center py-1 px-2 rounded-lg bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 truncate block">
+                  {{ $lokasi->latitude }}, {{ $lokasi->longitude }}
+                </code>
+              </div>
+              <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                <span class="font-bold text-slate-700 dark:text-slate-300"><i class="fas fa-street-view text-emerald-500 mr-1.5"></i> Radius:</span>
+                <span class="font-bold text-blue-600 dark:text-blue-400 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-100 dark:border-blue-800">{{ $lokasi->radius_meter }} <span class="text-[9px] uppercase tracking-tighter opacity-70">Meter</span></span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
+              <a href="https://www.google.com/maps?q={{ $lokasi->latitude }},{{ $lokasi->longitude }}" target="_blank"
+                class="px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-map"></i> Map
+              </a>
+              <button type="button" @click="MicroModal.show('modal-edit-{{ $lokasi->id }}')"
+                class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button type="button" @click="MicroModal.show('modal-delete-{{ $lokasi->id }}')"
+                class="px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </div>
+        @empty
+          <div class="p-8 text-center">
+            <i class="fas fa-map-location text-slate-300 dark:text-slate-600 text-5xl mb-4 block text-center"></i>
+            <p class="text-slate-400 italic text-xs">Data lokasi belum diatur!</p>
+          </div>
+        @endforelse
+      </div>
     </div>
   </div>
 
@@ -112,7 +168,7 @@
             <h2 class="text-xl font-bold text-slate-800 dark:text-white">Tambah Lokasi Baru</h2>
             <p class="text-[11px] text-red-500 uppercase font-black tracking-widest mt-1">Pinpoint GPS Coordinates</p>
           </div>
-          <button
+          <button type="button"
             class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             data-micromodal-close>
             <i class="fas fa-times"></i>
@@ -183,7 +239,7 @@
               <p class="text-[10px] text-blue-500 dark:text-blue-400 mt-0.5 uppercase tracking-widest font-bold font-mono">
                 ID LOKASI: #LOK-{{ str_pad($lokasi->id, 3, '0', STR_PAD_LEFT) }}</p>
             </div>
-            <button
+            <button type="button"
               class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
               data-micromodal-close>
               <i class="fas fa-times"></i>

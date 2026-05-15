@@ -11,7 +11,7 @@
         <p class="text-sm text-slate-500 dark:text-slate-400">Total {{ $golongans->total() }} golongan kelas terdaftar</p>
       </div>
       <div class="flex items-center gap-3">
-        <button @click="MicroModal.show('modal-create-golongan')"
+        <button type="button" @click="MicroModal.show('modal-create-golongan')"
           class="flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-primary-200 dark:shadow-none">
           <i class="fas fa-plus-circle"></i>
           <span>Tambah Golongan</span>
@@ -36,15 +36,16 @@
 
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <div class="overflow-x-auto">
+      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
             <tr>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">No</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Nama Golongan</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Jumlah Mahasiswa</th>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Semester Terkait</th>
-              <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Aksi</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">No</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Nama Golongan</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Jumlah Mahasiswa</th>
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Semester Terkait</th>
+              <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -78,7 +79,7 @@
 
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
-                    <button @click="MicroModal.show('modal-edit-{{ $golongan->id }}')"
+                    <button type="button" @click="MicroModal.show('modal-edit-{{ $golongan->id }}')"
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white transition-all border border-blue-100 dark:border-blue-800">
                       <i class="fas fa-edit text-xs"></i>
                     </button>
@@ -91,7 +92,7 @@
                       </button>
                     @else
                       {{-- Kalau kosong, baru muncul tombol hapus --}}
-                      <button @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
+                      <button type="button" @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
                         class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-800">
                         <i class="fas fa-trash text-xs"></i>
                       </button>
@@ -109,6 +110,57 @@
           </tbody>
         </table>
       </div>
+
+      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
+      <div class="block md:hidden p-4 space-y-3">
+        @forelse($golongans as $golongan)
+          <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
+            <div class="flex justify-between items-start gap-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center font-black text-primary-600 dark:text-primary-400 text-sm">
+                  <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight truncate">{{ $golongan->nama }}</h4>
+                  <p class="text-[10px] font-mono text-slate-400 truncate mt-0.5 font-bold uppercase tracking-tighter">ID: GOL-0{{ $golongan->id }}</p>
+                </div>
+              </div>
+              <div class="shrink-0 flex flex-col items-end gap-1.5">
+                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800/50">
+                  <i class="fas fa-users text-[8px]"></i>
+                  <span class="text-[10px] font-bold">{{ $golongan->mahasiswas_count }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
+              <p><span class="font-bold text-slate-700 dark:text-slate-300">Semester:</span> <span class="font-semibold uppercase">{{ $golongan->semester->nama ?? 'N/A' }}</span> <span class="italic text-slate-400">({{ $golongan->semester->tahun_ajaran ?? '-' }})</span></p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
+              <button type="button" @click="MicroModal.show('modal-edit-{{ $golongan->id }}')"
+                class="px-3 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              
+              @if($golongan->mahasiswas_count > 0)
+                <button type="button"
+                  class="px-3 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1 cursor-not-allowed"
+                  title="Tidak bisa dihapus karena masih ada mahasiswa">
+                  <i class="fas fa-lock"></i> Terkunci
+                </button>
+              @else
+                <button type="button" @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
+                  class="px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                  <i class="fas fa-trash"></i> Hapus
+                </button>
+              @endif
+            </div>
+          </div>
+        @empty
+          <div class="p-8 text-center text-slate-400 italic text-xs">Belum ada data golongan.</div>
+        @endforelse
+      </div>
       @if($golongans->hasPages())
         <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-700">
           {{ $golongans->links() }}
@@ -123,7 +175,7 @@
         <header
           class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700 text-left">
           <h2 class="text-xl font-bold text-slate-800 dark:text-white">Tambah Golongan</h2>
-          <button class="text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 w-8 h-8 rounded-lg"
+          <button type="button" class="text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 w-8 h-8 rounded-lg"
             data-micromodal-close><i class="fas fa-times"></i></button>
         </header>
 
@@ -172,7 +224,7 @@
               <p class="text-[10px] text-primary-500 mt-0.5 uppercase tracking-widest font-bold">Update informasi golongan
               </p>
             </div>
-            <button
+            <button type="button"
               class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
               data-micromodal-close>
               <i class="fas fa-times"></i>

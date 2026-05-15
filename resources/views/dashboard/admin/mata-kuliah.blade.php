@@ -88,7 +88,7 @@
         <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Manajemen kurikulum dan beban SKS per semester
         </p>
       </div>
-      <button @click="MicroModal.show('modal-create-matkul')"
+      <button type="button" @click="MicroModal.show('modal-create-matkul')"
         class="flex items-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-primary-200 dark:shadow-none">
         <i class="fas fa-plus-circle"></i>
         <span>Tambah Matkul</span>
@@ -97,20 +97,21 @@
 
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <div class="overflow-x-auto">
+      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
+      <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
             <tr>
-              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Kode &
+              <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">Kode &
                 Nama Matkul</th>
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">
+                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center whitespace-nowrap">
                 SKS</th>
               <th
-                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">
+                class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center whitespace-nowrap">
                 Semester</th>
               <th
-                class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                 Aksi</th>
             </tr>
           </thead>
@@ -145,11 +146,11 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
-                    <button @click="MicroModal.show('modal-edit-{{ $matkul->id }}')"
+                    <button type="button" @click="MicroModal.show('modal-edit-{{ $matkul->id }}')"
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition-all duration-300 shadow-sm border border-blue-100 dark:border-blue-800">
                       <i class="fas fa-edit text-xs"></i>
                     </button>
-                    <button @click="MicroModal.show('modal-delete-{{ $matkul->id }}')"
+                    <button type="button" @click="MicroModal.show('modal-delete-{{ $matkul->id }}')"
                       class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white dark:hover:bg-red-500 transition-all duration-300 shadow-sm border border-red-100 dark:border-red-800">
                       <i class="fas fa-trash text-xs"></i>
                     </button>
@@ -169,7 +170,7 @@
                       Belum ada mata kuliah yang terdaftar untuk <span
                         class="text-indigo-500 font-bold">{{ $semesterAktif->nama ?? 'semester ini' }}</span>.
                     </p>
-                    <button @click="MicroModal.show('modal-create-matkul')"
+                    <button type="button" @click="MicroModal.show('modal-create-matkul')"
                       class="mt-4 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                       <i class="fas fa-plus mr-1"></i> Tambah Matkul Sekarang
                     </button>
@@ -179,6 +180,59 @@
             @endforelse
           </tbody>
         </table>
+      </div>
+
+      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
+      <div class="block md:hidden p-4 space-y-3">
+        @forelse($matkuls as $matkul)
+          <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
+            <div class="flex justify-between items-start gap-2">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 shrink-0 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center font-black text-amber-600 dark:text-amber-400 text-sm border border-amber-200 dark:border-amber-800">
+                  <i class="fas fa-book"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight truncate">{{ $matkul->nama }}</h4>
+                  <p class="text-[10px] font-mono text-slate-400 truncate mt-0.5 font-bold uppercase tracking-wider">{{ $matkul->kode_mk }}</p>
+                </div>
+              </div>
+              <div class="shrink-0 flex flex-col items-end gap-1.5">
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs border border-slate-300 dark:border-slate-600">
+                  {{ $matkul->sks }}
+                </span>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
+              <p><span class="font-bold text-slate-700 dark:text-slate-300">Semester:</span> <span class="inline-flex items-center px-2 py-0.5 ml-1 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[9px] font-bold uppercase border border-indigo-100 dark:border-indigo-800">{{ $matkul->semester->nama ?? '-' }}</span></p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
+              <button type="button" @click="MicroModal.show('modal-edit-{{ $matkul->id }}')"
+                class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button type="button" @click="MicroModal.show('modal-delete-{{ $matkul->id }}')"
+                class="px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                <i class="fas fa-trash"></i> Hapus
+              </button>
+            </div>
+          </div>
+        @empty
+          <div class="p-8 text-center">
+            <div class="relative mb-4">
+              <i class="fas fa-book-open text-slate-200 dark:text-slate-700 text-5xl"></i>
+            </div>
+            <h3 class="text-slate-800 dark:text-slate-100 font-bold text-sm">Tidak Ada Mata Kuliah</h3>
+            <p class="text-slate-400 text-xs italic mt-1 mb-4">
+              Belum ada mata kuliah untuk semester ini.
+            </p>
+            <button type="button" @click="MicroModal.show('modal-create-matkul')"
+              class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+              <i class="fas fa-plus mr-1"></i> Tambah Matkul
+            </button>
+          </div>
+        @endforelse
       </div>
       @if($matkuls->hasPages())
         <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-700">
@@ -199,7 +253,7 @@
             <p class="text-[11px] text-primary-600 dark:text-primary-400 mt-1 uppercase tracking-wider font-bold">Input
               Data Kurikulum Baru</p>
           </div>
-          <button
+          <button type="button"
             class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             data-micromodal-close>
             <i class="fas fa-times"></i>
@@ -277,7 +331,7 @@
                 {{ $matkul->kode_mk }}
               </p>
             </div>
-            <button
+            <button type="button"
               class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
               data-micromodal-close>
               <i class="fas fa-times"></i>

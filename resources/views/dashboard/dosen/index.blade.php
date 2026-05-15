@@ -133,7 +133,7 @@
                   <div class="flex items-center gap-2 mt-1">
                     <span
                       class="text-[10px] font-bold px-1.5 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded uppercase">
-                      Gol {{ $item->mahasiswa->golongan->nama }}
+                      {{ $item->mahasiswa->golongan->nama }}
                     </span>
                     <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[150px] md:max-w-[200px]">
                       {{ $item->pertemuan->kelasPerkuliahan->mataKuliah->nama }}

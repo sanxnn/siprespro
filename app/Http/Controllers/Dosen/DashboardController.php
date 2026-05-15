@@ -13,16 +13,23 @@ class DashboardController extends Controller
         $dosenId = auth()->user()->dosen_id;
         $semesterAktif = \App\Models\Semester::where('status', 'aktif')->first();
         $hariIni = now()->format('Y-m-d');
+        $jamSekarang = now()->format('H:i:s');
 
         // 1. Stats Cards
         $totalKelas = \App\Models\KelasPerkuliahan::where('dosen_id', $dosenId)->count();
 
-        // CRITICAL FIX SESI SELESAI: Hanya hitung status 'ditutup' DAN tanggalnya hari ini ke belakang
+        // HITUNG SESI SELESAI (Kombinasi Tanggal lampau ATAU Hari ini tapi Jam-nya udah lewat)
         $pertemuanSelesai = \App\Models\Pertemuan::whereHas('kelasPerkuliahan', function ($q) use ($dosenId) {
             $q->where('dosen_id', $dosenId);
         })
             ->where('status', 'ditutup')
-            ->whereDate('tanggal', '<=', $hariIni)
+            ->where(function ($q) use ($hariIni, $jamSekarang) {
+                $q->whereDate('tanggal', '<', $hariIni) // Kelas hari-hari kemarin
+                    ->orWhere(function ($sub) use ($hariIni, $jamSekarang) {
+                        $sub->whereDate('tanggal', $hariIni) // Kelas hari ini
+                            ->where('jam_selesai', '<=', $jamSekarang); // Tapi jamnya udah lewat!
+                    });
+            })
             ->count();
 
         $presensiHariIni = \App\Models\Presensi::whereDate('waktu_presensi', $hariIni)
@@ -62,32 +69,46 @@ class DashboardController extends Controller
 
         // 4. CRITICAL FIX: HITUNG AVG KEHADIRAN SECARA PROPORSIONAL & REAL (SaaS Standard)
 
-        // Ambil semua ID kelas yang diampu dosen ini
+        // Tarik ID kelas untuk filter raw data query presensi di bawah
         $kelasIds = \App\Models\KelasPerkuliahan::where('dosen_id', $dosenId)->pluck('id')->toArray();
 
         $totalPresensiAman = 0;
         $kapasitasMaksimalTotal = 0;
 
-        // Looping per kelas untuk dapet angka kapasitas maksimal real (Mhs x Sesi Selesai per kelas)
-        $allKelas = \App\Models\KelasPerkuliahan::with(['pertemuans', 'golongans.mahasiswas'])
-            ->whereIn('id', $kelasIds)
+        // FIX FIX FIX: Panggil Eloquent dengan Eager Loading biar object-nya dapet Cuk!
+        $allKelasWithRelations = \App\Models\KelasPerkuliahan::with(['golongans.mahasiswas', 'pertemuans'])
+            ->where('dosen_id', $dosenId)
             ->get();
 
-        foreach ($allKelas as $k) {
-            $mhsCount = $k->golongans->flatMap(function ($g) {
-                return $g->mahasiswas; })->unique('id')->count();
-            $sesiSelesaiCount = $k->pertemuans->where('status', 'ditutup')->where('tanggal', '<=', $hariIni)->count();
+        foreach ($allKelasWithRelations as $kelas) {
+            // Hitung mahasiswa unik di dalam satu kelas perkuliahan
+            $mhsCount = $kelas->golongans->flatMap(function ($g) {
+                return $g->mahasiswas;
+            })->unique('id')->count();
 
-            // Kapasitas maksimal kumulatif kelas ini
+            // Filter sesi yang bener-bener udah lewat jam selesainya dan berstatus ditutup
+            $sesiSelesaiCount = $kelas->pertemuans->where('status', 'ditutup')
+                ->filter(function ($p) use ($hariIni, $jamSekarang) {
+                    return $p->tanggal < $hariIni || ($p->tanggal == $hariIni && $p->jam_selesai <= $jamSekarang);
+                })
+                ->count();
+
+            // Akumulasikan kapasitas maksimal total mhs harian
             $kapasitasMaksimalTotal += ($mhsCount * $sesiSelesaiCount);
         }
 
-        // Hitung seluruh data presensi AMAN (Hadir, Sakit, Izin) di semua kelas dosen ini pada sesi yang sudah ditutup
+        // Hitung seluruh data presensi AMAN (Hadir, Sakit, Izin) di semua sesi yang sudah ditutup lewat jamnya
         if ($kapasitasMaksimalTotal > 0) {
-            $totalPresensiAman = \App\Models\Presensi::whereHas('pertemuan', function ($q) use ($kelasIds, $hariIni) {
+            $totalPresensiAman = \App\Models\Presensi::whereHas('pertemuan', function ($q) use ($kelasIds, $hariIni, $jamSekarang) {
                 $q->whereIn('kelas_perkuliahan_id', $kelasIds)
                     ->where('status', 'ditutup')
-                    ->whereDate('tanggal', '<=', $hariIni);
+                    ->where(function ($query) use ($hariIni, $jamSekarang) {
+                        $query->whereDate('tanggal', '<', $hariIni)
+                            ->orWhere(function ($sub) use ($hariIni, $jamSekarang) {
+                                $sub->whereDate('tanggal', $hariIni)
+                                    ->where('jam_selesai', '<=', $jamSekarang);
+                            });
+                    });
             })
                 ->whereIn(DB::raw('LOWER(status)'), ['hadir', 'sakit', 'izin'])
                 ->count();
@@ -96,7 +117,7 @@ class DashboardController extends Controller
             if ($avgKehadiran > 100)
                 $avgKehadiran = 100;
         } else {
-            $avgKehadiran = 100; // Default 100% kalau emang belum ada sesi yang ditutup/berjalan
+            $avgKehadiran = 100; // Default 100% jika belum ada track record pertemuan selesai
         }
 
 

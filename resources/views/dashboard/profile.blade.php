@@ -64,19 +64,12 @@
 
           {{-- RIGHT SIDE: FORMS SEGMENTATION --}}
           <div class="lg:col-span-2 space-y-6">
-
-              {{-- BLOCK 1: INFORMASI AKADEMIK / IDENTITAS UTAMA --}}
+            @if($user->role === 'mahasiswa' && $user->mahasiswa)
               <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xs">
                   <h4 class="font-black text-xs text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50 pb-2 flex items-center gap-2">
                       <i class="fas fa-graduation-cap text-primary-500"></i> Kredensial Akademik
                   </h4>
-
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {{-- Input default semua akun --}}
-                      
-
-                      {{-- Form khusus mahasiswa --}}
-                      @if($user->role === 'mahasiswa' && $user->mahasiswa)
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">                      
                       <div class="sm:col-span-2">
                           <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Nama Lengkap Sesuai SK</label>
                           <input type="text" name="name" value="{{ old('nama', $user->mahasiswa->nama) }}" required
@@ -92,10 +85,16 @@
                             <input type="number" name="angkatan" value="{{ old('angkatan', $user->mahasiswa->angkatan) }}" required
                                 class="w-full px-4 py-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-primary-500/50">
                         </div>
-                      @endif
+                    </div>
+              </div>
+            @endif
 
-                      {{-- Form khusus dosen --}}
-                      @if($user->role === 'dosen' && $user->dosen)
+            @if($user->role === 'dosen' && $user->dosen)
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xs">
+                  <h4 class="font-black text-xs text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50 pb-2 flex items-center gap-2">
+                      <i class="fas fa-graduation-cap text-primary-500"></i> Kredensial Akademik
+                  </h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div class="sm:col-span-2">
                           <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Nama Lengkap Sesuai SK</label>
                           <input type="text" name="name" value="{{ old('nama', $user->dosen->nama) }}" required
@@ -116,20 +115,18 @@
                             <input type="text" name="jabatan" value="{{ old('jabatan', $user->dosen->jabatan) }}" required
                                 class="w-full px-4 py-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-primary-500/50">
                         </div>
-                      @endif
-                  </div>
+                    </div>
               </div>
+            @endif
 
               {{-- BLOCK 2: DATA PERSONAL & KONTAK --}}
               <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xs">
                   <h4 class="font-black text-xs text-slate-400 uppercase tracking-widest border-b border-slate-100 dark:border-slate-700/50 pb-2 flex items-center gap-2">
                       <i class="fas fa-id-card text-emerald-500"></i> Informasi Data Privat & Kontak
                   </h4>
-
                   @php 
                     $detail = $user->role === 'mahasiswa' ? $user->mahasiswa : ($user->role === 'dosen' ? $user->dosen : null);
                   @endphp
-
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                           <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1.5">Email SSO (Dikunci oleh Kampus)</label>
