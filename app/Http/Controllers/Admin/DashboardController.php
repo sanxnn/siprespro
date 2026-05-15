@@ -15,24 +15,37 @@ class DashboardController extends Controller
         $today = now()->startOfDay();
         $semesterAktif = Semester::where('status', 'aktif')->first() ?? Semester::latest()->first();
 
-        $statsHariIni = Presensi::whereDate('waktu_presensi', $today)
-            ->selectRaw('COUNT(*) as total')
-            ->selectRaw('SUM(CASE WHEN status = "hadir" THEN 1 ELSE 0 END) as hadir')
-            ->first();
+        // =========================================================================
+        // 1. GLOBAL QUERY: HITUNG KAPASITAS MAKSIMAL MAHASISWA HARI INI
+        // Langsung hitung total mahasiswa unik yang hari ini punya jadwal pertemuan/kuliah
+        // =========================================================================
+        $totalKapasitasMhsHariIni = Mahasiswa::whereHas('golongan.kelasPerkuliahan.pertemuans', function ($q) use ($today) {
+            $q->whereDate('tanggal', $today);
+        })->count();
 
+        // =========================================================================
+        // 2. GLOBAL QUERY: HITUNG MAHASISWA MASUK (HADIR, SAKIT, IZIN) HARI INI
+        // =========================================================================
+        $hadirHariIni = Presensi::whereDate('waktu_presensi', $today)
+            ->whereIn(DB::raw('LOWER(status)'), ['hadir', 'sakit', 'izin'])
+            ->count();
+
+        // 3. HITUNG RASIO KEHADIRAN GLOBAL ADMIN (ANTI DIVISION BY ZERO)
+        $tingkatKehadiran = $totalKapasitasMhsHariIni > 0
+            ? round(($hadirHariIni / $totalKapasitasMhsHariIni) * 100, 1)
+            : 100; // Default 100% kalau emang hari libur / gak ada jadwal kuliah sama sekali
+
+        // Total log record yang masuk hari ini (buat statistik kasaran)
+        $presensiHariIni = Presensi::whereDate('waktu_presensi', $today)->count();
+
+        // --- Sisa Query Stats Dasar Lu Tetap Aman Di Bawah ---
         $stats = [
-            'totalMahasiswa' => Mahasiswa::count(), // Key diganti agar sesuai Blade
-            'totalDosen' => Dosen::count(),     // Key diganti agar sesuai Blade
-            'totalMataKuliah' => MataKuliah::count(),// Key diganti agar sesuai Blade
-            'totalGolongan' => Golongan::count(),  // Key diganti agar sesuai Blade
-            'totalLokasi' => Lokasi::count(),    // Key diganti agar sesuai Blade
+            'totalMahasiswa' => Mahasiswa::count(),
+            'totalDosen' => Dosen::count(),
+            'totalMataKuliah' => MataKuliah::count(),
+            'totalGolongan' => Golongan::count(),
+            'totalLokasi' => Lokasi::count(),
         ];
-
-        $presensiHariIni = $statsHariIni->total ?? 0;
-        $hadirHariIni = $statsHariIni->hadir ?? 0;
-        $tingkatKehadiran = $presensiHariIni > 0
-            ? round(($hadirHariIni / $presensiHariIni) * 100, 1)
-            : 0;
 
         $kelasAktif = $semesterAktif
             ? KelasPerkuliahan::whereHas('mataKuliah', fn($q) => $q->where('semester_id', $semesterAktif->id))->count()
@@ -71,7 +84,8 @@ class DashboardController extends Controller
                 'hadirHariIni' => $hadirHariIni,
                 'tingkatKehadiran' => $tingkatKehadiran,
                 'kelasAktif' => $kelasAktif,
-                'recentPresensi' => $recentPresensi
+                'recentPresensi' => $recentPresensi,
+                'totalKapasitas' => $totalKapasitasMhsHariIni
             ]
         ));
     }
@@ -112,32 +126,44 @@ class DashboardController extends Controller
 
     private function getAttendanceTrend(int $days): array
     {
-        $startDate = now()->subDays($days - 1)->startOfDay();
-
-        $rawStats = Presensi::where('waktu_presensi', '>=', $startDate)
-            ->selectRaw('DATE(waktu_presensi) as date')
-            ->selectRaw('COUNT(*) as total')
-            ->selectRaw('SUM(CASE WHEN status = "hadir" THEN 1 ELSE 0 END) as hadir')
-            ->groupBy('date')
-            ->get()
-            ->keyBy('date');
-
         $trend = [];
-        for ($i = $days - 1; $i >= 0; $i--) {
-            $d = now()->subDays($i);
-            $dateStr = $d->format('Y-m-d');
-            $stat = $rawStats->get($dateStr);
+        $hariIni = now()->format('Y-m-d');
 
-            $total = $stat->total ?? 0;
-            $hadir = (int) ($stat->hadir ?? 0);
+        // Looping mundur untuk dapet data 7 hari terakhir
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $d = now()->subDays($i);
+
+            // 1. GLOBAL QUERY: Cari tahu semua sesi pertemuan/kuliah di tanggal ini
+            $pertemuanHariItu = Pertemuan::whereDate('tanggal', $date)->get();
+
+            $kapasitasMhsHariItu = 0;
+
+            // Hitung total kapasitas mahasiswa yang seharusnya kuliah di tanggal ini
+            foreach ($pertemuanHariItu as $p) {
+                $kapasitasMhsHariItu += Mahasiswa::whereHas('golongan.kelasPerkuliahan', function ($q) use ($p) {
+                    // FIX MUTLAK: Kasih nama tabelnya 'kelas_perkuliahan.id' biar MySQL gak siwer jancok!
+                    $q->where('kelas_perkuliahan.id', $p->kelas_perkuliahan_id);
+                })->count();
+            }
+
+            // 2. GLOBAL QUERY: Hitung total mhs yang masuk aman (Hadir, Sakit, Izin) di tanggal ini
+            $hadirHariItu = Presensi::whereDate('waktu_presensi', $date)
+                ->whereIn(DB::raw('LOWER(status)'), ['hadir', 'sakit', 'izin'])
+                ->count();
+
+            // 3. HITUNG PERSENTASE REALISTIS
+            $percentage = $kapasitasMhsHariItu > 0
+                ? round(($hadirHariItu / $kapasitasMhsHariItu) * 100)
+                : 0;
 
             $trend[] = [
                 'label' => $d->translatedFormat('d M'),
                 'day_full' => $d->translatedFormat('l'),
                 'day_short' => $d->translatedFormat('D'),
-                'total' => $total,
-                'hadir' => $hadir,
-                'percentage' => ($total > 0) ? round(($hadir / $total) * 100) : 0
+                'hadir' => $hadirHariItu,
+                'total' => $kapasitasMhsHariItu,
+                'percentage' => $percentage
             ];
         }
 

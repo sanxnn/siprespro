@@ -90,7 +90,7 @@
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-xl transition-all duration-300 group">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-tight">Log Hari Ini</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-tight">Presensi Hari Ini</p>
           <p class="text-3xl font-black mt-1 text-slate-800 dark:text-white">{{ number_format($presensiHariIni) }}</p>
           <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-2 flex items-center gap-1 font-bold">
             <i class="fas fa-sync-alt animate-spin text-[10px]"></i> UPDATE TERBARU
@@ -108,8 +108,15 @@
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-xl transition-all duration-300 group">
       <div class="flex items-center justify-between">
         <div class="w-full mr-4">
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-tight">Rasio Kehadiran</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-tight">Rasio Kehadiran
+            Real-Time</p>
           <p class="text-3xl font-black mt-1 text-slate-800 dark:text-white">{{ $tingkatKehadiran }}%</p>
+
+          {{-- Info Tambahan Metrik SaaS --}}
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-1 italic">
+            * {{ $hadirHariIni }} dari {{ $totalKapasitas }} mahasiswa terpantau hadir hari ini.
+          </p>
+
           <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-2 mt-3 overflow-hidden">
             {{-- Warna bar dinamis berdasarkan persentase --}}
             <div
@@ -263,23 +270,29 @@
 
       <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
         <h3 class="font-semibold text-lg text-slate-800 dark:text-slate-100 mb-4">Tren Kehadiran 7 Hari Terakhir</h3>
-        {{-- Ganti bagian Bar Chart lu dengan ini --}}
-        <div class="h-48 bg-slate-50 dark:bg-slate-900/40 rounded-2xl flex items-end justify-between px-4 pb-6 gap-2">
+
+        <div class="h-64 bg-slate-50 dark:bg-slate-900/40 rounded-2xl flex items-end justify-between px-4 pb-6 gap-2">
           @foreach($attendanceTrend as $day)
-            <div class="flex-1 flex flex-col items-center gap-2 group relative cursor-help">
-              {{-- Tooltip Simple --}}
+            <div class="flex-1 flex flex-col items-center justify-end h-full gap-2 group relative cursor-help">
+
+              {{-- Tooltip Pro --}}
               <div
-                class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap">
-                {{ $day['hadir'] }} Hadir ({{ $day['percentage'] }}%)
+                class="absolute -top-12 left-1/2 -translate-x-1/2 px-2 py-1.5 bg-slate-800 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap shadow-lg pointer-events-none">
+                <span class="font-black text-emerald-400">{{ $day['hadir'] }}</span>/{{ $day['total'] }} Mhs
+                ({{ $day['percentage'] }}%)
               </div>
 
-              {{-- Bar Dinamis --}}
-              <div
-                class="w-full rounded-t-lg transition-all duration-500 {{ $day['percentage'] >= 80 ? 'bg-emerald-500' : ($day['percentage'] >= 50 ? 'bg-amber-500' : 'bg-rose-500') }}"
-                style="height: {{ max($day['percentage'], 5) }}%"></div>
+              {{-- CONTAINER BAR: Biar tingginya konsisten di dalam flexbox --}}
+              <div class="w-full flex items-end justify-center h-32 mb-1">
+                {{-- Bar Dinamis: Kasih min-h-[8px] biar pas 0% atau kecil tetep ada tatakannya cok! --}}
+                <div
+                  class="w-full rounded-t-lg transition-all duration-500 shadow-xs group-hover:scale-x-105 min-h-2 {{ $day['percentage'] >= 80 ? 'bg-emerald-500' : ($day['percentage'] >= 50 ? 'bg-primary-500' : 'bg-amber-500') }}"
+                  style="height: {{ $day['percentage'] }}%">
+                </div>
+              </div>
 
               <span
-                class="text-[10px] text-slate-400 dark:text-slate-500 font-bold tracking-tighter">{{ $day['day_short'] }}</span>
+                class="text-[10px] text-slate-400 dark:text-slate-500 font-bold tracking-tighter shrink-0">{{ $day['day_short'] }}</span>
             </div>
           @endforeach
         </div>
@@ -394,32 +407,6 @@
           @endforeach
         </div>
       </div>
-      @if($semesterAktif)
-        <div class="bg-primary-600 dark:from-primary-700 dark:to-primary-900 rounded-2xl p-5 text-white shadow-lg">
-          <div class="flex items-start justify-between">
-            <div>
-              <p class="text-xs opacity-80 uppercase tracking-wider font-medium">Semester Aktif</p>
-              <p class="text-xl font-bold mt-1">{{ $semesterAktif->nama }}</p>
-              <p class="text-sm opacity-90 mt-1">{{ $semesterAktif->tahun_ajaran }}</p>
-              <div class="flex flex-wrap gap-2 mt-4">
-                <span
-                  class="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-xs font-medium transition-colors cursor-default">
-                  <i class="fas fa-users mr-1"></i> {{ $totalGolongan }} Golongan
-                </span>
-                <span
-                  class="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-xs font-medium transition-colors cursor-default">
-                  <i class="fas fa-chalkboard mr-1"></i> {{ $kelasAktif }} Kelas
-                </span>
-              </div>
-            </div>
-            <div
-              class="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-colors cursor-pointer"
-              onclick="window.location='/#94a3b8'" title="Kelola Semester">
-              <i class="fas fa-cog text-lg"></i>
-            </div>
-          </div>
-        </div>
-      @endif
     </div>
   </div>
 @endsection
