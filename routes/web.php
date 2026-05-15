@@ -88,5 +88,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/presensi/show/{pertemuan_id}', [PresensiController::class, 'isiPresensi'])->name('presensi.show');
         Route::post('/presensi/simpan/{pertemuan_id}', [PresensiController::class, 'simpanPresensi'])->name('presensi.simpan');
+
+        Route::get('/presensi/riwayat', [PresensiController::class, 'riwayat'])->name('presensi.riwayat');
+        Route::get('/presensi/riwayat/{kelas_id}', [PresensiController::class, 'detailRiwayat'])->name('presensi.detail-riwayat');
     });
 });

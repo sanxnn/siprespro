@@ -217,14 +217,41 @@ class KelasController extends Controller
 
     public function showPertemuan($id)
     {
-        // Ambil data pertemuan beserta kelas dan mata kuliahnya
-        $pertemuan = Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'lokasi'])->findOrFail($id);
+        // 1. Ambil data pertemuan beserta detail kelas perkuliahan, mata kuliah, dan lokasi
+        $pertemuan = DB::table('pertemuan')
+            ->join('kelas_perkuliahan', 'pertemuan.kelas_perkuliahan_id', '=', 'kelas_perkuliahan.id')
+            ->join('mata_kuliah', 'kelas_perkuliahan.mata_kuliah_id', '=', 'mata_kuliah.id')
+            ->join('lokasi', 'pertemuan.lokasi_id', '=', 'lokasi.id')
+            ->where('pertemuan.id', $id)
+            ->select(
+                'pertemuan.*',
+                'kelas_perkuliahan.nama_kelas',
+                'mata_kuliah.nama as nama_mk',
+                'lokasi.nama as nama_lokasi'
+            )
+            ->first();
 
-        // Ambil semua mahasiswa yang seharusnya ikut kelas ini (lewat golongan)
-        $mahasiswas = $pertemuan->kelasPerkuliahan->golongans->flatMap->mahasiswas->unique('id');
+        if (!$pertemuan) {
+            return redirect()->back()->with('error', 'Sesi pertemuan tidak ditemukan.');
+        }
 
-        // Ambil data presensi yang sudah masuk di pertemuan ini
-        $presensis = Presensi::where('pertemuan_id', $id)->get()->keyBy('mahasiswa_id');
+        // 2. Ambil semua ID golongan yang terikat dengan kelas perkuliahan ini lewat tabel pivot
+        $golonganIds = DB::table('kelas_golongan')
+            ->where('kelas_perkuliahan_id', $pertemuan->kelas_perkuliahan_id)
+            ->pluck('golongan_id')
+            ->toArray();
+
+        // 3. Ambil daftar mahasiswa yang berada di dalam golongan-golongan tersebut
+        $mahasiswas = DB::table('mahasiswa')
+            ->whereIn('golongan_id', $golonganIds)
+            ->orderBy('nim', 'asc')
+            ->get();
+
+        // 4. Ambil semua data presensi yang sudah masuk pada pertemuan ini, jadikan keyBy 'mahasiswa_id'
+        $presensis = DB::table('presensi')
+            ->where('pertemuan_id', $id)
+            ->get()
+            ->keyBy('mahasiswa_id');
 
         return view('dashboard.dosen.pertemuan', compact('pertemuan', 'mahasiswas', 'presensis'));
     }

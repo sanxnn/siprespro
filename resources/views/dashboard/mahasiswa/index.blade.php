@@ -265,7 +265,7 @@
           @endif
 
           <div class="border-t border-slate-100 dark:border-slate-700 pt-3 mt-2">
-            <a href="#"
+            <a href="{{ route('mahasiswa.presensi.riwayat') }}"
               class="block text-center text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline">
               Lihat Semua Riwayat <i class="fas fa-arrow-right ml-1 text-[10px]"></i>
             </a>

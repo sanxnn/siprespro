@@ -38,21 +38,24 @@ class DashboardController extends Controller
 
         // 3. Statistik Kehadiran (SaaS Metrics Style)
         // Total pertemuan yang terjadwal/ada untuk semua kelas si mahasiswa
-        $totalPertemuan = DB::table('pertemuan')
-            ->whereIn('kelas_perkuliahan_id', $kelasIds)
+        $totalPertemuan = DB::table('presensi')
+            ->where('mahasiswa_id', $mahasiswa->id)
             ->count();
 
         $kehadiran = DB::table('presensi')
             ->where('mahasiswa_id', $mahasiswa->id)
             ->select(
-                DB::raw("COUNT(CASE WHEN status = 'Hadir' THEN 1 END) as hadir"),
-                DB::raw("COUNT(CASE WHEN status = 'Sakit' THEN 1 END) as sakit"),
-                DB::raw("COUNT(CASE WHEN status = 'Izin' THEN 1 END) as izin"),
-                DB::raw("COUNT(CASE WHEN status = 'Alpha' THEN 1 END) as alpha")
+                DB::raw("COUNT(CASE WHEN LOWER(status) = 'hadir' THEN 1 END) as hadir"),
+                DB::raw("COUNT(CASE WHEN LOWER(status) = 'sakit' THEN 1 END) as sakit"),
+                DB::raw("COUNT(CASE WHEN LOWER(status) = 'izin' THEN 1 END) as izin"),
+                DB::raw("COUNT(CASE WHEN LOWER(status) IN ('alpha', 'alfa') THEN 1 END) as alpha")
             )->first();
 
+        $totalMasuk = $kehadiran->hadir + $kehadiran->sakit + $kehadiran->izin;
+
+        // Rumus SaaS Presisi: (Hadir + Sakit + Izin) / Total Sesi yang sudah berjalan
         $persentaseKehadiran = $totalPertemuan > 0
-            ? round(($kehadiran->hadir / $totalPertemuan) * 100, 1)
+            ? round(($totalMasuk / $totalPertemuan) * 100, 1)
             : 100;
 
         // 4. Kelas & Pertemuan Hari Ini (Langsung tembak ke tabel pertemuan berdasarkan tanggal sekarang)
@@ -78,8 +81,8 @@ class DashboardController extends Controller
                 'pertemuan.jam_mulai',
                 'pertemuan.jam_selesai',
                 'pertemuan.status as status_buka_absen',
-                'mata_kuliah.nama as nama_mk', // <--- GANTI INI COK! Biar di blade kebaca $jadwal->nama_mk
-                'mata_kuliah.kode_mk',         // Ambil aja kode_mk nya kalau misal nanti butuh disandingkan
+                'mata_kuliah.nama as nama_mk',
+                'mata_kuliah.kode_mk',
                 'mata_kuliah.sks',
                 'dosen.nama as nama_dosen',
                 'lokasi.nama as ruangan',
@@ -88,7 +91,6 @@ class DashboardController extends Controller
             ->orderBy('pertemuan.jam_mulai', 'asc')
             ->get();
 
-        // 5. Log Aktivitas Presensi Terakhir (Riwayat Singkat)
         $riwayatTerakhir = DB::table('presensi')
             ->join('pertemuan', 'presensi.pertemuan_id', '=', 'pertemuan.id')
             ->join('kelas_perkuliahan', 'pertemuan.kelas_perkuliahan_id', '=', 'kelas_perkuliahan.id')

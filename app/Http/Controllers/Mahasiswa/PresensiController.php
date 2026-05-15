@@ -32,31 +32,32 @@ class PresensiController extends Controller
 
         $tanggalHariIni = date('Y-m-d');
 
-        // 3. Tarik data pertemuan khusus HARI INI
+        // 3. Tarik data pertemuan khusus HARI INI yang BELUM DI-ABSEN
         $pertemuanHariIni = DB::table('pertemuan')
             ->join('kelas_perkuliahan', 'pertemuan.kelas_perkuliahan_id', '=', 'kelas_perkuliahan.id')
             ->join('mata_kuliah', 'kelas_perkuliahan.mata_kuliah_id', '=', 'mata_kuliah.id')
             ->join('dosen', 'kelas_perkuliahan.dosen_id', '=', 'dosen.id')
             ->join('lokasi', 'pertemuan.lokasi_id', '=', 'lokasi.id')
-            // Left join ke tabel presensi milik si mahasiswa untuk pertemuan ini
             ->leftJoin('presensi', function ($join) use ($mahasiswa) {
                 $join->on('pertemuan.id', '=', 'presensi.pertemuan_id')
                     ->where('presensi.mahasiswa_id', '=', $mahasiswa->id);
             })
             ->whereIn('pertemuan.kelas_perkuliahan_id', $kelasIds)
             ->where('pertemuan.tanggal', $tanggalHariIni)
+            ->where('pertemuan.status', 'dibuka') // Tambahan: Hanya tampilkan kalau dosen buka absen
+            ->whereNull('presensi.status') // CRITICAL: Kalau udh absen apapun itu langsung kosong/hilang Cuk!
             ->select(
                 'pertemuan.id as pertemuan_id',
                 'pertemuan.pertemuan_ke',
                 'pertemuan.jam_mulai',
                 'pertemuan.jam_selesai',
-                'pertemuan.status as status_buka_absen', // 'dibuka' atau 'ditutup'
+                'pertemuan.status as status_buka_absen',
                 'mata_kuliah.nama as nama_mk',
                 'mata_kuliah.kode_mk',
                 'mata_kuliah.sks',
                 'dosen.nama as nama_dosen',
                 'lokasi.nama as ruangan',
-                'presensi.status as status_absen_mhs' // Hadir, Sakit, Izin, atau NULL
+                'presensi.status as status_absen_mhs'
             )
             ->orderBy('pertemuan.jam_mulai', 'asc')
             ->get();
@@ -176,5 +177,104 @@ class PresensiController extends Controller
         ]);
 
         return redirect()->route('mahasiswa.presensi.index')->with('success', 'Berhasil! Data kehadiran Anda telah tervalidasi oleh sistem.');
+    }
+
+    public function riwayat()
+    {
+        $user = Auth::user();
+        $mahasiswa = DB::table('mahasiswa')->where('id', $user->mahasiswa_id)->first();
+
+        if (!$mahasiswa) {
+            return redirect()->back()->with('error', 'Data mahasiswa tidak ditemukan.');
+        }
+
+        $kelasIds = DB::table('kelas_golongan')
+            ->where('golongan_id', $mahasiswa->golongan_id)
+            ->pluck('kelas_perkuliahan_id')
+            ->toArray();
+
+        // Ambil data rekap kehadiran per Mata Kuliah
+        $riwayatPresensi = DB::table('kelas_perkuliahan')
+            ->join('mata_kuliah', 'kelas_perkuliahan.mata_kuliah_id', '=', 'mata_kuliah.id')
+            ->join('dosen', 'kelas_perkuliahan.dosen_id', '=', 'dosen.id')
+            ->whereIn('kelas_perkuliahan.id', $kelasIds)
+
+            // CRITICAL FIX: Hanya munculkan matakuliah yang SUDAH PERNAH DIABSEN oleh mahasiswa ini
+            // Matakuliah yang belum mulai (kayak yang tanggal 18) otomatis tertendang asu!
+            ->whereExists(function ($query) use ($mahasiswa) {
+                $query->select(DB::raw(1))
+                    ->from('presensi')
+                    ->join('pertemuan', 'presensi.pertemuan_id', '=', 'pertemuan.id')
+                    ->whereColumn('pertemuan.kelas_perkuliahan_id', 'kelas_perkuliahan.id')
+                    ->where('presensi.mahasiswa_id', $mahasiswa->id);
+            })
+
+            ->select(
+                'kelas_perkuliahan.id as kelas_id',
+                'mata_kuliah.nama as nama_mk',
+                'mata_kuliah.kode_mk',
+                'dosen.nama as nama_dosen',
+
+                // TOTAL PERTEMUAN: Hitung yang sudah dilewati/diabsen oleh mhs ini
+                DB::raw("(SELECT COUNT(*) FROM presensi JOIN pertemuan ON presensi.pertemuan_id = pertemuan.id 
+                      WHERE pertemuan.kelas_perkuliahan_id = kelas_perkuliahan.id 
+                      AND presensi.mahasiswa_id = {$mahasiswa->id}) as total_pertemuan"),
+
+                // Hitung detail status masing-masing
+                DB::raw("(SELECT COUNT(*) FROM presensi JOIN pertemuan ON presensi.pertemuan_id = pertemuan.id 
+                      WHERE pertemuan.kelas_perkuliahan_id = kelas_perkuliahan.id 
+                      AND presensi.mahasiswa_id = {$mahasiswa->id} 
+                      AND LOWER(presensi.status) = 'hadir') as jumlah_hadir"),
+
+                DB::raw("(SELECT COUNT(*) FROM presensi JOIN pertemuan ON presensi.pertemuan_id = pertemuan.id 
+                      WHERE pertemuan.kelas_perkuliahan_id = kelas_perkuliahan.id 
+                      AND presensi.mahasiswa_id = {$mahasiswa->id} 
+                      AND LOWER(presensi.status) = 'sakit') as jumlah_sakit"),
+
+                DB::raw("(SELECT COUNT(*) FROM presensi JOIN pertemuan ON presensi.pertemuan_id = pertemuan.id 
+                      WHERE pertemuan.kelas_perkuliahan_id = kelas_perkuliahan.id 
+                      AND presensi.mahasiswa_id = {$mahasiswa->id} 
+                      AND LOWER(presensi.status) = 'izin') as jumlah_izin"),
+
+                DB::raw("(SELECT COUNT(*) FROM presensi JOIN pertemuan ON presensi.pertemuan_id = pertemuan.id 
+                      WHERE pertemuan.kelas_perkuliahan_id = kelas_perkuliahan.id 
+                      AND presensi.mahasiswa_id = {$mahasiswa->id} 
+                      AND LOWER(presensi.status) = 'alfa') as jumlah_alfa")
+            )
+            ->get();
+
+        return view('dashboard.mahasiswa.riwayat.index', compact('riwayatPresensi'));
+    }
+
+    public function detailRiwayat($kelas_id)
+    {
+        $user = Auth::user();
+        $mahasiswa = DB::table('mahasiswa')->where('id', $user->mahasiswa_id)->first();
+
+        $kelas = DB::table('kelas_perkuliahan')
+            ->join('mata_kuliah', 'kelas_perkuliahan.mata_kuliah_id', '=', 'mata_kuliah.id')
+            ->join('dosen', 'kelas_perkuliahan.dosen_id', '=', 'dosen.id')
+            ->where('kelas_perkuliahan.id', $kelas_id)
+            ->select('mata_kuliah.nama as nama_mk', 'mata_kuliah.kode_mk', 'dosen.nama as nama_dosen', 'kelas_perkuliahan.id as kelas_id')
+            ->first();
+
+        // CRITICAL FIX: Pakai JOIN biasa (Inner Join) ke tabel presensi si mahasiswa
+        // Jadi kalau mhs BELUM ABSEN (termasuk kelas besok/minggu depan), TIDAK AKAN MUNCUL!
+        $daftarPertemuan = DB::table('pertemuan')
+            ->join('presensi', function ($join) use ($mahasiswa) {
+                $join->on('pertemuan.id', '=', 'presensi.pertemuan_id')
+                    ->where('presensi.mahasiswa_id', '=', $mahasiswa->id);
+            })
+            ->where('pertemuan.kelas_perkuliahan_id', $kelas_id)
+            ->select(
+                'pertemuan.pertemuan_ke',
+                'pertemuan.tanggal',
+                'pertemuan.jam_mulai',
+                DB::raw('LOWER(presensi.status) as status_absen')
+            )
+            ->orderBy('pertemuan.pertemuan_ke', 'asc')
+            ->get();
+
+        return view('dashboard.mahasiswa.riwayat.show', compact('kelas', 'daftarPertemuan'));
     }
 }
