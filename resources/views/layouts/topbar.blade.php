@@ -47,13 +47,9 @@
         x-transition:leave-end="opacity-0 scale-95" @click.away="open = false"
         class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl py-2 z-50"
         x-cloak>
-        <a href="#"
+        <a href="{{ route('profile.edit') }}"
           class=" px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center gap-2">
           <i class="fas fa-user text-sm"></i> Profil
-        </a>
-        <a href="#"
-          class=" px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center gap-2">
-          <i class="fas fa-cog text-sm"></i> Pengaturan
         </a>
         <hr class="border-slate-200 dark:border-slate-700 my-1">
         <a href="#" @click.prevent="open = false; MicroModal.show('modal-logout')"

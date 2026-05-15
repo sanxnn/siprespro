@@ -7,6 +7,7 @@ use App\Http\Controllers\Dosen\DashboardController;
 use App\Http\Controllers\Dosen\KelasController;
 use App\Http\Controllers\Dosen\RekapController;
 use App\Http\Controllers\Mahasiswa\PresensiController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,8 @@ Route::middleware('redirect.if.auth.role')->group(function () {
 Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
 
