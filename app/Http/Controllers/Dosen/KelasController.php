@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dosen;
 
+use App\Exports\PresensiSesiExport;
 use App\Http\Controllers\Controller;
 // use App\Models\Jadwal; // <--- HAPUS/BUANG INI COK, UDAH JADI ALMARHUM
 use App\Models\KelasPerkuliahan;
@@ -12,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KelasController extends Controller
 {
@@ -254,5 +256,24 @@ class KelasController extends Controller
             ->keyBy('mahasiswa_id');
 
         return view('dashboard.dosen.pertemuan', compact('pertemuan', 'mahasiswas', 'presensis'));
+    }
+
+    public function exportExcel($pertemuan_id)
+    {
+        $pertemuan = DB::table('pertemuan')
+            ->join('kelas_perkuliahan', 'pertemuan.kelas_perkuliahan_id', '=', 'kelas_perkuliahan.id')
+            ->join('mata_kuliah', 'kelas_perkuliahan.mata_kuliah_id', '=', 'mata_kuliah.id')
+            ->where('pertemuan.id', $pertemuan_id)
+            ->select('pertemuan.pertemuan_ke', 'mata_kuliah.nama as nama_mk')
+            ->first();
+
+        if (!$pertemuan) {
+            return redirect()->back()->with('error', 'Data pertemuan tidak ditemukan.');
+        }
+
+        // Nama file disesuaikan otomatis: Rekap_MataKuliah_Pertemuan_Ke-X.xlsx
+        $namaFile = 'Rekap_' . str_replace(' ', '_', $pertemuan->nama_mk) . '_Pertemuan_Ke-' . $pertemuan->pertemuan_ke . '.xlsx';
+
+        return Excel::download(new PresensiSesiExport($pertemuan_id), $namaFile);
     }
 }

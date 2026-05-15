@@ -6,6 +6,7 @@
     <div
       class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
       <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-500/5 rounded-full blur-3xl"></div>
+      {{-- Update bagian Header di file Blade lu --}}
       <div class="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div class="flex items-center gap-5">
           <div
@@ -17,11 +18,15 @@
               Rekap Presensi Sesi #{{ $pertemuan->pertemuan_ke }}
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 font-bold flex items-center gap-2 uppercase tracking-widest mt-1">
-              {{ $pertemuan->nama_mk }} <span class="text-slate-300">•</span>
-              {{ $pertemuan->nama_kelas }}
+              {{ $pertemuan->nama_mk }} <span class="text-slate-300">•</span> {{ $pertemuan->nama_kelas }}
             </p>
           </div>
         </div>
+
+        <a href="{{ route('dosen.pertemuan.export-excel', $pertemuan->id) }}"
+          class="no-print flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-emerald-100 dark:shadow-none hover:-translate-y-0.5">
+          <i class="fas fa-file-excel"></i> Export Excel
+        </a>
       </div>
     </div>
 

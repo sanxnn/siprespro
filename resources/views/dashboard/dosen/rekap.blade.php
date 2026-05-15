@@ -45,16 +45,19 @@
             {{-- Progress Bar Kehadiran Rata-rata Kelas --}}
             <div class="space-y-2">
               <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                <span class="text-slate-400">Rerata Kehadiran</span>
+                <span class="text-slate-400">Efektivitas Kelas (H+S+I)</span>
                 <span class="{{ $rekap['persentase'] < 75 ? 'text-rose-500' : 'text-emerald-500' }}">
                   {{ number_format($rekap['persentase'], 1) }}%
                 </span>
               </div>
-              <div class="w-full h-2 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
+              <div
+                class="w-full h-2 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200/50 dark:border-slate-700">
                 <div
-                  class="h-full transition-all duration-500 {{ $rekap['persentase'] < 75 ? 'bg-rose-500' : 'bg-emerald-500' }}"
+                  class="h-full transition-all duration-700 ease-out {{ $rekap['persentase'] < 75 ? 'bg-gradient-to-r from-rose-500 to-orange-400' : 'bg-gradient-to-r from-emerald-500 to-teal-400' }}"
                   style="width: {{ $rekap['persentase'] }}%"></div>
               </div>
+              <p class="text-[9px] text-slate-400 italic">Berbasis {{ $rekap['pertemuan_jalan'] }} sesi yang telah ditutup
+              </p>
             </div>
 
             <a href="{{ route('dosen.kelas.show', $rekap['id']) }}"

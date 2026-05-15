@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/pertemuan/{pertemuan}', [KelasController::class, 'destroyPertemuan'])->name('pertemuan.destroy');
         Route::patch('/pertemuan/{pertemuan}/toggle', [KelasController::class, 'togglePertemuan'])->name('pertemuan.toggle');
         Route::get('/pertemuan/{pertemuan}', [KelasController::class, 'showPertemuan'])->name('pertemuan.show');
+        Route::get('/dosen/pertemuan/{pertemuan_id}/export-excel', [KelasController::class, 'exportExcel'])
+            ->name('pertemuan.export-excel');
 
         Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
 
