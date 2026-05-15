@@ -24,11 +24,6 @@ class Lokasi extends Model
         'radius_meter' => 'integer',
     ];
 
-    public function jadwals()
-    {
-        return $this->hasMany(Jadwal::class);
-    }
-
     public function isWithinRadius(float $lat, float $lng)
     {
         $distance = $this->calculateDistance($lat, $lng);
@@ -46,12 +41,12 @@ class Lokasi extends Model
         $dLat = $lat2 - $lat1;
         $dLng = $lng2 - $lng1;
 
-        $a = sin($dLat/2) * sin($dLat/2) +
-             cos($lat1) * cos($lat2) *
-             sin($dLng/2) * sin($dLng/2);
-        
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
-        
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos($lat1) * cos($lat2) *
+            sin($dLng / 2) * sin($dLng / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
         return $earthRadius * $c;
     }
 }

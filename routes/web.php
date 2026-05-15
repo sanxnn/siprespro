@@ -6,6 +6,7 @@ use App\Http\Controllers\Dosen;
 use App\Http\Controllers\Dosen\DashboardController;
 use App\Http\Controllers\Dosen\KelasController;
 use App\Http\Controllers\Dosen\RekapController;
+use App\Http\Controllers\Mahasiswa\PresensiController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +82,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-        Route::get('/dashboard', fn() => view('dashboard.mahasiswa.index'))->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
+
+        Route::get('/presensi/show/{pertemuan_id}', [PresensiController::class, 'isiPresensi'])->name('presensi.show');
+        Route::post('/presensi/simpan/{pertemuan_id}', [PresensiController::class, 'simpanPresensi'])->name('presensi.simpan');
     });
 });
