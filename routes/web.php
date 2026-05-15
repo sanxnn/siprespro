@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
             ->parameters(['kelas-perkuliahan' => 'kela']);
 
         // presensi
-        Route::resource('presensi', Admin\PresensiController::class)->only(['index', 'destroy']);
+        Route::resource('presensi', Admin\PresensiController::class);
 
     });
 
