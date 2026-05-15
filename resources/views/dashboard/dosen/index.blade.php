@@ -27,8 +27,9 @@
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Kelas Diampu</p>
-          <p class="text-2xl font-bold mt-1">{{ $totalKelas }}</p>
-          <p class="text-xs text-primary-600 dark:text-primary-400 mt-1">Semester Aktif</p>
+          <p class="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{{ $totalKelas }}</p>
+          <p class="text-[10px] font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider mt-1">Semester
+            Aktif</p>
         </div>
         <div
           class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center text-primary-600 dark:text-primary-400">
@@ -41,9 +42,26 @@
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
       <div class="flex items-center justify-between">
         <div>
+          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Mahasiswa Diampu</p>
+          <p class="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{{ $totalMahasiswaDiampu }}</p>
+          <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mt-1">Total Individu
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
+      <div class="flex items-center justify-between">
+        <div>
           <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Sesi Selesai</p>
-          <p class="text-2xl font-bold mt-1">{{ $pertemuanSelesai }}</p>
-          <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1">Total Pertemuan</p>
+          <p class="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{{ $pertemuanSelesai }}</p>
+          <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mt-1">Sesi
+            Terlaksana</p>
         </div>
         <div
           class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -55,56 +73,22 @@
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Presensi Hari Ini</p>
-          <p class="text-2xl font-bold mt-1">{{ $presensiHariIni }}</p>
-          <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">Mahasiswa Absen</p>
-        </div>
-        <div
-          class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center text-amber-600 dark:text-amber-400">
-          <i class="fas fa-user-check"></i>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
-      <div class="flex items-center justify-between">
-        <div>
+        <div class="flex-1 min-w-0">
           <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Avg Kehadiran</p>
-          <p class="text-2xl font-bold mt-1">{{ $avgKehadiran }}%</p>
+          <p class="text-2xl font-bold mt-1 text-slate-800 dark:text-white">{{ $avgKehadiran }}%</p>
           <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 mt-2 overflow-hidden">
             <div class="bg-primary-500 h-1.5 rounded-full transition-all duration-700"
               style="width: {{ $avgKehadiran }}%"></div>
           </div>
         </div>
         <div
-          class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400">
+          class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 ml-3">
           <i class="fas fa-chart-line"></i>
         </div>
       </div>
     </div>
   </div>
 
-  {{-- 3. Aksi Cepat & Info --}}
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center">
-      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total Mahasiswa</p>
-      <p class="text-xl font-bold mt-1 text-primary-600">{{ $totalMahasiswaDiampu }}</p>
-    </div>
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center">
-      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Status Dosen</p>
-      <p class="text-xl font-bold mt-1 text-emerald-600">Aktif</p>
-    </div>
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center">
-      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Materi Terinput</p>
-      <p class="text-xl font-bold mt-1 text-primary-600">{{ $pertemuanSelesai }}</p>
-    </div>
-    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-center">
-      <p class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide">Hari Ini</p>
-      <p class="text-xl font-bold mt-1 text-primary-600">{{ $jadwalHariIni->count() }} Sesi</p>
-    </div>
-  </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     {{-- Aktivitas Presensi Terbaru di Kelas Dosen --}}
