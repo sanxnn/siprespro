@@ -49,7 +49,7 @@
       @include('layouts.menu.mahasiswa')
     @endif
   </nav>
-  <div class="hidden md:flex p-3 border-t border-slate-200 dark:border-slate-700 overflow-hidden">
+  {{-- <div class="hidden md:flex p-3 border-t border-slate-200 dark:border-slate-700 overflow-hidden">
     <button @click="sidebarCollapse = !sidebarCollapse"
       class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-slate-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-sm font-medium">
       <i class="fas" :class="sidebarCollapse ? 'fa-chevron-right' : 'fa-chevron-left'"></i>
@@ -57,5 +57,5 @@
         Collapse
       </span>
     </button>
-  </div>
+  </div> --}}
 </aside>
