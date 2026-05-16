@@ -39,7 +39,7 @@ class RekapController extends Controller
                 if ($persentaseKelas > 100)
                     $persentaseKelas = 100;
             } else {
-                $persentaseKelas = 100; 
+                $persentaseKelas = 0; 
             }
             return [
                 'id' => $k->id,

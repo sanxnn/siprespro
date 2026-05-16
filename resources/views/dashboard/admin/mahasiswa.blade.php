@@ -89,7 +89,7 @@
                                 <td class="px-6 py-4">
                                     <span
                                         class="inline-flex items-center px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase border border-blue-100 dark:border-blue-800/60 mb-1">
-                                        Golongan {{ $mhs->golongan->nama ?? 'N/A' }}
+                                        {{ $mhs->golongan->nama ?? 'N/A' }}
                                     </span>
                                     <p class="text-xs text-slate-500 dark:text-slate-400 font-bold">Angkatan
                                         {{ $mhs->angkatan }} <span class="text-slate-300 dark:text-slate-600">|</span> Sem

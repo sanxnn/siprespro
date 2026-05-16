@@ -22,32 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      @php
-        $totalMhs = $mahasiswas ?? collect();
-        $totalMhsCount = $totalMhs->count();
-        $hadir = ($presensis ?? collect())->where('status', 'hadir')->count();
-        $sakit = ($presensis ?? collect())->where('status', 'sakit')->count();
-        $izin = ($presensis ?? collect())->where('status', 'izin')->count();
-        $alfa = $totalMhsCount - ($hadir + $sakit + $izin);
-      @endphp
-      <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
-        <p class="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Mahasiswa</p>
-        <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white">{{ $totalMhsCount }}</p>
-      </div>
-      <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-emerald-100 dark:border-emerald-900/30 shadow-sm text-center">
-        <p class="text-[9px] sm:text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Hadir</p>
-        <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ $hadir }}</p>
-      </div>
-      <div class="bg-amber-50 dark:bg-amber-950/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-amber-100 dark:border-amber-900/30 shadow-sm text-center">
-        <p class="text-[9px] sm:text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">Sakit / Izin</p>
-        <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{{ $sakit + $izin }}</p>
-      </div>
-      <div class="bg-rose-50 dark:bg-rose-950/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-rose-100 dark:border-rose-900/30 shadow-sm text-center">
-        <p class="text-[9px] sm:text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1">Alfa</p>
-        <p class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400">{{ $alfa }}</p>
-      </div>
-    </div>
+
     <div class="bg-white dark:bg-slate-800 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
       <div class="p-5 sm:p-8 border-b border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <h2 class="font-black text-slate-800 dark:text-white uppercase text-xs sm:text-sm tracking-widest">Daftar Sesi Perkuliahan</h2>

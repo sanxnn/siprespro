@@ -62,7 +62,7 @@ class LokasiController extends Controller
             'latitude' => [
                 'required',
                 'numeric',
-                \Illuminate\Validation\Rule::unique('lokasis', 'latitude')
+                \Illuminate\Validation\Rule::unique('lokasi', 'latitude')
                     ->ignore($lokasi->id)
                     ->where(function ($query) use ($request) {
                         return $query->where('longitude', $request->longitude);
