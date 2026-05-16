@@ -4,7 +4,6 @@
   'groups' => '',
   'classes' => '',
 ])
-
 <div {{ $attributes->merge(['class' => 'bg-primary-600 dark:bg-primary-800 rounded-2xl p-5 text-white']) }}>
   <div class="flex items-start justify-between">
     <div>

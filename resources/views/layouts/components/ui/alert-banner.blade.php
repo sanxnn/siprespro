@@ -4,8 +4,6 @@
   'title' => '',
   'message' => '',
 ])
-
-
 @php
   $colors = [
     'info' => 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',

@@ -3,9 +3,6 @@
     x-show="sidebarOpen || !sidebarCollapse" x-transition.opacity>Lecturer Panel</span>
   <div x-show="sidebarCollapse && !sidebarOpen" class="border-t border-slate-200 dark:border-slate-700 mx-2 mt-2"></div>
 </div>
-
-
-<!-- Menu Utama: Kelas Saya (The Hub) -->
 <div x-data="{ open: {{ request()->routeIs('dosen.kelas.*') ? 'true' : 'false' }} }">
   <button @click="open = !open"
     class="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('dosen.kelas.*') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
@@ -17,14 +14,12 @@
     <i class="fas fa-chevron-down text-[10px] transition-transform duration-200"
       x-show="sidebarOpen || !sidebarCollapse" :class="open ? 'rotate-180' : ''"></i>
   </button>
-
   <div x-show="open && (sidebarOpen || !sidebarCollapse)" x-collapse>
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2 text-left">
       <a href="{{ route('dosen.kelas.index') }}"
         class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('dosen.kelas.index') ? 'text-primary-600 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-primary-600' }}">
         <i class="fas fa-layer-group w-4"></i><span class="ml-2">Kelas Perkuliahan</span>
       </a>
-      <!-- Menu ini otomatis aktif kalau dosen lagi di dalam detail kelas -->
       @if(request()->route('kela'))
         <div class="pt-2 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Quick Access</div>
         <a href="{{ route('dosen.kelas.show', request()->route('kela')) }}"
@@ -35,8 +30,6 @@
     </div>
   </div>
 </div>
-
-<!-- Menu Laporan & Rekap -->
 <div
   x-data="{ open: {{ (request()->routeIs('dosen.rekap.*') || request()->routeIs('dosen.pertemuan.show')) ? 'true' : 'false' }} }">
   <button @click="open = !open"
@@ -49,11 +42,8 @@
     <i class="fas fa-chevron-down text-[10px] transition-transform duration-200"
       x-show="sidebarOpen || !sidebarCollapse" :class="open ? 'rotate-180' : ''"></i>
   </button>
-
   <div x-show="open && (sidebarOpen || !sidebarCollapse)" x-collapse>
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2 text-left">
-
-      <!-- Link Utama Rekap (Daftar Kelas) -->
       <a href="{{ route('dosen.rekap.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg transition-colors
         {{ request()->routeIs('dosen.rekap.index')
   ? 'text-primary-600 font-black bg-primary-50/50 dark:bg-primary-900/10'
@@ -62,12 +52,9 @@
         <i class="fas fa-file-export w-4 {{ request()->routeIs('dosen.rekap.index') ? 'text-primary-600' : '' }}"></i>
         <span class="ml-2">Rekap Kehadiran</span>
       </a>
-
-      <!-- HUB AKSES: Muncul cuma kalau lagi buka detail pertemuan -->
       @if(request()->route('pertemuan'))
           <div class="pt-2 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-widest italic pl-4">Quick Access
           </div>
-
           <a href="{{ route('dosen.pertemuan.show', request()->route('pertemuan')) }}" class="flex items-center px-4 py-2 text-sm rounded-lg transition-all
               {{ request()->routeIs('dosen.pertemuan.show')
         ? ' text-primary-600 font-bold'
@@ -78,7 +65,6 @@
             <span class="ml-2">Detail Presensi</span>
           </a>
       @endif
-
     </div>
   </div>
 </div>

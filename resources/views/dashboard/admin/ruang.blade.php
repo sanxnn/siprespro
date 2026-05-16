@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Data Ruang • SIPRESPRO')
-
 @section('content')
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -16,10 +14,8 @@
         <span>Tambah Ruang</span>
       </button>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
       <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
@@ -53,7 +49,6 @@
                     </div>
                   </div>
                 </td>
-
                 <td class="px-6 py-4 text-center">
                   <span
                     class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700 transition-colors">
@@ -61,7 +56,6 @@
                     {{ $ruang->gedung }}
                   </span>
                 </td>
-
                 <td class="px-6 py-4 text-center">
                   <span
                     class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-bold text-xs border border-indigo-100 dark:border-indigo-800">
@@ -69,7 +63,6 @@
                     {{ $ruang->kapasitas }} <span class="hidden md:inline">Kursi</span>
                   </span>
                 </td>
-
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
                     <button type="button" @click="MicroModal.show('modal-edit-{{ $ruang->id }}')"
@@ -96,8 +89,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @forelse($ruangs as $ruang)
           <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
@@ -112,7 +103,6 @@
                 </div>
               </div>
             </div>
-
             <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-2 font-medium">
               <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
                 <span class="font-bold text-slate-700 dark:text-slate-300"><i class="fas fa-building text-primary-500 mr-1.5"></i> Gedung:</span>
@@ -123,7 +113,6 @@
                 <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ $ruang->kapasitas }} <span class="text-[9px] uppercase tracking-tighter opacity-70">Kursi</span></span>
               </div>
             </div>
-
             <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
               <button type="button" @click="MicroModal.show('modal-edit-{{ $ruang->id }}')"
                 class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
@@ -144,7 +133,6 @@
       </div>
     </div>
   </div>
-
   <div class="modal" id="modal-create-ruang" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div class="modal__container w-full max-w-md bg-white dark:bg-slate-800 rounded-4xl p-8" role="dialog" @click.stop>
@@ -161,7 +149,6 @@
             <i class="fas fa-times"></i>
           </button>
         </header>
-
         <form action="{{ route('admin.ruang.store') }}" method="POST" class="text-left space-y-5">
           @csrf
           <div>
@@ -196,7 +183,6 @@
       </div>
     </div>
   </div>
-
   @foreach($ruangs as $ruang)
     <div class="modal" id="modal-edit-{{ $ruang->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
@@ -214,7 +200,6 @@
               <i class="fas fa-times"></i>
             </button>
           </header>
-
           <form action="{{ route('admin.ruang.update', $ruang->id) }}" method="POST" class="space-y-5 text-left">
             @csrf @method('PUT')
             <div>
@@ -247,7 +232,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal" id="modal-delete-{{ $ruang->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container w-full max-w-sm text-center bg-white dark:bg-slate-800 rounded-4xl p-8" role="dialog"

@@ -1,7 +1,5 @@
 @extends('layouts.app')
-
 @section('title', 'Master Lokasi • SIPRESPRO')
-
 @section('content')
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -16,10 +14,8 @@
         <span>Tambah Titik</span>
       </button>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
       <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
@@ -100,8 +96,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @forelse($lokasis as $lokasi)
           <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
@@ -116,7 +110,6 @@
                 </div>
               </div>
             </div>
-
             <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-2 font-medium">
               <div class="flex flex-col gap-1.5 bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700">
                 <div class="flex justify-between items-center w-full">
@@ -132,7 +125,6 @@
                 <span class="font-bold text-blue-600 dark:text-blue-400 px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 rounded border border-blue-100 dark:border-blue-800">{{ $lokasi->radius_meter }} <span class="text-[9px] uppercase tracking-tighter opacity-70">Meter</span></span>
               </div>
             </div>
-
             <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
               <a href="https://www.google.com/maps?q={{ $lokasi->latitude }},{{ $lokasi->longitude }}" target="_blank"
                 class="px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
@@ -157,7 +149,6 @@
       </div>
     </div>
   </div>
-
   <div class="modal" id="modal-create-lokasi" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div
@@ -174,7 +165,6 @@
             <i class="fas fa-times"></i>
           </button>
         </header>
-
         <form action="{{ route('admin.lokasi.store') }}" method="POST" class="space-y-5 text-left">
           @csrf
           <div>
@@ -184,7 +174,6 @@
             <input type="text" name="nama" required placeholder="Contoh: Gedung J - Lab Komputer"
               class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-red-500/50 outline-none transition-all">
           </div>
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -199,7 +188,6 @@
                 class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-red-500/50 outline-none transition-all">
             </div>
           </div>
-
           <div>
             <label
               class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Radius
@@ -212,7 +200,6 @@
             <p class="mt-2 text-[10px] text-slate-400 italic leading-relaxed">*Radius di bawah 15 meter mungkin sulit
               dideteksi GPS HP standar.</p>
           </div>
-
           <div class="mt-8 flex gap-3">
             <button type="button" data-micromodal-close
               class="flex-1 py-3 bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-all hover:bg-slate-200 dark:hover:bg-slate-700">Batal</button>
@@ -225,14 +212,12 @@
       </div>
     </div>
   </div>
-
   @foreach($lokasis as $lokasi)
     <div class="modal" id="modal-edit-{{ $lokasi->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div
           class="modal__container w-full max-w-lg bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 shadow-2xl border-none dark:border dark:border-slate-700"
           role="dialog" @click.stop>
-
           <header class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700/50">
             <div>
               <h2 class="text-xl font-bold text-slate-800 dark:text-white">Edit Titik Lokasi</h2>
@@ -245,7 +230,6 @@
               <i class="fas fa-times"></i>
             </button>
           </header>
-
           <form action="{{ route('admin.lokasi.update', $lokasi->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -257,7 +241,6 @@
                 <input type="text" name="nama" value="{{ $lokasi->nama }}" required
                   class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all">
               </div>
-
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
@@ -272,7 +255,6 @@
                     class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all font-mono">
                 </div>
               </div>
-
               <div>
                 <label
                   class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Radius
@@ -281,7 +263,6 @@
                   class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all">
               </div>
             </div>
-
             <div class="mt-8 flex gap-3">
               <button type="button" data-micromodal-close
                 class="flex-1 py-3 bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-all hover:bg-slate-200 dark:hover:bg-slate-700">Batal</button>
@@ -293,7 +274,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal" id="modal-delete-{{ $lokasi->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div
@@ -320,7 +300,4 @@
       </div>
     </div>
   @endforeach
-
-
-
 @endsection

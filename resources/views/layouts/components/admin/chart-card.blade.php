@@ -6,17 +6,14 @@
   'datasets' => [],
   'options' => [],
 ])
-
 <div {{ $attributes->merge(['class' => 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5']) }}>
   <div class="flex justify-between items-center mb-4">
     <h3 class="font-semibold text-lg">{{ $title }}</h3>
     {{ $slot }}
   </div>
-  
    <div class="h-48">
     <canvas id="{{ $chartId }}"></canvas>
   </div>
-
   @push('scripts')
     <script>
       document.addEventListener('DOMContentLoaded', function() {

@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
-
 class LokasiController extends Controller
 {
     public function index()
@@ -13,7 +10,6 @@ class LokasiController extends Controller
         $lokasis = Lokasi::latest()->paginate(10);
         return view('dashboard.admin.lokasi', compact('lokasis'));
     }
-
     public function store(Request $request)
     {
         $messages = [
@@ -27,7 +23,6 @@ class LokasiController extends Controller
             'radius_meter.integer' => 'Radius harus berupa angka bulat.',
             'radius_meter.min' => 'Radius minimal 5 meter, jangan pelit-pelit!',
         ];
-
         $request->validate([
             'nama' => 'required|string|max:255',
             'latitude' => [
@@ -40,19 +35,15 @@ class LokasiController extends Controller
             'longitude' => 'required|numeric',
             'radius_meter' => 'required|integer|min:5',
         ], $messages);
-
         try {
             Lokasi::create($request->all());
-
             return back()->with('success', 'Titik lokasi berhasil ditambahkan!');
-
         } catch (\Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Gagal nambah lokasi: ' . $e->getMessage());
         }
     }
-
     public function update(Request $request, Lokasi $lokasi)
     {
         $messages = [
@@ -66,7 +57,6 @@ class LokasiController extends Controller
             'radius_meter.integer' => 'Radius harus berupa angka bulat.',
             'radius_meter.min' => 'Radius minimal 5 meter.',
         ];
-
         $request->validate([
             'nama' => 'required|string|max:255',
             'latitude' => [
@@ -81,10 +71,8 @@ class LokasiController extends Controller
             'longitude' => 'required|numeric',
             'radius_meter' => 'required|integer|min:5',
         ], $messages);
-
         try {
             $lokasi->update($request->all());
-
             return back()->with('success', 'Lokasi berhasil diupdate!');
         } catch (\Exception $e) {
             return back()
@@ -92,7 +80,6 @@ class LokasiController extends Controller
                 ->with('error', 'Gagal update lokasi: ' . $e->getMessage());
         }
     }
-
     public function destroy(Lokasi $lokasi)
     {
         $lokasi->delete();

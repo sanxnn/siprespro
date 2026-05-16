@@ -1,10 +1,7 @@
 @extends('layouts.app')
-
 @section('title', 'Data Dosen • SIPRESPRO')
-
 @section('content')
   <div class="space-y-6 mx-auto p-2 sm:p-4 text-left">
-    <!-- Header Section (Responsive Flex) -->
     <div
       class="bg-white dark:bg-slate-800 p-5 sm:p-8 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
       <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-500/5 rounded-full blur-3xl"></div>
@@ -22,33 +19,24 @@
         </button>
       </div>
     </div>
-
-    <!-- Filter & Search Form (Responsive Stacked Grid) -->
     <form method="GET" action="{{ route('admin.dosen.index') }}"
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl sm:rounded-3xl p-3 sm:p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center shadow-xs">
-
-      {{-- Search Input --}}
       <div class="relative flex-1">
         <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs sm:text-sm"></i>
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari NIP, Nama, atau Email..."
           class="w-full pl-9 pr-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white font-bold outline-none focus:ring-2 focus:ring-primary-500 transition-all">
       </div>
-
       <div class="flex gap-2 w-full sm:w-auto">
-        {{-- Filter Status --}}
         <select name="status"
           class="flex-1 sm:flex-initial px-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white font-bold outline-none focus:ring-2 focus:ring-primary-500">
           <option value="">Semua Status</option>
           <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>Aktif</option>
           <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Nonaktif</option>
         </select>
-
         <button type="submit"
           class="px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition shadow-md shadow-primary-500/10 shrink-0">
           Apply
         </button>
-
-        {{-- Tombol Export Excel --}}
         <a href="{{ route('admin.dosen.export.excel', request()->query()) }}"
           class="inline-flex items-center justify-center gap-1.5 px-4 py-2 sm:py-2.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider transition shrink-0">
           <i class="fas fa-file-excel text-emerald-600"></i>
@@ -56,12 +44,8 @@
         </a>
       </div>
     </form>
-
-    <!-- Main Content Container -->
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-4xl sm:rounded-[2.5rem] overflow-hidden shadow-xs">
-
-      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
       <div class="hidden md:block overflow-x-auto p-4 sm:p-6">
         <table class="w-full text-left border-separate border-spacing-y-2">
           <thead class="text-slate-400">
@@ -144,8 +128,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @forelse($dosens as $dosen)
           <div
@@ -172,7 +154,6 @@
                 @endif
               </div>
             </div>
-
             <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
               <p><span class="font-bold text-slate-700 dark:text-slate-300">NIP:</span> <span
                   class="font-mono">{{ $dosen->nip ?? '-' }}</span></p>
@@ -181,7 +162,6 @@
               <p class="truncate"><i class="fas fa-phone text-[9px] mr-1 text-primary-500"></i> {{ $dosen->no_hp ?? '-' }}
               </p>
             </div>
-
             <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
               <button type="button" @click="MicroModal.show('modal-edit-{{ $dosen->id }}')"
                 class="px-3 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
@@ -197,7 +177,6 @@
           <div class="p-8 text-center text-slate-400 italic text-xs">Data dosen belum tersedia.</div>
         @endforelse
       </div>
-
       @if($dosens->hasPages())
         <div
           class="px-4 py-3 sm:px-6 sm:py-4 bg-slate-50/50 dark:bg-slate-900/20 border-t border-slate-100 dark:border-slate-700">
@@ -206,12 +185,6 @@
       @endif
     </div>
   </div>
-
-  <!-- ======================================================== -->
-  <!-- MODALS MASTER CONTAINER ZONE (FULL RESPONSIVE & ANIMATED) -->
-  <!-- ======================================================== -->
-
-  {{-- Modal Create Dosen --}}
   <div class="modal micromodal-slide" id="modal-create-dosen" aria-hidden="true">
     <div
       class="modal__overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out"
@@ -233,7 +206,6 @@
             <i class="fas fa-times"></i>
           </button>
         </header>
-
         <form action="{{ route('admin.dosen.store') }}" method="POST">
           @csrf
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left">
@@ -264,7 +236,6 @@
                   class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
               </div>
             </div>
-
             <div class="space-y-4">
               <h4 class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Informasi
                 Pribadi</h4>
@@ -297,7 +268,6 @@
               </div>
             </div>
           </div>
-
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <button type="button" data-micromodal-close
               class="w-full sm:flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-black uppercase text-xs tracking-wider transition-colors">Batal</button>
@@ -309,9 +279,7 @@
       </div>
     </div>
   </div>
-
   @foreach($dosens as $dosen)
-    <!-- Modal Edit Profil Dosen -->
     <div class="modal micromodal-slide" id="modal-edit-{{ $dosen->id }}" aria-hidden="true">
       <div
         class="modal__overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-all duration-300"
@@ -331,7 +299,6 @@
               <i class="fas fa-times"></i>
             </button>
           </header>
-
           <form action="{{ route('admin.dosen.update', $dosen->id) }}" method="POST">
             @csrf @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left">
@@ -359,7 +326,6 @@
                     class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
                 </div>
               </div>
-
               <div class="space-y-4">
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">Data Personal
                 </h4>
@@ -385,7 +351,6 @@
                 </div>
               </div>
             </div>
-
             <div class="mt-8 flex flex-col sm:flex-row gap-3">
               <button type="button" data-micromodal-close
                 class="w-full sm:flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-black uppercase text-xs tracking-wider transition-colors">Batal</button>
@@ -397,8 +362,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal Konfirmasi Hapus -->
     <div class="modal micromodal-slide" id="modal-delete-{{ $dosen->id }}" aria-hidden="true">
       <div
         class="modal__overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-all duration-300"
@@ -413,7 +376,6 @@
           <h2 class="text-lg font-black text-slate-800 dark:text-white uppercase tracking-tight mb-2">Hapus Dosen?</h2>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6 px-2 leading-relaxed">Menghapus profil
             <b>{{ $dosen->nama }}</b> juga akan melenyapkan kredensial login akun secara permanen.</p>
-
           <form action="{{ route('admin.dosen.destroy', $dosen->id) }}" method="POST" class="flex gap-2 w-full">
             @csrf @method('DELETE')
             <button type="button" data-micromodal-close
@@ -427,78 +389,63 @@
     </div>
   @endforeach
 @endsection
-
 @push('styles')
   <style>
     /* MODAL SAKTI ANIMATED SLIDE MICROMODAL ENGINE */
     .modal {
       display: none;
     }
-
     .modal.is-open {
       display: flex;
     }
-
     .micromodal-slide[aria-hidden="false"] .modal__overlay {
       animation: mmFadeIn .25s cubic-bezier(0.0, 0.0, 0.2, 1);
     }
-
     .micromodal-slide[aria-hidden="false"] .modal__container {
       animation: mmSlideIn .25s cubic-bezier(0, 0, 0.2, 1);
     }
-
     .micromodal-slide[aria-hidden="true"] .modal__overlay {
       animation: mmFadeOut .2s cubic-bezier(0.0, 0.0, 0.2, 1);
     }
-
     .micromodal-slide[aria-hidden="true"] .modal__container {
       animation: mmSlideOut .2s cubic-bezier(0, 0, 0.2, 1);
     }
-
     @keyframes mmFadeIn {
       from {
         opacity: 0;
       }
-
       to {
         opacity: 1;
       }
     }
-
     @keyframes mmFadeOut {
       from {
         opacity: 1;
       }
-
       to {
         opacity: 0;
       }
     }
-
     @keyframes mmSlideIn {
       from {
         transform: scale(0.95);
         opacity: 0;
       }
-
       to {
         transform: scale(1);
         opacity: 1;
       }
     }
-
     @keyframes mmSlideOut {
       from {
         transform: scale(1);
         opacity: 1;
       }
-
       to {
         transform: scale(0.95);
         opacity: 0;
       }
     }
-
     /* Premium Glow Focus Inputs Override */
     input:focus,
     select:focus,

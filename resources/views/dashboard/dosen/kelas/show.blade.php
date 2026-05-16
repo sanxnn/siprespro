@@ -1,11 +1,8 @@
 @extends('layouts.app')
-
 @section('content')
   <div class="space-y-6 mx-auto p-2 sm:p-4 text-left">
-    <!-- Header: Info Pertemuan (Responsive Flex) -->
     <div class="bg-white dark:bg-slate-800 p-5 sm:p-8 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
       <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-500/5 rounded-full blur-3xl"></div>
-      
       <div class="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div class="flex items-center gap-4 sm:gap-5">
           <div class="w-12 h-12 sm:w-16 sm:h-16 bg-primary-600 text-white rounded-2xl sm:rounded-3xl flex items-center justify-center shadow-xl shadow-primary-500/20 font-black text-xl sm:text-2xl shrink-0">
@@ -22,11 +19,8 @@
             </p>
           </div>
         </div>
-
       </div>
     </div>
-
-    <!-- Quick Stats Grid (Responsive 2 Col Mobile, 4 Col Desktop) -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       @php
         $totalMhs = $mahasiswas ?? collect();
@@ -36,29 +30,23 @@
         $izin = ($presensis ?? collect())->where('status', 'izin')->count();
         $alfa = $totalMhsCount - ($hadir + $sakit + $izin);
       @endphp
-
       <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm text-center">
         <p class="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Mahasiswa</p>
         <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white">{{ $totalMhsCount }}</p>
       </div>
-
       <div class="bg-emerald-50 dark:bg-emerald-950/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-emerald-100 dark:border-emerald-900/30 shadow-sm text-center">
         <p class="text-[9px] sm:text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1">Hadir</p>
         <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ $hadir }}</p>
       </div>
-
       <div class="bg-amber-50 dark:bg-amber-950/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-amber-100 dark:border-amber-900/30 shadow-sm text-center">
         <p class="text-[9px] sm:text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">Sakit / Izin</p>
         <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{{ $sakit + $izin }}</p>
       </div>
-
       <div class="bg-rose-50 dark:bg-rose-950/20 p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-rose-100 dark:border-rose-900/30 shadow-sm text-center">
         <p class="text-[9px] sm:text-[10px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest mb-1">Alfa</p>
         <p class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400">{{ $alfa }}</p>
       </div>
     </div>
-
-    <!-- Main Table Container -->
     <div class="bg-white dark:bg-slate-800 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
       <div class="p-5 sm:p-8 border-b border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <h2 class="font-black text-slate-800 dark:text-white uppercase text-xs sm:text-sm tracking-widest">Daftar Sesi Perkuliahan</h2>
@@ -67,8 +55,6 @@
           <i class="fas fa-plus-circle mr-2"></i>BUAT SESI BARU
         </button>
       </div>
-
-      <!-- DESKTOP TABLE VIEW (md: ke atas baru nongol) -->
       <div class="hidden md:block overflow-x-auto p-6">
         <table class="w-full text-left border-separate border-spacing-y-3">
           <thead>
@@ -109,7 +95,6 @@
                       class="w-9 h-9 flex items-center justify-center bg-primary-50 text-primary-600 border border-primary-100 rounded-xl hover:bg-primary-600 hover:text-white transition-all shadow-sm group">
                       <i class="fas fa-clipboard-user text-sm group-hover:scale-110 transition-transform"></i>
                     </a>
-
                     <form action="{{ route('dosen.pertemuan.toggle', $p->id) }}" method="POST">
                       @csrf @method('PATCH')
                       <button type="submit"
@@ -117,12 +102,10 @@
                         <i class="fas {{ $p->status == 'dibuka' ? 'fa-stop-circle' : 'fa-play' }} text-sm"></i>
                       </button>
                     </form>
-
                     <button type="button" @click="MicroModal.show('modal-edit-{{ $p->id }}')"
                       class="w-9 h-9 flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm">
                       <i class="fas fa-edit text-sm"></i>
                     </button>
-
                     <button type="button" @click="MicroModal.show('modal-delete-{{ $p->id }}')"
                       class="w-9 h-9 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-100 rounded-xl hover:bg-rose-600 hover:text-white transition-all shadow-sm">
                       <i class="fas fa-trash text-sm"></i>
@@ -134,8 +117,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @foreach($kelas->pertemuans->sortBy('pertemuan_ke') as $p)
           <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/60 shadow-xs space-y-3">
@@ -149,39 +130,28 @@
                 <span class="px-2.5 py-1 rounded-lg text-[8px] font-black uppercase border {{ $status == 'Aktif' ? 'bg-emerald-100 text-emerald-600 border-emerald-200' : 'bg-slate-200 text-slate-500 border-slate-300' }}">{{ $status }}</span>
               </div>
             </div>
-
             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">
               <i class="far fa-calendar mr-1 text-primary-500"></i> {{ \Carbon\Carbon::parse($p->tanggal)->translatedFormat('l, d M Y') }}
               <br>
               <i class="far fa-clock mr-1 text-primary-500 mt-1"></i> {{ substr($p->jam_mulai, 0, 5) }} - {{ substr($p->jam_selesai, 0, 5) }} WIB
             </p>
-
-            {{-- Button Trigger Aksi khusus Mobile Layout --}}
             <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex justify-end gap-1.5">
               <a href="{{ route('dosen.pertemuan.show', $p->id) }}" class="px-3 py-1.5 bg-primary-50 text-primary-600 rounded-lg text-[11px] font-bold border border-primary-100"><i class="fas fa-clipboard-user mr-1"></i> Rekap</a>
-              
               <form action="{{ route('dosen.pertemuan.toggle', $p->id) }}" method="POST" class="inline">
                 @csrf @method('PATCH')
                 <button type="submit" class="px-3 py-1.5 {{ $p->status == 'dibuka' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-600 border-emerald-100' }} border rounded-lg text-[11px] font-bold">
                   <i class="fas {{ $p->status == 'dibuka' ? 'fa-stop-circle' : 'fa-play' }} mr-1"></i> {{ $p->status == 'dibuka' ? 'Tutup' : 'Buka' }}
                 </button>
               </form>
-
               <button type="button" @click="MicroModal.show('modal-edit-{{ $p->id }}')" class="px-2.5 py-1.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100"><i class="fas fa-edit"></i></button>
               <button type="button" @click="MicroModal.show('modal-delete-{{ $p->id }}')" class="px-2.5 py-1.5 bg-rose-50 text-rose-600 rounded-lg border border-rose-100"><i class="fas fa-trash"></i></button>
             </div>
           </div>
         @endforeach
       </div>
-
     </div>
   </div>
-
-  {{-- ======================================================== --}}
-  {{-- MODALS WRAPPER ZONE: FULL ANIMATED & TAB OUTSIDE TO CLOSE --}}
-  {{-- ======================================================== --}}
   @foreach($kelas->pertemuans as $p)
-    <!-- Modal Edit Pertemuan -->
     <div class="modal micromodal-slide" id="modal-edit-{{ $p->id }}" aria-hidden="true">
       <div class="modal__overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-opacity duration-300" tabindex="-1" data-micromodal-close>
         <div class="modal__container bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl w-full max-w-md relative transform transition-all duration-300 scale-95" role="dialog" aria-modal="true">
@@ -189,7 +159,6 @@
             <h2 class="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Edit Sesi #{{ $p->pertemuan_ke }}</h2>
             <button type="button" data-micromodal-close class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-times"></i></button>
           </div>
-
           <form action="{{ route('dosen.pertemuan.update', $p->id) }}" method="POST" class="space-y-4 text-left">
             @csrf @method('PATCH')
             <div class="grid grid-cols-2 gap-4">
@@ -202,7 +171,6 @@
                 <input type="date" name="tanggal" value="{{ $p->tanggal ? \Carbon\Carbon::parse($p->tanggal)->format('Y-m-d') : date('Y-m-d') }}" class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold outline-none focus:border-primary-500" required>
               </div>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
               <div class="space-y-1">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jam Mulai</label>
@@ -213,7 +181,6 @@
                 <input type="time" name="jam_selesai" value="{{ substr($p->jam_selesai, 0, 5) }}" class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold focus:border-primary-500" required>
               </div>
             </div>
-
             <div class="space-y-1">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi Presensi</label>
               <select name="lokasi_id" class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold focus:border-primary-500">
@@ -222,29 +189,23 @@
                 @endforeach
               </select>
             </div>
-
             <div class="space-y-1">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Materi Bahasan</label>
               <textarea name="materi" rows="2" class="w-full px-5 py-3 rounded-2xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold focus:border-primary-500" required>{{ $p->materi }}</textarea>
             </div>
-
             <button type="submit" class="w-full py-4 bg-amber-500 text-white rounded-2xl font-black shadow-xl shadow-amber-500/30 transform transition-all hover:-translate-y-0.5 mt-2">SIMPAN PERUBAHAN</button>
           </form>
         </div>
       </div>
     </div>
-
-    <!-- Modal Konfirmasi Hapus -->
     <div class="modal micromodal-slide" id="modal-delete-{{ $p->id }}" aria-hidden="true">
       <div class="modal__overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 transition-opacity duration-300" tabindex="-1" data-micromodal-close>
         <div class="modal__container bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl w-full max-w-sm text-center relative transform transition-all duration-300 scale-95" role="dialog" aria-modal="true">
           <div class="w-20 h-20 bg-rose-100 dark:bg-rose-900/30 text-rose-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
             <i class="fas fa-trash-alt text-3xl"></i>
           </div>
-
           <h2 class="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tight mb-2">Hapus Sesi?</h2>
           <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Data presensi mahasiswa pada pertemuan ke-{{ $p->pertemuan_ke }} akan <strong class="text-rose-600">terhapus permanen</strong>.</p>
-
           <form action="{{ route('dosen.pertemuan.destroy', $p->id) }}" method="POST" class="w-full">
             @csrf @method('DELETE')
             <button type="submit" class="w-full py-4 bg-rose-600 text-white rounded-2xl font-black shadow-xl shadow-rose-500/30 transform transition-all hover:-translate-y-0.5 uppercase text-xs tracking-widest">Ya, Hapus Permanen</button>
@@ -253,8 +214,6 @@
       </div>
     </div>
   @endforeach
-
-  {{-- MODAL ADD PERTEMUAN (Master Create Sesi) --}}
   <div class="modal micromodal-slide" id="modal-add-pertemuan" aria-hidden="true">
     <div class="modal__overlay fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4" tabindex="-1" data-micromodal-close>
       <div class="modal__container bg-white dark:bg-slate-800 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl w-full max-w-md relative" role="dialog" aria-modal="true">
@@ -274,7 +233,6 @@
               <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold outline-none focus:border-primary-500" required>
             </div>
           </div>
-
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jam Mulai</label>
@@ -285,7 +243,6 @@
               <input type="time" name="jam_selesai" class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold focus:border-primary-500" required>
             </div>
           </div>
-
           <div class="space-y-1">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi Presensi</label>
             <select name="lokasi_id" class="w-full px-5 py-3 rounded-xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold focus:border-primary-500">
@@ -294,12 +251,10 @@
               @endforeach
             </select>
           </div>
-
           <div class="space-y-1">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Materi Bahasan</label>
             <textarea name="materi" rows="2" class="w-full px-5 py-3 rounded-2xl border-2 border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 font-bold focus:border-primary-500" placeholder="Input topik pertemuan..." required></textarea>
           </div>
-
           <button type="submit" class="w-full py-4 bg-primary-600 text-white rounded-2xl font-black shadow-xl shadow-primary-500/30 transform transition-all hover:-translate-y-0.5 mt-2">KONFIRMASI & SIMPAN SESI</button>
         </form>
       </div>

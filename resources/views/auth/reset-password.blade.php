@@ -1,10 +1,6 @@
 @extends('auth.layouts.app')
-
 @section('title', 'Reset Password | siprespro')
-
 @section('content')
-
-  <!-- Form Header -->
   <div class="text-center mb-8">
     <div
       class="inline-flex items-center justify-center w-14 h-14 bg-primary-100 dark:bg-primary-900/30 rounded-2xl text-primary-600 dark:text-primary-400 mb-4">
@@ -13,8 +9,6 @@
     <h2 class="text-2xl font-semibold mb-2">Buat Password Baru</h2>
     <p class="text-slate-500 dark:text-slate-400">Masukkan password baru untuk akun Anda</p>
   </div>
-
-  <!-- Alerts -->
   @if (session('status'))
     <div
       class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-slide-down">
@@ -22,7 +16,6 @@
       <span>{{ session('status') }}</span>
     </div>
   @endif
-
   @if ($errors->any())
     <div
       class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-slide-down">
@@ -30,16 +23,10 @@
       <span>{{ $errors->first() }}</span>
     </div>
   @endif
-
-  <!-- Reset Password Form -->
   <form method="POST" action="{{ route('password.update') }}" id="resetForm" class="space-y-5">
     @csrf
-
-    <!-- Hidden Fields -->
     <input type="hidden" name="token" value="{{ $token }}">
     <input type="hidden" name="email" value="{{ $email }}">
-
-    <!-- Email (Read Only) -->
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email</label>
       <div class="relative">
@@ -51,8 +38,6 @@
           value="{{ $email }}" readonly>
       </div>
     </div>
-
-    <!-- Password -->
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Password Baru</label>
       <div class="relative">
@@ -71,8 +56,6 @@
         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
       @enderror
     </div>
-
-    <!-- Confirm Password -->
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Konfirmasi Password</label>
       <div class="relative">
@@ -88,22 +71,16 @@
         </button>
       </div>
     </div>
-
-    <!-- Password Strength Hint -->
     <div class="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3">
       <i class="fas fa-info-circle me-1"></i>
       Password harus minimal 8 karakter, kombinasi huruf dan angka.
     </div>
-
-    <!-- Submit Button -->
     <button type="submit" id="submitBtn"
       class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 active:scale-[0.98]">
       <i class="fas fa-save"></i>
       <span>Simpan Password Baru</span>
     </button>
   </form>
-
-  <!-- Footer -->
   <div class="text-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
     <a href="{{ route('login') }}"
       class="inline-flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">
@@ -111,16 +88,12 @@
       <span>Kembali ke login</span>
     </a>
   </div>
-
-  <!-- Copyright -->
   <div class="text-center mt-4">
     <small class="text-xs text-slate-400 dark:text-slate-500">
       &copy; {{ date('Y') }} siprespro. Politeknik Negeri Jember.
     </small>
   </div>
-
 @endsection
-
 @section('scripts')
   <script>
     // Toggle Password Visibility
@@ -137,7 +110,6 @@
         }
       }
     }
-
     // Loading State on Submit
     document.getElementById('resetForm')?.addEventListener('submit', function () {
       const btn = document.getElementById('submitBtn');

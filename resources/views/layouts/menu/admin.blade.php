@@ -3,7 +3,6 @@
     x-show="sidebarOpen || !sidebarCollapse" x-transition.opacity>Architect Panel</span>
   <div x-show="sidebarCollapse && !sidebarOpen" class="border-t border-slate-200 dark:border-slate-700 mx-2 mt-2"></div>
 </div>
-
 <div x-data="{ open: {{ request()->routeIs('admin.users.*', 'admin.dosen.*', 'admin.mahasiswa.*') ? 'true' : 'false' }} }">
   <button @click="open = !open"
     class="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.users.*', 'admin.dosen.*', 'admin.mahasiswa.*') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
@@ -13,7 +12,6 @@
     </div>
     <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" x-show="sidebarOpen || !sidebarCollapse" :class="open ? 'rotate-180' : ''"></i>
   </button>
-
   <div x-show="open && (sidebarOpen || !sidebarCollapse)" x-collapse>
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
       <a href="{{ route('admin.users.index') }}"
@@ -31,7 +29,6 @@
     </div>
   </div>
 </div>
-
 <div x-data="{ open: {{ request()->routeIs('admin.semester.*', 'admin.golongan.*', 'admin.mata-kuliah.*', 'admin.ruang.*', 'admin.lokasi.*') ? 'true' : 'false' }} }">
   <button @click="open = !open"
     class="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.semester.*', 'admin.golongan.*', 'admin.mata-kuliah.*', 'admin.ruang.*', 'admin.lokasi.*') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
@@ -41,7 +38,6 @@
     </div>
     <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" x-show="sidebarOpen || !sidebarCollapse" :class="open ? 'rotate-180' : ''"></i>
   </button>
-
   <div x-show="open && (sidebarOpen || !sidebarCollapse)" x-collapse>
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
       <a href="{{ route('admin.semester.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('admin.semester.*') ? 'text-primary-600 font-bold' : 'text-slate-500 dark:text-slate-400' }}">
@@ -62,7 +58,6 @@
     </div>
   </div>
 </div>
-
 <div x-data="{ open: {{ request()->routeIs('admin.kelas-perkuliahan.*') ? 'true' : 'false' }} }">
   <button @click="open = !open"
     class="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.kelas-perkuliahan.*') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
@@ -72,7 +67,6 @@
     </div>
     <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" x-show="sidebarOpen || !sidebarCollapse" :class="open ? 'rotate-180' : ''"></i>
   </button>
-
   <div x-show="open && (sidebarOpen || !sidebarCollapse)" x-collapse>
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
       <a href="{{ route('admin.kelas-perkuliahan.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('admin.kelas-perkuliahan.*') ? 'text-primary-600 font-bold' : 'text-slate-500 dark:text-slate-400' }}">
@@ -81,7 +75,6 @@
     </div>
   </div>
 </div>
-
 <div x-data="{ open: {{ request()->routeIs('admin.presensi.*', 'admin.rekap.*') ? 'true' : 'false' }} }">
   <button @click="open = !open"
     class="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.presensi.*', 'admin.rekap.*') ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600' }}">
@@ -91,7 +84,6 @@
     </div>
     <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" x-show="sidebarOpen || !sidebarCollapse" :class="open ? 'rotate-180' : ''"></i>
   </button>
-
   <div x-show="open && (sidebarOpen || !sidebarCollapse)" x-collapse>
     <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
       <a href="{{ route('admin.presensi.index') }}" class="flex items-center px-4 py-2 text-sm rounded-lg {{ request()->routeIs('admin.presensi.*') ? 'text-primary-600 font-bold' : 'text-slate-500 dark:text-slate-400' }}">

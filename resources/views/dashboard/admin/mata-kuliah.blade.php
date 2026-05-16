@@ -1,18 +1,13 @@
 @extends('layouts.app')
-
 @section('title', 'Data Mata Kuliah • SIPRESPRO')
-
 @section('content')
   <div class="space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {{-- Info Semester Aktif (Makan 2 Kolom) --}}
       <div
         class="md:col-span-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl shadow-sm transition-all group">
-        {{-- Background Decoration --}}
         <div
           class="absolute -right-10 -top-10 w-40 h-40 bg-indigo-50 dark:bg-indigo-900/10 rounded-full blur-3xl group-hover:bg-indigo-100 transition-colors">
         </div>
-
         <div class="flex items-center gap-4 relative z-10">
           <div
             class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-200 dark:shadow-none transform group-hover:scale-105 transition-transform">
@@ -28,8 +23,6 @@
           </div>
         </div>
       </div>
-
-      {{-- Stats Ringkas --}}
       <div
         class="flex flex-col justify-center p-6 bg-indigo-600 rounded-3xl shadow-xl shadow-indigo-100 dark:shadow-none text-white relative overflow-hidden">
         <i class="fas fa-book-open absolute -right-4 -bottom-4 text-8xl opacity-10 rotate-12"></i>
@@ -44,10 +37,7 @@
         </div>
       </div>
     </div>
-
-    {{-- Filter Row --}}
     <div class="flex flex-col md:flex-row gap-4 mb-8">
-      {{-- Dropdown Filter Semester --}}
       <form action="{{ route('admin.mata-kuliah.index') }}" method="GET" class="flex-1 md:flex-none md:w-80">
         <div class="relative group">
           <i
@@ -65,15 +55,11 @@
             class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 text-[10px] pointer-events-none"></i>
         </div>
       </form>
-
-      {{-- Tombol Tampilkan Semua (Terpisah) --}}
       <a href="{{ route('admin.mata-kuliah.index', ['view' => 'all']) }}"
         class="flex items-center justify-center gap-2 px-6 py-3.5 {{ request('view') == 'all' ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700' }} rounded-2xl font-bold text-sm transition-all shadow-sm hover:shadow-md active:scale-95">
         <i class="fas fa-layer-group"></i>
         <span>Tampilkan Semua Mata Kuliah</span>
       </a>
-
-      {{-- Indikator Reset (Hanya muncul kalau lagi filter sesuatu) --}}
       @if(request('semester_id') || request('view') == 'all')
         <a href="{{ route('admin.mata-kuliah.index') }}"
           class="flex items-center justify-center gap-2 px-4 py-3.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl text-sm font-bold transition-all">
@@ -94,10 +80,8 @@
         <span>Tambah Matkul</span>
       </button>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
       <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
@@ -181,8 +165,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @forelse($matkuls as $matkul)
           <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
@@ -202,11 +184,9 @@
                 </span>
               </div>
             </div>
-
             <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
               <p><span class="font-bold text-slate-700 dark:text-slate-300">Semester:</span> <span class="inline-flex items-center px-2 py-0.5 ml-1 rounded bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[9px] font-bold uppercase border border-indigo-100 dark:border-indigo-800">{{ $matkul->semester->nama ?? '-' }}</span></p>
             </div>
-
             <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
               <button type="button" @click="MicroModal.show('modal-edit-{{ $matkul->id }}')"
                 class="px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
@@ -241,7 +221,6 @@
       @endif
     </div>
   </div>
-
   <div class="modal" id="modal-create-matkul" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div
@@ -259,7 +238,6 @@
             <i class="fas fa-times"></i>
           </button>
         </header>
-
         <form action="{{ route('admin.mata-kuliah.store') }}" method="POST">
           @csrf
           <div class="space-y-5">
@@ -317,7 +295,6 @@
       </div>
     </div>
   </div>
-
   @foreach($matkuls as $matkul)
     <div class="modal" id="modal-edit-{{ $matkul->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
@@ -337,7 +314,6 @@
               <i class="fas fa-times"></i>
             </button>
           </header>
-
           <form action="{{ route('admin.mata-kuliah.update', $matkul->id) }}" method="POST">
             @csrf @method('PUT')
             <div class="space-y-5">
@@ -393,7 +369,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal" id="modal-delete-{{ $matkul->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container w-full max-w-sm text-center bg-white dark:bg-slate-800 rounded-4xl p-8" role="dialog"

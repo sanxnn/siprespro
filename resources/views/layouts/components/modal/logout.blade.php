@@ -1,9 +1,7 @@
 <div class="modal" id="modal-logout" aria-hidden="true">
   <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-
     <div class="modal__container w-full max-w-md" role="dialog" aria-modal="true" aria-labelledby="modal-logout-title"
       @click.stop>
-
       <div class="flex items-center gap-3 mb-4">
         <div
           class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
@@ -21,7 +19,6 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-
       <div class="mb-6">
         <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
           Apakah Anda yakin ingin keluar dari sistem <strong class="text-primary-500">siprespro</strong>?
@@ -33,7 +30,6 @@
           </p>
         </div>
       </div>
-
       <div class="flex gap-3">
         <button type="button" @click="MicroModal.close('modal-logout')"
           class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-sm font-medium">

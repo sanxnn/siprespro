@@ -19,7 +19,6 @@
     sidebarOpen ? 'translate-x-0' : '-translate-x-full',
     'w-72 lg:translate-x-0'
   ]">
-
   <a href="#"
     class="flex items-center gap-3 px-4 py-4 border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
     <div
@@ -29,9 +28,7 @@
     <span class="font-bold text-lg whitespace-nowrap transition-opacity duration-200"
       x-show="sidebarOpen || !sidebarCollapse" x-transition.opacity.duration.200ms>siprespro</span>
   </a>
-
   <nav class="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar text-left">
-
     @php $dashboardRoute = auth()->user()->getDashboardRoute(); @endphp
     <a href="{{ route($dashboardRoute) }}"
       class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 
@@ -42,21 +39,16 @@
       <span class="whitespace-nowrap transition-opacity duration-200" x-show="sidebarOpen || !sidebarCollapse"
         x-transition.opacity.duration.200ms>Dashboard</span>
     </a>
-
     @if(auth()->user()?->isAdmin())
       @include('layouts.menu.admin')
     @endif
-
     @if(auth()->user()?->isDosen())
       @include('layouts.menu.dosen')
     @endif
-
     @if(auth()->user()?->isMahasiswa())
       @include('layouts.menu.mahasiswa')
     @endif
-
   </nav>
-
   <div class="hidden md:flex p-3 border-t border-slate-200 dark:border-slate-700 overflow-hidden">
     <button @click="sidebarCollapse = !sidebarCollapse"
       class="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-slate-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 text-sm font-medium">

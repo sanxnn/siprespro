@@ -1,20 +1,14 @@
 <?php
-
 namespace App\Http\Controllers\Mahasiswa;
-
 use App\Http\Controllers\Controller;
-// use ;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
 class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Ambil data mahasiswa + nama semester + nama golongan berdasarkan user login
         $user = Auth::user();
-
         $mahasiswa = DB::table('mahasiswa')
             ->join('semester', 'mahasiswa.semester_id', '=', 'semester.id')
             ->join('golongan', 'mahasiswa.golongan_id', '=', 'golongan.id')
@@ -25,23 +19,16 @@ class DashboardController extends Controller
                 'golongan.nama as nama_golongan'
             )
             ->first();
-
         if (!$mahasiswa) {
             return redirect()->back()->with('error', 'Data mahasiswa tidak ditemukan.');
         }
-
-        // 2. Ambil semua ID kelas perkuliahan yang diikuti oleh golongan si mahasiswa
         $kelasIds = DB::table('kelas_golongan')
             ->where('golongan_id', $mahasiswa->golongan_id)
             ->pluck('kelas_perkuliahan_id')
             ->toArray();
-
-        // 3. Statistik Kehadiran (SaaS Metrics Style)
-        // Total pertemuan yang terjadwal/ada untuk semua kelas si mahasiswa
         $totalPertemuan = DB::table('presensi')
             ->where('mahasiswa_id', $mahasiswa->id)
             ->count();
-
         $kehadiran = DB::table('presensi')
             ->where('mahasiswa_id', $mahasiswa->id)
             ->select(
@@ -50,20 +37,12 @@ class DashboardController extends Controller
                 DB::raw("COUNT(CASE WHEN LOWER(status) = 'izin' THEN 1 END) as izin"),
                 DB::raw("COUNT(CASE WHEN LOWER(status) IN ('alpha', 'alfa') THEN 1 END) as alpha")
             )->first();
-
         $totalMasuk = $kehadiran->hadir + $kehadiran->sakit + $kehadiran->izin;
-
-        // Rumus SaaS Presisi: (Hadir + Sakit + Izin) / Total Sesi yang sudah berjalan
         $persentaseKehadiran = $totalPertemuan > 0
             ? round(($totalMasuk / $totalPertemuan) * 100, 1)
             : 100;
-
-        // 4. Kelas & Pertemuan Hari Ini (Langsung tembak ke tabel pertemuan berdasarkan tanggal sekarang)
         $tanggalHariIni = date('Y-m-d');
-
-        // 4. Kelas & Pertemuan Hari Ini
         $tanggalHariIni = date('Y-m-d');
-
         $jadwalHariIni = DB::table('pertemuan')
             ->join('kelas_perkuliahan', 'pertemuan.kelas_perkuliahan_id', '=', 'kelas_perkuliahan.id')
             ->join('mata_kuliah', 'kelas_perkuliahan.mata_kuliah_id', '=', 'mata_kuliah.id')
@@ -90,7 +69,6 @@ class DashboardController extends Controller
             )
             ->orderBy('pertemuan.jam_mulai', 'asc')
             ->get();
-
         $riwayatTerakhir = DB::table('presensi')
             ->join('pertemuan', 'presensi.pertemuan_id', '=', 'pertemuan.id')
             ->join('kelas_perkuliahan', 'pertemuan.kelas_perkuliahan_id', '=', 'kelas_perkuliahan.id')
@@ -105,7 +83,6 @@ class DashboardController extends Controller
             ->orderBy('presensi.waktu_presensi', 'desc')
             ->limit(5)
             ->get();
-
         return view('dashboard.mahasiswa.index', compact(
             'mahasiswa',
             'kehadiran',

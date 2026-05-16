@@ -13,7 +13,6 @@
   ];
   $badgeClass = $statusClasses[$statusVariant] ?? $statusClasses['secondary'];
 @endphp
-
 <div {{ $attributes->merge(['class' => 'p-4 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors']) }}>
   <div class="flex items-start justify-between">
     <div>

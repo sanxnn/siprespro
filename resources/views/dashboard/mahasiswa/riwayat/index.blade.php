@@ -1,8 +1,6 @@
 @extends('layouts.app')
-
 @section('content')
   <div class="mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
-
     <div
       class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm">
       <div>
@@ -18,7 +16,6 @@
         </div>
       </div>
     </div>
-
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
       @php
         $totalHadir = $riwayatPresensi->sum('jumlah_hadir');
@@ -65,7 +62,6 @@
         </div>
       </div>
     </div>
-
     @if($riwayatPresensi->isEmpty())
       <div
         class="bg-white dark:bg-slate-800 rounded-2xl p-12 border border-dashed border-slate-200 dark:border-slate-700 text-center">
@@ -81,16 +77,13 @@
         @foreach($riwayatPresensi as $row)
           @php
             $totalMasuk = $row->jumlah_hadir + $row->jumlah_sakit + $row->jumlah_izin;
-
             $persentase = $row->total_pertemuan > 0
               ? round(($totalMasuk / $row->total_pertemuan) * 100)
               : 100; // Default 100 kalau baru mulai
-
             $isWarning = $persentase < 75;
           @endphp
           <div
             class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm flex flex-col gap-4">
-
             <div class="flex flex-col md:flex-row justify-between gap-4">
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
@@ -106,7 +99,6 @@
                   <i class="fas fa-user-tie text-[10px]"></i> {{ $row->nama_dosen }}
                 </p>
               </div>
-
               <div class="min-w-[180px] space-y-2">
                 <div class="flex justify-between items-end">
                   <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Persentase Hadir</span>
@@ -124,7 +116,6 @@
                 @endif
               </div>
             </div>
-
             <div
               class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-50 dark:border-slate-700/50">
               <div class="flex items-center gap-4">
@@ -144,7 +135,6 @@
                   <span class="text-xs font-bold text-rose-600 dark:text-rose-400">{{ $row->jumlah_alfa }}</span>
                 </div>
               </div>
-
               <a href="{{ route('mahasiswa.presensi.detail-riwayat', $row->kelas_id) }}"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-600 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all group">
                 Detail Log <i class="fas fa-chevron-right text-[10px] group-hover:translate-x-1 transition-transform"></i>

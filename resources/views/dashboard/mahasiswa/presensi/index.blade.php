@@ -1,9 +1,6 @@
 @extends('layouts.app')
-
 @section('content')
   <div class="mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
-
-    <!-- Header Page -->
     <div
       class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm">
       <div>
@@ -18,10 +15,7 @@
         <i class="far fa-calendar-alt mr-1.5 text-primary-500"></i> {{ date('d F Y') }}
       </div>
     </div>
-
-    <!-- Main List Perkuliahan -->
     @if($pertemuanHariIni->isEmpty())
-      <!-- State Kosong jika tidak ada kelas hari ini -->
       <div
         class="bg-white dark:bg-slate-800 rounded-2xl p-8 sm:p-12 border border-dashed border-slate-200 dark:border-slate-700 text-center shadow-sm">
         <div
@@ -37,10 +31,7 @@
         @foreach($pertemuanHariIni as $pertemuan)
           <div
             class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-100 dark:border-slate-700/50 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-
-            <!-- Sisi Kiri: Info Waktu & Detail Mata Kuliah -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
-              <!-- Indikator Jam (Full width di mobile sangat kecil, rapi di tablet ke atas) -->
               <div
                 class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 border border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-center flex sm:flex-col justify-between sm:justify-center items-center sm:min-w-[100px] gap-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 sm:block">Waktu Kuliah</span>
@@ -52,8 +43,6 @@
                     class="text-xs sm:text-sm font-extrabold text-primary-600 dark:text-primary-400">{{ date('H:i', strtotime($pertemuan->jam_selesai)) }}</span>
                 </div>
               </div>
-
-              <!-- Detail Matkul -->
               <div class="space-y-1.5 flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
                   <span
@@ -70,8 +59,6 @@
                   <i class="fas fa-user-tie text-slate-400 text-[11px] shrink-0"></i>
                   <span class="truncate">{{ $pertemuan->nama_dosen }}</span>
                 </p>
-
-                <!-- Meta Ruangan & SKS -->
                 <div
                   class="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 text-[11px] sm:text-xs font-medium text-slate-400">
                   <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt text-rose-500 text-[11px]"></i> Ruang:
@@ -82,28 +69,20 @@
                 </div>
               </div>
             </div>
-
-            <!-- Sisi Kanan: Status & Aksi Tombol -->
             <div
               class="border-t md:border-t-0 pt-4 md:pt-0 border-slate-100 dark:border-slate-700 flex items-center justify-between md:justify-end gap-4 min-w-[140px]">
               <span class="text-xs text-slate-400 font-semibold lg:hidden uppercase tracking-wider">Status Presensi</span>
-
               @if($pertemuan->status_absen_mhs)
-                <!-- 🟢 STATUS: HADIR -->
                 @if($pertemuan->status_absen_mhs == 'hadir')
                   <span
                     class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm border w-auto justify-center bg-green-50 text-green-700 border-green-100 dark:bg-green-950/20 dark:text-green-400 dark:border-green-900/30">
                     <i class="fas fa-check-circle mr-1.5 text-sm sm:text-xs"></i> {{ ucwords($pertemuan->status_absen_mhs) }}
                   </span>
-
-                  <!-- 🟡 STATUS: SAKIT / IZIN -->
                 @elseif(in_array($pertemuan->status_absen_mhs, ['sakit', 'izin']))
                   <span
                     class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm border w-auto justify-center bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900/30">
                     <i class="fas fa-check-circle mr-1.5 text-sm sm:text-xs"></i> {{ ucwords($pertemuan->status_absen_mhs) }}
                   </span>
-
-                  <!-- 🔴 STATUS: ALPHA / DLL -->
                 @else
                   <span
                     class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm border w-auto justify-center bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-900/30">
@@ -111,15 +90,12 @@
                   </span>
                 @endif
               @else
-                <!-- Kondisi JIKA MAHASISWA BELUM ABSEN -->
                 @if($pertemuan->status_buka_absen == 'dibuka')
-                  <!-- Master Switch Dosen Terbuka Aktif -->
                   <a href="{{ route('mahasiswa.presensi.show', $pertemuan->pertemuan_id) }}"
                     class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold transition-all shadow-md shadow-primary-100 dark:shadow-none hover:-translate-y-0.5 w-auto sm:w-auto text-center">
                     <i class="fas fa-fingerprint mr-2 text-sm"></i> Ambil Absen
                   </a>
                 @else
-                  <!-- Dosen Belum Membuka Absen -->
                   <span
                     class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 dark:bg-slate-700/50 text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700 w-auto justify-center">
                     <i class="fas fa-lock mr-1.5 text-[11px]"></i> Belum Dibuka
@@ -127,7 +103,6 @@
                 @endif
               @endif
             </div>
-
           </div>
         @endforeach
       </div>

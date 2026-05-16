@@ -1,10 +1,6 @@
 @extends('layouts.app')
-
 @section('title', 'Dashboard Dosen | SIPRESPRO')
-
 @section('content')
-
-  {{-- 1. Alert Semester Aktif --}}
   @if($semesterAktif)
     <div
       class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6 flex items-start gap-3">
@@ -19,8 +15,6 @@
       </div>
     </div>
   @endif
-
-  {{-- 2. Statistik Utama Dosen --}}
   <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
@@ -37,7 +31,6 @@
         </div>
       </div>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
       <div class="flex items-center justify-between">
@@ -53,7 +46,6 @@
         </div>
       </div>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
       <div class="flex items-center justify-between">
@@ -69,7 +61,6 @@
         </div>
       </div>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow">
       <div class="flex items-center justify-between">
@@ -88,14 +79,10 @@
       </div>
     </div>
   </div>
-
-
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    {{-- Aktivitas Presensi Terbaru di Kelas Dosen --}}
     <div class="lg:col-span-2 space-y-6">
       <div
         class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-all hover:shadow-md">
-        {{-- Header --}}
         <div
           class="p-5 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
           <div>
@@ -113,19 +100,15 @@
               Feed</span>
           </div>
         </div>
-
-        {{-- Body Log --}}
         <div class="divide-y divide-slate-100 dark:divide-slate-700/50 max-h-[450px] overflow-y-auto custom-scrollbar">
           @forelse($recentPresensi as $item)
             <div
               class="p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/40 transition-all group">
               <div class="flex items-center gap-4">
-                {{-- Avatar / Inisial --}}
                 <div
                   class="w-11 h-11 bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-200 font-bold shadow-sm group-hover:scale-105 transition-transform">
                   {{ strtoupper(substr($item->mahasiswa->nama, 0, 1)) }}
                 </div>
-
                 <div class="min-w-0">
                   <p class="font-bold text-sm text-slate-800 dark:text-slate-100 leading-tight truncate">
                     {{ $item->mahasiswa->nama }}
@@ -141,7 +124,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="text-right flex flex-col items-end gap-1.5">
                 @php
                   $statusClasses = [
@@ -152,11 +134,9 @@
                   ];
                   $class = $statusClasses[strtolower($item->status)] ?? 'bg-slate-100 text-slate-600';
                 @endphp
-
                 <span class="px-2.5 py-1 border rounded-lg text-[9px] font-black uppercase tracking-widest {{ $class }}">
                   {{ $item->status }}
                 </span>
-
                 <div class="flex items-center gap-1 text-[9px] text-slate-400 font-medium">
                   <i class="far fa-clock"></i>
                   {{ $item->waktu_presensi->diffForHumans() }}
@@ -174,12 +154,9 @@
         </div>
       </div>
     </div>
-
-    {{-- Jadwal Hari Ini & Shortcut --}}
     <div class="space-y-6">
       <div
         class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm text-left transition-all hover:shadow-md">
-        {{-- Header --}}
         <div
           class="p-5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/20">
           <div class="flex items-center gap-2">
@@ -191,8 +168,6 @@
             {{ now()->translatedFormat('l') }}
           </span>
         </div>
-
-        {{-- List Jadwal --}}
         <div class="divide-y divide-slate-100 dark:divide-slate-700">
           @forelse($jadwalHariIni as $j)
             @php
@@ -200,22 +175,17 @@
               $isPassed = $currentTime > $j->jam_selesai;
               $isCurrent = ($currentTime >= $j->jam_mulai && $currentTime <= $j->jam_selesai);
             @endphp
-
             <a href="{{ route('dosen.kelas.show', $j->kelas_perkuliahan_id) }}"
               class="p-5 block hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all group relative {{ $isPassed ? 'opacity-60 grayscale-[0.5]' : '' }}">
-
-              {{-- Indikator Kelas Berlangsung --}}
               @if($isCurrent)
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
               @endif
-
               <div class="flex justify-between items-start gap-4">
                 <div class="min-w-0">
                   <p
                     class="font-black text-sm text-slate-800 dark:text-slate-100 group-hover:text-primary-600 transition-colors leading-tight truncate">
                     {{ $j->kelasPerkuliahan->mataKuliah->nama }}
                   </p>
-
                   <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
                     <span
                       class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase">
@@ -229,8 +199,6 @@
                     </span>
                   </div>
                 </div>
-
-                {{-- Badge Status Waktu --}}
                 <div>
                   @if($isPassed)
                     <span
@@ -247,7 +215,6 @@
             </a>
           @empty
             <div class="flex flex-col items-center justify-center py-16 px-6">
-              <!-- Icon Container dengan Ring Lembut -->
               <div
                 class="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex items-center justify-center mb-5 border border-slate-100 dark:border-slate-700/50">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none"
@@ -256,8 +223,6 @@
                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9 3.75h.008v.008H12v-.008z" />
                 </svg>
               </div>
-
-              <!-- Text Content -->
               <div class="text-center">
                 <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
                   Tidak Ada Jadwal
@@ -272,5 +237,4 @@
       </div>
     </div>
   </div>
-
 @endsection

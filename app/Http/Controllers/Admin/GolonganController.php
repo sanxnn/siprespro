@@ -1,13 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\Golongan;
 use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-
 class GolonganController extends Controller
 {
     public function index()
@@ -16,12 +13,9 @@ class GolonganController extends Controller
             ->withCount('mahasiswas')
             ->latest()
             ->paginate(10);
-
         $semesters = Semester::all();
-
         return view('dashboard.admin.golongan', compact('golongans', 'semesters'));
     }
-
     public function store(Request $request)
     {
         $messages = [
@@ -30,7 +24,6 @@ class GolonganController extends Controller
             'nama.unique' => 'Golongan ini sudah ada di semester tersebut!',
             'semester_id.required' => 'Semester wajib dipilih.',
         ];
-
         $request->validate([
             'nama' => [
                 'required',
@@ -42,7 +35,6 @@ class GolonganController extends Controller
             ],
             'semester_id' => 'required|exists:semester,id',
         ], $messages);
-
         try {
             Golongan::create($request->all());
             return back()->with('success', "Golongan {$request->nama} berhasil ditambahkan!");
@@ -50,8 +42,6 @@ class GolonganController extends Controller
             return back()->with('error', 'Gagal menambahkan golongan: ' . $e->getMessage());
         }
     }
-
-
     public function update(Request $request, Golongan $golongan)
     {
         $messages = [
@@ -60,7 +50,6 @@ class GolonganController extends Controller
             'semester_id.required' => 'Semester wajib dipilih.',
             'semester_id.exists' => 'Semester tidak ditemukan.',
         ];
-
         $request->validate([
             'nama' => [
                 'required',
@@ -74,7 +63,6 @@ class GolonganController extends Controller
             ],
             'semester_id' => 'required|exists:semester,id',
         ], $messages);
-
         try {
             $golongan->update($request->all());
             return back()->with('success', "Data golongan {$request->nama} berhasil diupdate!");
@@ -82,15 +70,12 @@ class GolonganController extends Controller
             return back()->with('error', 'Gagal mengupdate data: ' . $e->getMessage());
         }
     }
-
     public function destroy(Golongan $golongan)
     {
         if ($golongan->mahasiswas()->exists()) {
             return back()->with('error', 'Gagal hapus! Masih ada mahasiswa di golongan ini.');
         }
-
         $golongan->delete();
         return back()->with('success', 'Golongan berhasil dihapus!');
     }
-
 }

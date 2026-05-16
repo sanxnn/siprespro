@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="id" class="light">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'Dashboard | siprespro')</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -25,33 +22,26 @@
       }
     }
   </script>
-
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
   <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
-
   <style>
     [x-cloak] {
       display: none !important;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
     }
-
     /* --- FIX MODAL JADI CENTER --- */
     .modal {
       display: none;
       z-index: 1000;
     }
-
     .modal.is-open {
       display: block;
     }
-
     .modal__overlay {
       position: fixed;
       top: 0;
@@ -68,7 +58,6 @@
       /* Vertikal Center */
       z-index: 1000;
     }
-
     .modal__container {
       background-color: #ffffff;
       padding: 24px;
@@ -79,61 +68,49 @@
       position: relative;
       /* Hapus max-width 400px yang tadi ngerusak layout */
     }
-
     .dark .modal__container {
       background-color: #1e293b;
       border: 1px solid #334155;
     }
-
     /* ANIMASI */
     @keyframes mmFadeIn {
       from {
         opacity: 0;
       }
-
       to {
         opacity: 1;
       }
     }
-
     @keyframes mmSlideIn {
       from {
         transform: scale(0.95) translateY(10px);
         opacity: 0;
       }
-
       to {
         transform: scale(1) translateY(0);
         opacity: 1;
       }
     }
-
     .modal.is-open .modal__overlay {
       animation: mmFadeIn 0.3s ease-out;
     }
-
     .modal.is-open .modal__container {
       animation: mmSlideIn 0.3s ease-out;
     }
-
     /* Custom Scrollbar */
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
-
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 3px;
     }
-
     .dark .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #475569;
     }
   </style>
-
   @yield('styles')
 </head>
-
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 antialiased"
   x-data="{ sidebarOpen:false, sidebarCollapse:false, darkMode:false }" x-init="() => {
     MicroModal.init({
@@ -142,7 +119,6 @@
       awaitOpenAnimation: true,
       awaitCloseAnimation: true
     });
-
     const saved = localStorage.getItem('theme');
     darkMode = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
     if(darkMode) document.documentElement.classList.add('dark');
@@ -151,17 +127,13 @@
       localStorage.setItem('theme', v ? 'dark' : 'light');
     });
 }">
-
   <div class="flex min-h-screen">
     @include('layouts.sidebar')
-
     <div x-cloak class="fixed inset-0 bg-black/40 z-30 lg:hidden" x-show="sidebarOpen" @click="sidebarOpen = false">
     </div>
-
     <div class="flex-1 flex flex-col lg:ml-64 transition-all duration-300"
       :class="sidebarCollapse ? 'lg:ml-20' : 'lg:ml-64'">
       @include('layouts.topbar')
-
       <main class="flex-1 p-6">
         @if(session('error'))
           <div
@@ -172,7 +144,6 @@
             </div>
           </div>
         @endif
-
         @if($errors->any())
           <div
             class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-r-xl shadow-sm animate-shake">
@@ -187,7 +158,6 @@
             </ul>
           </div>
         @endif
-
         @if(session('success'))
           <div
             class="mb-4 p-4 bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-r-xl shadow-sm">
@@ -197,18 +167,12 @@
             </div>
           </div>
         @endif
-
         @yield('content')
       </main>
-
       @include('layouts.footer')
     </div>
   </div>
-
   @include('layouts.components.modal.logout')
-
   @yield('scripts')
-
 </body>
-
 </html>

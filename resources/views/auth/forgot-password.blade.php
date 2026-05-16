@@ -1,10 +1,6 @@
 @extends('auth.layouts.app')
-
 @section('title', 'Lupa Password | siprespro')
-
 @section('content')
-
-  <!-- Form Header -->
   <div class="text-center mb-8">
     <div class="inline-flex items-center justify-center w-14 h-14 bg-amber-100 dark:bg-amber-900/30 rounded-2xl text-amber-600 dark:text-amber-400 mb-4">
       <i class="fas fa-key text-xl"></i>
@@ -12,27 +8,20 @@
     <h2 class="text-2xl font-semibold mb-2">Lupa Password?</h2>
     <p class="text-slate-500 dark:text-slate-400">Masukkan email Polije Anda, kami akan kirimkan link reset</p>
   </div>
-
-  <!-- Alerts -->
   @if (session('status'))
     <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-slide-down">
       <i class="fas fa-check-circle"></i>
       <span>{{ session('status') }}</span>
     </div>
   @endif
-
   @if ($errors->any())
     <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-slide-down">
       <i class="fas fa-exclamation-circle"></i>
       <span>{{ $errors->first() }}</span>
     </div>
   @endif
-
-  <!-- Forgot Password Form -->
   <form method="POST" action="{{ route('password.email') }}" id="resetForm" class="space-y-5">
     @csrf
-
-    <!-- Email -->
     <div>
       <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email Polije</label>
       <div class="relative">
@@ -46,32 +35,24 @@
                required autofocus autocomplete="email">
       </div>
     </div>
-
-    <!-- Submit Button -->
     <button type="submit" id="submitBtn" 
             class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 active:scale-[0.98]">
       <i class="fas fa-paper-plane"></i>
       <span>Kirim Link Reset</span>
     </button>
   </form>
-
-  <!-- Footer -->
   <div class="text-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
     <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">
       <i class="fas fa-arrow-left"></i>
       <span>Kembali ke login</span>
     </a>
   </div>
-
-  <!-- Copyright -->
   <div class="text-center mt-4">
     <small class="text-xs text-slate-400 dark:text-slate-500">
       &copy; {{ date('Y') }} siprespro. Politeknik Negeri Jember.
     </small>
   </div>
-
 @endsection
-
 @push('scripts')
 <script>
   // Loading State on Submit

@@ -11,7 +11,6 @@
   'trendColor' => 'text-emerald-600',
   'darkTrendColor' => 'dark:text-emerald-400',
 ])
-
 <div {{ $attributes->merge(['class' => 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 hover:shadow-lg transition-shadow']) }}>
   <div class="flex items-center justify-between">
     <div

@@ -1,16 +1,10 @@
 @extends('auth.layouts.app')
-
 @section('title', 'Login | siprespro')
-
 @section('content')
-
-    <!-- Form Header -->
     <div class="text-center mb-8">
         <h2 class="text-2xl font-semibold mb-2">Selamat Datang</h2>
         <p class="text-slate-500 dark:text-slate-400">Silakan masuk untuk mengakses dashboard presensi</p>
     </div>
-
-    <!-- Alerts -->
     @if (session('success'))
         <div
             class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-slide-down">
@@ -18,7 +12,6 @@
             <span>{{ session('success') }}</span>
         </div>
     @endif
-
     @if ($errors->any())
         <div
             class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-slide-down">
@@ -26,12 +19,8 @@
             <span>{{ $errors->first() }}</span>
         </div>
     @endif
-
-    <!-- Login Form -->
     <form method="POST" action="{{ route('authenticate') }}" id="loginForm" class="space-y-5">
         @csrf
-
-        <!-- Email -->
         <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email</label>
             <div class="relative">
@@ -43,8 +32,6 @@
                     placeholder="nama@polije.ac.id" value="{{ old('email') }}" required autofocus autocomplete="email">
             </div>
         </div>
-
-        <!-- Password -->
         <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Password</label>
             <div class="relative">
@@ -60,8 +47,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- Remember & Forgot -->
         <div class="flex items-center justify-between">
             <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" name="remember"
@@ -75,30 +60,22 @@
                 </a>
             @endif
         </div>
-
-        <!-- Submit Button -->
         <button type="submit" id="submitBtn"
             class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 active:scale-[0.98]">
             <i class="fas fa-sign-in-alt"></i>
             <span>Masuk</span>
         </button>
     </form>
-
-    <!-- Footer -->
     <div class="text-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
         <span class="text-sm text-slate-500 dark:text-slate-400">Butuh bantuan? </span>
         <a href="#" class="text-sm text-primary-600 dark:text-primary-400 hover:underline font-medium">Hubungi IT Polije</a>
     </div>
-
-    <!-- Copyright -->
     <div class="text-center mt-4">
         <small class="text-xs text-slate-400 dark:text-slate-500">
             &copy; {{ date('Y') }} siprespro. Politeknik Negeri Jember.
         </small>
     </div>
-
 @endsection
-
 @section('scripts')
     <script>
         // Toggle Password Visibility
@@ -113,7 +90,6 @@
                 icon.className = 'fas fa-eye';
             }
         }
-
         // Loading State on Submit
         document.getElementById('loginForm')?.addEventListener('submit', function (e) {
             const btn = document.getElementById('submitBtn');

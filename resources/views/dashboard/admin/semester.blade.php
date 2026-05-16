@@ -1,5 +1,4 @@
 @extends('layouts.app') @section('title', 'Data Semester • SIPRESPRO')
-
 @section('content')
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -16,7 +15,6 @@
         </button>
       </div>
     </div>
-
     <div
       class="mb-6 flex items-start gap-4 p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-2xl">
       <div
@@ -33,10 +31,8 @@
         </ul>
       </div>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
       <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
@@ -113,8 +109,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @forelse($semesters as $semester)
           <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
@@ -139,11 +133,9 @@
                 @endif
               </div>
             </div>
-
             <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
               <p><span class="font-bold text-slate-700 dark:text-slate-300">Tahun Ajaran:</span> <span class="font-semibold">{{ $semester->tahun_ajaran }}</span></p>
             </div>
-
             <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
               <button type="button" @click="MicroModal.show('modal-edit-{{ $semester->id }}')"
                 class="px-3 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
@@ -166,7 +158,6 @@
       @endif
     </div>
   </div>
-
   <div class="modal" id="modal-create-semester" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div class="modal__container w-full max-w-lg" role="dialog" @click.stop>
@@ -182,7 +173,6 @@
             <i class="fas fa-times"></i>
           </button>
         </header>
-
         <form action="{{ route('admin.semester.store') }}" method="POST">
           @csrf
           <div class="space-y-5">
@@ -201,7 +191,6 @@
                 class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 outline-none transition-all">
             </div>
           </div>
-
           <div class="mt-8 flex gap-3">
             <button type="button" data-micromodal-close
               class="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-colors">Batal</button>
@@ -213,7 +202,6 @@
       </div>
     </div>
   </div>
-
   @foreach($semesters as $semester)
     <div class="modal" id="modal-edit-{{ $semester->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
@@ -230,7 +218,6 @@
               <i class="fas fa-times"></i>
             </button>
           </header>
-
           <form action="{{ route('admin.semester.update', $semester->id) }}" method="POST">
             @csrf @method('PUT')
             <div class="space-y-5">
@@ -249,7 +236,6 @@
                   class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
               </div>
             </div>
-
             <div class="mt-8 flex gap-3">
               <button type="button" data-micromodal-close
                 class="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-all">Batal</button>
@@ -261,7 +247,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal" id="modal-delete-{{ $semester->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container w-full max-w-sm text-center" role="dialog" @click.stop>
@@ -286,19 +271,15 @@
       </div>
     </div>
   @endforeach
-
 @endsection
-
 @push('styles')
   <style>
     .modal {
       display: none;
     }
-
     .modal.is-open {
       display: block;
     }
-
     .modal__overlay {
       position: fixed;
       top: 0;
@@ -312,7 +293,6 @@
       align-items: center;
       z-index: 9999;
     }
-
     .modal__container {
       background-color: #fff;
       padding: 2rem;
@@ -322,12 +302,10 @@
       position: relative;
       border: 1px solid #f1f5f9;
     }
-
     .dark .modal__container {
       background-color: #1e293b;
       border-color: #334155;
     }
-
     input:focus {
       border-color: #10b981 !important;
       box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;

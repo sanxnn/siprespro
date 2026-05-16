@@ -11,11 +11,9 @@
     'alpha' => 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400',
   ]
 ])
-
 @php
   $statusClass = $statusColors[$status] ?? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
 @endphp
-
 <div {{ $attributes->merge(['class' => 'p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors']) }}>
   <div class="flex items-center gap-3">
     <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center text-primary-600 dark:text-primary-400 font-semibold text-sm">

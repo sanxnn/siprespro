@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
   <div class="mx-auto p-3 sm:p-6 space-y-6">
     <div class="flex items-center justify-between">
@@ -11,7 +10,6 @@
         SEMESTER AKTIF
       </span>
     </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div
         class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm flex flex-col justify-center">
@@ -23,27 +21,21 @@
             {{ $kelas->nama_dosen }}</span>
         </div>
       </div>
-
       <div
         class="bg-primary-600 rounded-2xl p-6 shadow-lg shadow-primary-200 dark:shadow-none flex flex-col justify-center text-white relative overflow-hidden">
         <i class="fas fa-chart-pie absolute -right-4 -bottom-4 text-8xl text-white/10 rotate-12"></i>
         <p class="text-xs font-bold text-primary-100 uppercase tracking-widest mb-1 text-center">Persentase Kehadiran</p>
-
         @php
           $total = $daftarPertemuan->count();
-
           $masuk = $daftarPertemuan->whereIn('status_absen', ['hadir', 'sakit', 'izin'])->count();
-
-          $persen = $total > 0 ? round(($masuk / $total) * 100) : 100; // Default 100 kalau data kosong
+          $persen = $total > 0 ? round(($masuk / $total) * 100) : 100; // Nilai default jika belum ada pertemuan
         @endphp
-
         <h2 class="text-4xl font-black text-center">{{ $persen }}%</h2>
         <p class="text-[10px] text-primary-100 mt-2 text-center font-medium uppercase tracking-tighter">
           {{ $masuk }} DARI {{ $total }} PERTEMUAN TERDATA
         </p>
       </div>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-50 dark:border-slate-700/50 flex items-center justify-between">
@@ -86,14 +78,12 @@
                   @php
                     // Mapping status biar sinkron
                     $status = trim(strtolower($p->status_absen)) ?: 'alfa';
-
                     $config = [
                       'hadir' => ['label' => 'HADIR', 'class' => 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800'],
                       'sakit' => ['label' => 'SAKIT', 'class' => 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800'],
                       'izin' => ['label' => 'IZIN', 'class' => 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800'],
                       'alfa' => ['label' => 'ALPA', 'class' => 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800'],
                     ];
-
                     // Fallback kalau ada status aneh
                     $res = $config[$status] ?? $config['alfa'];
                   @endphp

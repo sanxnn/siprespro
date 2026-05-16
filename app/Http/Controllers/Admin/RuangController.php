@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\Ruang;
 use Illuminate\Http\Request;
-
 class RuangController extends Controller
 {
     public function index()
@@ -13,7 +10,6 @@ class RuangController extends Controller
         $ruangs = Ruang::latest()->paginate(10);
         return view('dashboard.admin.ruang', compact('ruangs'));
     }
-
     public function store(Request $request)
     {
         $messages = [
@@ -24,7 +20,6 @@ class RuangController extends Controller
             'kapasitas.min' => 'Kapasitas minimal 1 orang.',
             'gedung.required' => 'Gedung wajib diisi.',
         ];
-
         $request->validate([
             'nama' => [
                 'required',
@@ -37,19 +32,15 @@ class RuangController extends Controller
             'kapasitas' => 'required|integer|min:1',
             'gedung' => 'required|string|max:255',
         ], $messages);
-
         try {
             Ruang::create($request->all());
-
             return back()->with('success', 'Ruang baru berhasil ditambahkan!');
-
         } catch (\Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Gagal nambah ruang: ' . $e->getMessage());
         }
     }
-
     public function update(Request $request, Ruang $ruang)
     {
         $messages = [
@@ -60,7 +51,6 @@ class RuangController extends Controller
             'kapasitas.min' => 'Kapasitas minimal 1.',
             'gedung.required' => 'Gedung wajib diisi.',
         ];
-
         $request->validate([
             'nama' => [
                 'required',
@@ -75,10 +65,8 @@ class RuangController extends Controller
             'kapasitas' => 'required|integer|min:1',
             'gedung' => 'required|string|max:255',
         ], $messages);
-
         try {
             $ruang->update($request->all());
-
             return back()->with('success', 'Data ruang berhasil diperbarui!');
         } catch (\Exception $e) {
             return back()
@@ -86,13 +74,11 @@ class RuangController extends Controller
                 ->with('error', 'Gagal update data: ' . $e->getMessage());
         }
     }
-
     public function destroy(Ruang $ruang)
     {
         if ($ruang->kelasPerkuliahan()->exists()) {
             return back()->with('error', 'Gagal hapus! Ruangan ini masih digunakan dalam jadwal kelas.');
         }
-
         $ruang->delete();
         return back()->with('success', 'Ruangan berhasil dihapus!');
     }

@@ -1,44 +1,26 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Http\Controllers\Controller;
 use App\Models\{Mahasiswa, Dosen, Presensi, MataKuliah, Golongan, Lokasi, Jadwal, Semester, KelasPerkuliahan, Pertemuan};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-
 class DashboardController extends Controller
 {
     public function index()
     {
         $today = now()->startOfDay();
         $semesterAktif = Semester::where('status', 'aktif')->first() ?? Semester::latest()->first();
-
-        // =========================================================================
-        // 1. GLOBAL QUERY: HITUNG KAPASITAS MAKSIMAL MAHASISWA HARI INI
-        // Langsung hitung total mahasiswa unik yang hari ini punya jadwal pertemuan/kuliah
-        // =========================================================================
         $totalKapasitasMhsHariIni = Mahasiswa::whereHas('golongan.kelasPerkuliahan.pertemuans', function ($q) use ($today) {
             $q->whereDate('tanggal', $today);
         })->count();
-
-        // =========================================================================
-        // 2. GLOBAL QUERY: HITUNG MAHASISWA MASUK (HADIR, SAKIT, IZIN) HARI INI
-        // =========================================================================
         $hadirHariIni = Presensi::whereDate('waktu_presensi', $today)
             ->whereIn(DB::raw('LOWER(status)'), ['hadir', 'sakit', 'izin'])
             ->count();
-
-        // 3. HITUNG RASIO KEHADIRAN GLOBAL ADMIN (ANTI DIVISION BY ZERO)
         $tingkatKehadiran = $totalKapasitasMhsHariIni > 0
             ? round(($hadirHariIni / $totalKapasitasMhsHariIni) * 100, 1)
-            : 100; // Default 100% kalau emang hari libur / gak ada jadwal kuliah sama sekali
-
-        // Total log record yang masuk hari ini (buat statistik kasaran)
+            : 100; 
         $presensiHariIni = Presensi::whereDate('waktu_presensi', $today)->count();
-
-        // --- Sisa Query Stats Dasar Lu Tetap Aman Di Bawah ---
         $stats = [
             'totalMahasiswa' => Mahasiswa::count(),
             'totalDosen' => Dosen::count(),
@@ -46,11 +28,9 @@ class DashboardController extends Controller
             'totalGolongan' => Golongan::count(),
             'totalLokasi' => Lokasi::count(),
         ];
-
         $kelasAktif = $semesterAktif
             ? KelasPerkuliahan::whereHas('mataKuliah', fn($q) => $q->where('semester_id', $semesterAktif->id))->count()
             : KelasPerkuliahan::count();
-
         $recentPresensi = Presensi::with(['pertemuan.kelasPerkuliahan.mataKuliah', 'mahasiswa'])
             ->whereDate('waktu_presensi', $today)
             ->latest('waktu_presensi')
@@ -66,7 +46,6 @@ class DashboardController extends Controller
                     'time_diff' => $p->waktu_presensi->diffForHumans()
                 ];
             });
-
         $data = [
             'formattedDate' => now()->translatedFormat('l, j F Y'),
             'hariIniEnum' => strtolower(now()->translatedFormat('l')),
@@ -74,7 +53,6 @@ class DashboardController extends Controller
             'jadwalHariIni' => $this->getJadwalHariIni(),
             'quickActions' => $this->getQuickActions(),
         ];
-
         return view('dashboard.admin.index', array_merge(
             $stats,
             $data,
@@ -89,7 +67,6 @@ class DashboardController extends Controller
             ]
         ));
     }
-
     private function getQuickActions(): array
     {
         return [
@@ -123,40 +100,26 @@ class DashboardController extends Controller
             ],
         ];
     }
-
     private function getAttendanceTrend(int $days): array
     {
         $trend = [];
         $hariIni = now()->format('Y-m-d');
-
-        // Looping mundur untuk dapet data 7 hari terakhir
         for ($i = $days - 1; $i >= 0; $i--) {
             $date = now()->subDays($i)->format('Y-m-d');
             $d = now()->subDays($i);
-
-            // 1. GLOBAL QUERY: Cari tahu semua sesi pertemuan/kuliah di tanggal ini
             $pertemuanHariItu = Pertemuan::whereDate('tanggal', $date)->get();
-
             $kapasitasMhsHariItu = 0;
-
-            // Hitung total kapasitas mahasiswa yang seharusnya kuliah di tanggal ini
             foreach ($pertemuanHariItu as $p) {
                 $kapasitasMhsHariItu += Mahasiswa::whereHas('golongan.kelasPerkuliahan', function ($q) use ($p) {
-                    // FIX MUTLAK: Kasih nama tabelnya 'kelas_perkuliahan.id' biar MySQL gak siwer jancok!
                     $q->where('kelas_perkuliahan.id', $p->kelas_perkuliahan_id);
                 })->count();
             }
-
-            // 2. GLOBAL QUERY: Hitung total mhs yang masuk aman (Hadir, Sakit, Izin) di tanggal ini
             $hadirHariItu = Presensi::whereDate('waktu_presensi', $date)
                 ->whereIn(DB::raw('LOWER(status)'), ['hadir', 'sakit', 'izin'])
                 ->count();
-
-            // 3. HITUNG PERSENTASE REALISTIS
             $percentage = $kapasitasMhsHariItu > 0
                 ? round(($hadirHariItu / $kapasitasMhsHariItu) * 100)
                 : 0;
-
             $trend[] = [
                 'label' => $d->translatedFormat('d M'),
                 'day_full' => $d->translatedFormat('l'),
@@ -166,29 +129,24 @@ class DashboardController extends Controller
                 'percentage' => $percentage
             ];
         }
-
         return $trend;
     }
-
     private function getJadwalHariIni(): array
     {
         $now = now();
         $today = $now->toDateString();
         $time = $now->toTimeString();
-
         return Pertemuan::with(['kelasPerkuliahan.mataKuliah', 'kelasPerkuliahan.ruang', 'lokasi'])
             ->whereDate('tanggal', $today)
             ->orderBy('jam_mulai')
             ->get()
             ->map(function ($p) use ($time) {
                 $status = 'mendatang';
-
                 if ($time >= $p->jam_mulai && $time <= $p->jam_selesai) {
                     $status = 'berlangsung';
                 } elseif ($time > $p->jam_selesai) {
                     $status = 'selesai';
                 }
-
                 return [
                     'matkul_nama' => $p->kelasPerkuliahan?->mataKuliah?->nama ?? 'Mata Kuliah Tidak Ditemukan',
                     'kelas_nama' => $p->kelasPerkuliahan?->nama_kelas ?? '-',

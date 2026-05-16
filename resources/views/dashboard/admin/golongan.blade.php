@@ -1,10 +1,7 @@
 @extends('layouts.app')
-
 @section('title', 'Data Golongan • SIPRESPRO')
-
 @section('content')
   <div class="space-y-6">
-
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Master Golongan</h1>
@@ -18,7 +15,6 @@
         </button>
       </div>
     </div>
-
     <div
       class="mb-6 flex items-start gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl">
       <div
@@ -33,10 +29,8 @@
         </p>
       </div>
     </div>
-
     <div
       class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm transition-colors duration-300">
-      <!-- DESKTOP VIEW TABLE (Hanya nampil di layar laptop md: ke atas) -->
       <div class="hidden md:block overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
@@ -57,8 +51,6 @@
                 <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-100">
                   {{ $golongan->nama }}
                 </td>
-
-                {{-- KOLOM JUMLAH MAHASISWA --}}
                 <td class="px-6 py-4">
                   <div
                     class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800/50">
@@ -67,7 +59,6 @@
                     <span class="text-[9px] uppercase tracking-tighter opacity-70">Mahasiswa</span>
                   </div>
                 </td>
-
                 <td class="px-6 py-4">
                   <div
                     class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800">
@@ -76,7 +67,6 @@
                   </div>
                   <span class="text-[10px] text-slate-400 ml-2 italic">{{ $golongan->semester->tahun_ajaran ?? '-' }}</span>
                 </td>
-
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
                     <button type="button" @click="MicroModal.show('modal-edit-{{ $golongan->id }}')"
@@ -84,14 +74,12 @@
                       <i class="fas fa-edit text-xs"></i>
                     </button>
                     @if($golongan->mahasiswas_count > 0)
-                      {{-- Kalau ada mahasiswa, tombol hapus dimatiin/dikasi tanda --}}
                       <button type="button"
                         class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
                         title="Tidak bisa dihapus karena masih ada mahasiswa">
                         <i class="fas fa-lock text-xs"></i>
                       </button>
                     @else
-                      {{-- Kalau kosong, baru muncul tombol hapus --}}
                       <button type="button" @click="MicroModal.show('modal-delete-{{ $golongan->id }}')"
                         class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-800">
                         <i class="fas fa-trash text-xs"></i>
@@ -110,8 +98,6 @@
           </tbody>
         </table>
       </div>
-
-      <!-- MOBILE STACKED CARD VIEW (Khusus Layar HP / md:hidden) -->
       <div class="block md:hidden p-4 space-y-3">
         @forelse($golongans as $golongan)
           <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xs space-y-3">
@@ -132,17 +118,14 @@
                 </div>
               </div>
             </div>
-
             <div class="text-[11px] text-slate-500 dark:text-slate-400 space-y-0.5 font-medium">
               <p><span class="font-bold text-slate-700 dark:text-slate-300">Semester:</span> <span class="font-semibold uppercase">{{ $golongan->semester->nama ?? 'N/A' }}</span> <span class="italic text-slate-400">({{ $golongan->semester->tahun_ajaran ?? '-' }})</span></p>
             </div>
-
             <div class="pt-2 border-t border-slate-200/50 dark:border-slate-700/50 flex justify-end gap-1.5">
               <button type="button" @click="MicroModal.show('modal-edit-{{ $golongan->id }}')"
                 class="px-3 py-1.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
                 <i class="fas fa-edit"></i> Edit
               </button>
-              
               @if($golongan->mahasiswas_count > 0)
                 <button type="button"
                   class="px-3 py-1.5 bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1 cursor-not-allowed"
@@ -168,7 +151,6 @@
       @endif
     </div>
   </div>
-
   <div class="modal" id="modal-create-golongan" aria-hidden="true">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div class="modal__container w-full max-w-md" role="dialog" @click.stop>
@@ -178,7 +160,6 @@
           <button type="button" class="text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 w-8 h-8 rounded-lg"
             data-micromodal-close><i class="fas fa-times"></i></button>
         </header>
-
         <form action="{{ route('admin.golongan.store') }}" method="POST" class="text-left">
           @csrf
           <div class="space-y-4">
@@ -213,7 +194,6 @@
       </div>
     </div>
   </div>
-
   @foreach($golongans as $golongan)
     <div class="modal" id="modal-edit-{{ $golongan->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
@@ -230,7 +210,6 @@
               <i class="fas fa-times"></i>
             </button>
           </header>
-
           <form action="{{ route('admin.golongan.update', $golongan->id) }}" method="POST" class="text-left">
             @csrf
             @method('PUT')
@@ -256,7 +235,6 @@
                 </select>
               </div>
             </div>
-
             <div class="mt-8 flex gap-3">
               <button type="button" data-micromodal-close
                 class="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold transition-all hover:bg-slate-200 dark:hover:bg-slate-600">Batal</button>
@@ -268,7 +246,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal" id="modal-delete-{{ $golongan->id }}" aria-hidden="true">
       <div class="modal__overlay" tabindex="-1" data-micromodal-close>
         <div class="modal__container w-full max-w-sm text-center" role="dialog" @click.stop>
@@ -295,17 +272,14 @@
     </div>
   @endforeach
 @endsection
-
 @push('styles')
   <style>
     .modal {
       display: none;
     }
-
     .modal.is-open {
       display: block;
     }
-
     .modal__overlay {
       position: fixed;
       top: 0;
@@ -319,7 +293,6 @@
       align-items: center;
       z-index: 9999;
     }
-
     .modal__container {
       background-color: #fff;
       padding: 2rem;
@@ -329,7 +302,6 @@
       position: relative;
       border: 1px solid #f1f5f9;
     }
-
     .dark .modal__container {
       background-color: #1e293b;
       border-color: #334155;

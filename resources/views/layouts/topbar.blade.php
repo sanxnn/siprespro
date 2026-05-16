@@ -1,32 +1,21 @@
-<!-- Topbar -->
+
 <header
   class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 px-6 py-3.5 flex justify-between items-center sticky top-0 z-30">
-
-  <!-- Left: Page Title (Mobile) -->
   <div class="flex items-center gap-3 lg:hidden">
     <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden">
       <i class="fas fa-bars"></i>
     </button>
-
-    <!-- DESKTOP COLLAPSE -->
     <button class="hidden lg:block text-xl" @click="sidebarCollapse = !sidebarCollapse">
       <i class="fas fa-bars"></i>
     </button>
     <h2 class="text-base font-semibold truncate max-w-[180px]">@yield('page_title', 'Dashboard')</h2>
   </div>
-
-
-  <!-- Right: Actions -->
   <div class="flex items-center gap-2 ml-auto">
-
-    <!-- Dark Mode Toggle -->
     <button @click="darkMode = !darkMode"
       class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors text-slate-600 dark:text-slate-300">
       <i class="fas fa-moon" x-show="!darkMode" x-transition></i>
       <i class="fas fa-sun text-amber-400" x-show="darkMode" x-transition x-cloak></i>
     </button>
-
-    <!-- User Dropdown (Alpine.js) -->
     <div class="relative" x-data="{ open: false }">
       <button @click="open = !open" @click.outside="open = false"
         class="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
@@ -39,8 +28,6 @@
           {{ strtoupper(substr(auth()->user()->email, 0, 1)) }}
         </div>
       </button>
-
-      <!-- Dropdown Menu -->
       <div x-show="open" x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
@@ -58,6 +45,5 @@
         </a>
       </div>
     </div>
-
   </div>
 </header>
