@@ -16,7 +16,7 @@
       class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-sm p-6 space-y-4">
       <div>
         <span class="text-[11px] font-bold text-primary-600 uppercase tracking-wider block">Konfirmasi Kelas</span>
-        <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 mt-0.5">{{ $pertemuan->nama_mk }}</h2>
+        <h2 class="text-xl font-bold text-slate-800 dark:text-white mt-0.5">{{ $pertemuan->nama_mk }}</h2>
         <p class="text-xs text-slate-400 mt-0.5">Kode MK: {{ $pertemuan->kode_mk }}</p>
       </div>
       <div class="grid grid-cols-2 gap-4 border-t border-b border-slate-100 dark:border-slate-700 py-4 text-xs">
@@ -74,7 +74,8 @@
             </label>
             <label
               class="relative flex flex-col p-4 border rounded-xl cursor-pointer transition-all focus-within:ring-2 focus-within:ring-primary-500 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/30">
-              <input type="radio" name="status" value=izin" class="sr-only peer">
+
+              <input type="radio" name="status" value="izin" class="sr-only peer">
               <div class="flex flex-col items-center gap-1 text-center peer-checked:text-amber-600">
                 <i class="fas fa-envelope text-xl text-slate-400 peer-checked:text-amber-500"></i>
                 <span class="text-xs font-bold mt-1">Izin</span>
@@ -85,6 +86,46 @@
             </label>
           </div>
         </div>
+
+        <div id="alert-sakit-izin" class="hidden transition-all duration-300 transform scale-95 origin-top mt-2">
+          <div
+            class="p-5 rounded-2xl bg-amber-50 dark:bg-rose-950/20 border-2 border-amber-400 dark:border-rose-500/50 shadow-xs">
+            <div class="flex items-start gap-3.5">
+              <div
+                class="w-10 h-10 shrink-0 bg-amber-500 text-white dark:bg-rose-600 rounded-xl flex items-center justify-center animate-pulse shadow-md shadow-amber-500/20">
+                <i class="fas fa-exclamation-triangle text-lg"></i>
+              </div>
+
+              <div class="space-y-1 text-left">
+                <h4 class="text-xs sm:text-sm font-black text-amber-800 dark:text-rose-400 uppercase tracking-wider">
+                  Perhatian: Prosedur Validasi Presensi
+                </h4>
+                <p class="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                  Anda memilih status <span
+                    class="text-rose-600 dark:text-rose-400 font-bold underline uppercase">Sakit/Izin</span>. Validasi lokasi GPS
+                  dinonaktifkan untuk pengajuan ini. Namun, Anda <span class="text-slate-900 dark:text-white font-bold">wajib menyerahkan dokumen/surat keterangan fisik yang sah</span> kepada Dosen Pengampu.
+                </p>
+
+                <div
+                  class="mt-3 pt-2.5 border-t border-amber-200 dark:border-rose-900/40 space-y-2 text-[10px] sm:text-[11px] text-amber-800 dark:text-rose-200">
+                  <p class="flex items-start gap-1.5 font-bold text-rose-700 dark:text-rose-400">
+                    <i class="fas fa-clock mt-0.5"></i> 1. Batas Waktu: Dokumen fisik WAJIB diterima oleh Dosen Pengampu maksimal H+1 dari waktu jadwal perkuliahan ini.
+                  </p>
+                  <p class="flex items-start gap-1.5">
+                    <i class="fas fa-id-card mt-0.5 text-amber-600 dark:text-rose-400"></i> 2. Kelengkapan: Surat keterangan harus mencantumkan data diri lengkap mahasiswa yang bersangkutan secara jelas dan dapat dipertanggungjawabkan keabsahannya.
+                  </p>
+                  <p class="flex items-start gap-1.5">
+                    <i class="fas fa-hands-helping mt-0.5 text-amber-600 dark:text-rose-400"></i> 3. Penyerahan: Untuk mempermudah, penyerahan dokumen fisik kepada Dosen Pengampu dapat diwakilkan oleh siapa saja.
+                  </p>
+                  <p class="flex items-start gap-1.5 font-black text-rose-700 dark:text-rose-400">
+                    <i class="fas fa-gavel mt-0.5"></i> 4. Konsekuensi Tegas: Kegagalan menyerahkan dokumen fisik pada batas waktu yang ditentukan atau penemuan indikasi pemalsuan akan mengakibatkan status kehadiran Anda diubah menjadi ALFA secara permanen.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="gps-status"
           class="bg-slate-50 dark:bg-slate-900 rounded-xl p-3 border border-slate-100 dark:border-slate-800 text-center flex items-center justify-center gap-2 text-xs text-slate-500">
           <i class="fas fa-sync fa-spin text-primary-500" id="gps-icon"></i>
@@ -105,23 +146,39 @@
       const btnSubmit = document.getElementById('btnSubmit');
       const latInput = document.getElementById('latInput');
       const lngInput = document.getElementById('lngInput');
+
+      const statusInputs = document.querySelectorAll('input[name="status"]');
+      const alertBox = document.getElementById('alert-sakit-izin');
+
+      statusInputs.forEach(input => {
+        input.addEventListener('change', function () {
+          if (this.value === 'sakit' || this.value === 'izin') {
+            alertBox.classList.remove('hidden');
+            setTimeout(() => {
+              alertBox.classList.remove('scale-95');
+              alertBox.classList.add('scale-100');
+            }, 20);
+          } else {
+            alertBox.classList.add('hidden');
+            alertBox.classList.remove('scale-100');
+            alertBox.classList.add('scale-95');
+          }
+        });
+      });
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function (position) {
-            // Berhasil ambil koordinat
             latInput.value = position.coords.latitude;
             lngInput.value = position.coords.longitude;
-            // Update UI status GPS sukses
             gpsBox.classList.remove('bg-slate-50', 'text-slate-500');
             gpsBox.classList.add('bg-green-50', 'text-green-700', 'border-green-100');
             gpsIcon.className = "fas fa-map-marked-alt text-green-500";
             gpsStatusText.innerText = "Lokasi berhasil dikunci! Silakan submit presensi.";
-            // Aktifkan tombol submit
             btnSubmit.disabled = false;
             btnSubmit.className = "w-full flex items-center justify-center py-3 px-4 rounded-xl text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 transition-all shadow-md shadow-primary-100 dark:shadow-none";
           },
           function (error) {
-            // Gagal ambil koordinat (GPS dimatikan/ditolak user)
             gpsBox.classList.remove('bg-slate-50', 'text-slate-500');
             gpsBox.classList.add('bg-rose-50', 'text-rose-700', 'border-rose-100');
             gpsIcon.className = "fas fa-exclamation-triangle text-rose-500";
