@@ -305,7 +305,7 @@
                     </header>
                     <form action="{{ route('admin.mahasiswa.update', $mhs->id) }}" method="POST">
                         @csrf @method('PUT')
-                        <input type="hidden" name="id" value="{{ $mhs->nim }}">
+                        <input type="hidden" name="nim" value="{{ $mhs->nim }}">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left">
                             <div class="space-y-4">
                                 <h4 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">
