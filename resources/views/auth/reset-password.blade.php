@@ -96,7 +96,6 @@
 @endsection
 @section('scripts')
   <script>
-    // Toggle Password Visibility
     function togglePassword(inputId, iconId) {
       const input = document.getElementById(inputId);
       const icon = document.getElementById(iconId);
@@ -110,7 +109,6 @@
         }
       }
     }
-    // Loading State on Submit
     document.getElementById('resetForm')?.addEventListener('submit', function () {
       const btn = document.getElementById('submitBtn');
       btn.classList.add('opacity-75', 'cursor-not-allowed');

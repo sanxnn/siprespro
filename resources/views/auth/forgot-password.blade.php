@@ -55,7 +55,6 @@
 @endsection
 @push('scripts')
 <script>
-  // Loading State on Submit
   document.getElementById('resetForm')?.addEventListener('submit', function() {
     const btn = document.getElementById('submitBtn');
     btn.classList.add('opacity-75', 'cursor-not-allowed');

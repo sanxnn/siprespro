@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Riwayat Kehadiran • SIPRESPRO')
 @section('content')
   <div class="mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
     <div
@@ -79,7 +80,7 @@
             $totalMasuk = $row->jumlah_hadir + $row->jumlah_sakit + $row->jumlah_izin;
             $persentase = $row->total_pertemuan > 0
               ? round(($totalMasuk / $row->total_pertemuan) * 100)
-              : 100; // Default 100 kalau baru mulai
+              : 100;
             $isWarning = $persentase < 75;
           @endphp
           <div

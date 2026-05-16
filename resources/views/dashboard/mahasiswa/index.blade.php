@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Dashboard Mahasiswa • SIPRESPRO')
 @section('content')
   <div class="space-y-6 p-4 mx-auto">
     <div
@@ -153,9 +154,9 @@
                   <span class="block text-[10px] text-slate-400 uppercase font-semibold sm:hidden">Status Presensi</span>
                   @if($jadwal->status_absen_mhs)
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold 
-                                                    @if($jadwal->status_absen_mhs == 'Hadir') bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400
-                                                    @elseif(in_array($jadwal->status_absen_mhs, ['Sakit', 'Izin'])) bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400
-                                                    @else @endif">
+                                                                    @if($jadwal->status_absen_mhs == 'Hadir') bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400
+                                                                    @elseif(in_array($jadwal->status_absen_mhs, ['Sakit', 'Izin'])) bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400
+                                                                    @else @endif">
                       <i class="fas fa-check-circle mr-1 text-[10px]"></i> {{ $jadwal->status_absen_mhs }}
                     </span>
                   @else

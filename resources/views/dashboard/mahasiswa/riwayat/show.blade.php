@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Detail Kehadiran • SIPRESPRO')
 @section('content')
   <div class="mx-auto p-3 sm:p-6 space-y-6">
     <div class="flex items-center justify-between">
@@ -28,7 +29,7 @@
         @php
           $total = $daftarPertemuan->count();
           $masuk = $daftarPertemuan->whereIn('status_absen', ['hadir', 'sakit', 'izin'])->count();
-          $persen = $total > 0 ? round(($masuk / $total) * 100) : 100; // Nilai default jika belum ada pertemuan
+          $persen = $total > 0 ? round(($masuk / $total) * 100) : 100;
         @endphp
         <h2 class="text-4xl font-black text-center">{{ $persen }}%</h2>
         <p class="text-[10px] text-primary-100 mt-2 text-center font-medium uppercase tracking-tighter">
@@ -76,7 +77,6 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                   @php
-                    // Mapping status biar sinkron
                     $status = trim(strtolower($p->status_absen)) ?: 'alfa';
                     $config = [
                       'hadir' => ['label' => 'HADIR', 'class' => 'bg-green-50 text-green-700 border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800'],
@@ -84,7 +84,6 @@
                       'izin' => ['label' => 'IZIN', 'class' => 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800'],
                       'alfa' => ['label' => 'ALPA', 'class' => 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800'],
                     ];
-                    // Fallback kalau ada status aneh
                     $res = $config[$status] ?? $config['alfa'];
                   @endphp
                   <span

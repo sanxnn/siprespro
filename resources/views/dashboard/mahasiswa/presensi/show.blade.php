@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Detail Presensi • SIPRESPRO')
 @section('content')
   <div class=" mx-auto p-4 space-y-6">
     <div class="flex items-center justify-between">

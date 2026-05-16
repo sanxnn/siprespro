@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Detail Kelas & Sesi • SIPRESPRO')
 @section('content')
   <div class="space-y-6 mx-auto p-2 sm:p-4 text-left">
     <div class="bg-white dark:bg-slate-800 p-5 sm:p-8 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">

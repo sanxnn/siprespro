@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" class="light">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,41 +34,51 @@
         opacity: 0;
         transform: translateY(10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
     @keyframes slideDown {
       from {
         opacity: 0;
         transform: translateY(-10px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
+
     @keyframes pulseSlow {
+
       0%,
       100% {
         opacity: 0.5;
       }
+
       50% {
         opacity: 0.8;
       }
     }
+
     .animate-fade-in {
       animation: fadeIn 0.4s ease-out;
     }
+
     .animate-slide-down {
       animation: slideDown 0.3s ease-out;
     }
+
     .animate-pulse-slow {
       animation: pulseSlow 4s ease-in-out infinite;
     }
   </style>
 </head>
+
 <body
   class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-sans min-h-screen flex items-center justify-center p-4 transition-colors duration-200">
   <button id="themeToggle" aria-label="Toggle dark mode"
@@ -98,7 +109,7 @@
         <ul class="space-y-3">
           <li class="flex items-center gap-3 text-sm">
             <span class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">✓</span>
-            Absensi Berbasis GPS & QR Code
+            Absensi Berbasis GPS
           </li>
           <li class="flex items-center gap-3 text-sm">
             <span class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center text-xs">✓</span>
@@ -116,11 +127,9 @@
     </div>
   </div>
   <script>
-    // Check saved theme or system preference
     if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
     }
-    // Toggle function
     document.getElementById('themeToggle').addEventListener('click', () => {
       document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
@@ -128,4 +137,5 @@
   </script>
   @yield('scripts')
 </body>
+
 </html>

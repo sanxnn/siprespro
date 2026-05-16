@@ -40,7 +40,7 @@ class DashboardController extends Controller
         $totalMasuk = $kehadiran->hadir + $kehadiran->sakit + $kehadiran->izin;
         $persentaseKehadiran = $totalPertemuan > 0
             ? round(($totalMasuk / $totalPertemuan) * 100, 1)
-            : 100;
+            : 0;
         $tanggalHariIni = date('Y-m-d');
         $tanggalHariIni = date('Y-m-d');
         $jadwalHariIni = DB::table('pertemuan')

@@ -78,7 +78,6 @@
 @endsection
 @section('scripts')
     <script>
-        // Toggle Password Visibility
         function togglePassword() {
             const input = document.querySelector('input[name="password"]');
             const icon = document.getElementById('toggleIcon');
@@ -90,7 +89,6 @@
                 icon.className = 'fas fa-eye';
             }
         }
-        // Loading State on Submit
         document.getElementById('loginForm')?.addEventListener('submit', function (e) {
             const btn = document.getElementById('submitBtn');
             btn.classList.add('opacity-75', 'cursor-not-allowed');

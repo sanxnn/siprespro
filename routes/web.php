@@ -2,14 +2,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Dosen;
-use App\Http\Controllers\Dosen\DashboardController;
-use App\Http\Controllers\Dosen\KelasController;
-use App\Http\Controllers\Dosen\RekapController;
-use App\Http\Controllers\Mahasiswa\PresensiController;
+use App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+
 Route::middleware('redirect.if.auth.role')->group(function () {
     Route::get('/', [AuthController::class, 'login'])->name('login');
     Route::post('/', [AuthController::class, 'authenticate'])->name('authenticate');
@@ -22,10 +20,12 @@ Route::middleware('redirect.if.auth.role')->group(function () {
         Route::post('/', [AuthController::class, 'updatePassword'])->name('password.update');
     });
 });
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::get('users/export/excel', [Admin\UserController::class, 'exportExcel'])->name('users.export.excel');
@@ -46,24 +46,26 @@ Route::middleware('auth')->group(function () {
             ->parameters(['kelas-perkuliahan' => 'kela']);
         Route::resource('presensi', Admin\PresensiController::class);
     });
+
     Route::middleware('role:dosen')->prefix('dosen')->name('dosen.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::resource('kelas', KelasController::class);
-        Route::post('/kelas/{kela}/pertemuan', [KelasController::class, 'storePertemuan'])->name('kelas.pertemuan.store');
-        Route::patch('/pertemuan/{pertemuan}', [KelasController::class, 'updatePertemuan'])->name('pertemuan.update');
-        Route::delete('/pertemuan/{pertemuan}', [KelasController::class, 'destroyPertemuan'])->name('pertemuan.destroy');
-        Route::patch('/pertemuan/{pertemuan}/toggle', [KelasController::class, 'togglePertemuan'])->name('pertemuan.toggle');
-        Route::get('/pertemuan/{pertemuan}', [KelasController::class, 'showPertemuan'])->name('pertemuan.show');
-        Route::get('/dosen/pertemuan/{pertemuan_id}/export-excel', [KelasController::class, 'exportExcel'])
+        Route::get('/dashboard', [Dosen\DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('kelas', Dosen\KelasController::class);
+        Route::post('/kelas/{kela}/pertemuan', [Dosen\KelasController::class, 'storePertemuan'])->name('kelas.pertemuan.store');
+        Route::patch('/pertemuan/{pertemuan}', [Dosen\KelasController::class, 'updatePertemuan'])->name('pertemuan.update');
+        Route::delete('/pertemuan/{pertemuan}', [Dosen\KelasController::class, 'destroyPertemuan'])->name('pertemuan.destroy');
+        Route::patch('/pertemuan/{pertemuan}/toggle', [Dosen\KelasController::class, 'togglePertemuan'])->name('pertemuan.toggle');
+        Route::get('/pertemuan/{pertemuan}', [Dosen\KelasController::class, 'showPertemuan'])->name('pertemuan.show');
+        Route::get('/dosen/pertemuan/{pertemuan_id}/export-excel', [Dosen\KelasController::class, 'exportExcel'])
             ->name('pertemuan.export-excel');
-        Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
+        Route::get('/rekap', [Dosen\RekapController::class, 'index'])->name('rekap.index');
     });
+
     Route::middleware('role:mahasiswa')->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/presensi', [PresensiController::class, 'index'])->name('presensi.index');
-        Route::get('/presensi/show/{pertemuan_id}', [PresensiController::class, 'isiPresensi'])->name('presensi.show');
-        Route::post('/presensi/simpan/{pertemuan_id}', [PresensiController::class, 'simpanPresensi'])->name('presensi.simpan');
-        Route::get('/presensi/riwayat', [PresensiController::class, 'riwayat'])->name('presensi.riwayat');
-        Route::get('/presensi/riwayat/{kelas_id}', [PresensiController::class, 'detailRiwayat'])->name('presensi.detail-riwayat');
+        Route::get('/dashboard', [Mahasiswa\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/presensi', [Mahasiswa\PresensiController::class, 'index'])->name('presensi.index');
+        Route::get('/presensi/show/{pertemuan_id}', [Mahasiswa\PresensiController::class, 'isiPresensi'])->name('presensi.show');
+        Route::post('/presensi/simpan/{pertemuan_id}', [Mahasiswa\PresensiController::class, 'simpanPresensi'])->name('presensi.simpan');
+        Route::get('/presensi/riwayat', [Mahasiswa\PresensiController::class, 'riwayat'])->name('presensi.riwayat');
+        Route::get('/presensi/riwayat/{kelas_id}', [Mahasiswa\PresensiController::class, 'detailRiwayat'])->name('presensi.detail-riwayat');
     });
 });

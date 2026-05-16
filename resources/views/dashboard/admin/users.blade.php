@@ -235,7 +235,6 @@
 @endsection
 @push('styles')
 <style>
-    /* MODAL SAKTI ANIMATED SLIDE MICROMODAL STANDARD */
     .modal { display: none; }
     .modal.is-open { display: flex; }
     .micromodal-slide[aria-hidden="false"] .modal__overlay {

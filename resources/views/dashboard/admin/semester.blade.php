@@ -1,4 +1,5 @@
-@extends('layouts.app') @section('title', 'Data Semester • SIPRESPRO')
+@extends('layouts.app')
+@section('title', 'Data Semester • SIPRESPRO')
 @section('content')
   <div class="space-y-6">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">

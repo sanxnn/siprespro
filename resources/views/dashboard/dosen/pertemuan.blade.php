@@ -1,8 +1,9 @@
 @extends('layouts.app')
+@section('title', 'Detail Pertemuan • SIPRESPRO')
 @section('content')
   <div class="space-y-6 mx-auto max-w-7xl p-2 sm:p-4 text-left">
     <div
-      class="bg-white dark:bg-slate-800 p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
+      class="bg-white dark:bg-slate-800 p-5 sm:p-8 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden">
       <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary-500/5 rounded-full blur-3xl"></div>
       <div class="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div class="flex items-center gap-4 sm:gap-5">
@@ -62,7 +63,7 @@
       </div>
     </div>
     <div
-      class="bg-white dark:bg-slate-800 rounded-[2rem] sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+      class="bg-white dark:bg-slate-800 rounded-4xl sm:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
       <div
         class="p-5 sm:p-8 border-b border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <h2 class="font-black text-slate-800 dark:text-white uppercase text-xs sm:text-sm tracking-widest">Daftar
@@ -147,7 +148,7 @@
             class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/60 shadow-xs space-y-3">
             <div class="flex justify-between items-start gap-2">
               <div class="min-w-0">
-                <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight break-words">{{ $mhs->nama }}
+                <h4 class="font-black text-slate-800 dark:text-white text-sm leading-tight wrap-break-word">{{ $mhs->nama }}
                 </h4>
                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">{{ $mhs->nim }}</p>
               </div>

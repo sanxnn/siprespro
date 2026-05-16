@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Rekap Presensi • SIPRESPRO')
 @section('content')
   <div class="space-y-8">
     <div>
