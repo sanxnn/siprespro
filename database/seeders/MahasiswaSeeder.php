@@ -22,11 +22,13 @@ class MahasiswaSeeder extends Seeder
         $golongans = Golongan::all();
 
         if (!$semester || $golongans->isEmpty()) {
-            $this->command->error('Semester atau Golongan tidak ditemukan! Jalankan SemesterSeeder & GolonganSeeder dulu.');
+            $this->command->error('❌ Semester atau Golongan tidak ditemukan! Jalankan SemesterSeeder & GolonganSeeder dulu.');
             return;
         }
 
-        $angkatanList = [22, 23, 24, 25];
+        // Sesuai request: Angkatan dikunci hanya di tahun 2025 (kode NIM: 25)
+        $angkatanTahun = 2025;
+        $angkatanKode = '25';
 
         $firstNames = [
             'Ahmad',
@@ -60,7 +62,7 @@ class MahasiswaSeeder extends Seeder
             'Widya',
             'Doni',
             'Lina',
-            'Hadi',
+            'Hadi'
         ];
 
         $lastNames = [
@@ -79,19 +81,17 @@ class MahasiswaSeeder extends Seeder
             'Fauzi',
             'Nugroho',
             'Setiawan',
-            'Purnomo',
+            'Purnomo'
         ];
 
         $mahasiswaCount = 50;
 
         for ($i = 1; $i <= $mahasiswaCount; $i++) {
-            // Generate NIM: E41251012
-            // E (wajib) + 41 (wajib) + 22-25 (angkatan) + 4 digit random
-            $angkatan = $angkatanList[array_rand($angkatanList)];
-            $randomNum = str_pad($i, 4, '0', STR_PAD_LEFT); // 0001, 0002, dst
-            $nim = 'E41' . $angkatan . $randomNum;
+            // Generate NIM: E41 + 25 + 4 digit urut (E41250001 sampai E41250050)
+            $randomNum = str_pad($i, 4, '0', STR_PAD_LEFT);
+            $nim = 'E41' . $angkatanKode . $randomNum;
 
-            // Generate Nama
+            // Generate Nama (Gabungan acak depan + belakang)
             $firstName = $firstNames[array_rand($firstNames)];
             $lastName = $lastNames[array_rand($lastNames)];
             $nama = $firstName . ' ' . $lastName;
@@ -99,7 +99,7 @@ class MahasiswaSeeder extends Seeder
             // Generate Email: nim@student.polije.ac.id
             $email = strtolower($nim) . '@student.polije.ac.id';
 
-            // Pick random golongan
+            // Pilih golongan secara acak dari database
             $golongan = $golongans->random();
 
             // Create Mahasiswa
@@ -107,19 +107,19 @@ class MahasiswaSeeder extends Seeder
                 'nim' => $nim,
                 'nama' => $nama,
                 'email' => $email,
-                'angkatan' => 2000 + $angkatan, // 2022, 2023, 2024, 2025
-                'semester_id' => $semester->id,
+                'angkatan' => $angkatanTahun, // Tetap 2025
+                'semester_id' => $semester->id, // Menggunakan semester aktif
                 'golongan_id' => $golongan->id,
-                'tanggal_lahir' => fake()->date('Y-m-d', '2005-01-01'),
-                'nik' => fake()->numerify('##############'),
+                'tanggal_lahir' => fake()->date('Y-m-d', '2007-01-01'), // Disesuaikan umur anak angkatan 2025
+                'nik' => fake()->numerify('################'), // NIK Indonesia 16 digit
                 'no_hp' => fake()->phoneNumber(),
                 'alamat' => fake()->address(),
             ]);
 
-            // Create User for Mahasiswa
+            // Create User untuk Mahasiswa
             User::create([
                 'email' => $email,
-                'password' => Hash::make('password'), // Default password
+                'password' => Hash::make($nim), // Password default: nim
                 'role' => 'mahasiswa',
                 'mahasiswa_id' => $mhsRecord->id,
                 'dosen_id' => null,
@@ -128,8 +128,8 @@ class MahasiswaSeeder extends Seeder
             ]);
         }
 
-        $this->command->info("   Contoh: {$nim} (Angkatan {$angkatan}) → Semester {$mhsRecord->semester_aktif}");
-        $this->command->info('✓ ' . $mahasiswaCount . ' mahasiswa created with default password: password');
-
+        // Tampilkan info sampel data terakhir yang berhasil dibuat di terminal
+        $this->command->info("ℹ️ Contoh generate terakhir: {$nim} - {$nama} ({$golongan->nama})");
+        $this->command->info('✓ ' . $mahasiswaCount . ' mahasiswa berhasil dibuat dengan password bawaan: password');
     }
 }

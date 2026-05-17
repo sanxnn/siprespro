@@ -15,30 +15,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            SemesterSeeder::class,
-            LokasiSeeder::class,
-            GolonganSeeder::class,
-            AdminSeeder::class,
-            DosenSeeder::class,
-            MahasiswaSeeder::class,
-        ]);
 
-        $this->command->info('✅ All seeders completed successfully!');
-        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        $this->command->info('📋 LOGIN CREDENTIALS:');
-        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        $this->command->info('🔐 ADMIN:');
-        $this->command->info('   Email: admin@polije.ac.id');
-        $this->command->info('   Password: admin123');
-        $this->command->info('');
-        $this->command->info('👨‍🏫 DOSEN:');
-        $this->command->info('   Email: bety@polije.ac.id');
-        $this->command->info('   Password: dosen123');
-        $this->command->info('');
-        $this->command->info('👨‍🎓 MAHASISWA:');
-        $this->command->info('   Email: e41220001@student.polije.ac.id');
-        $this->command->info('   Password: mhs123');
-        $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        $this->command->info('======================================================');
+        $this->command->info('      MEMULAI PROSES SEEDING DATABASE UTAMA          ');
+        $this->command->info('======================================================');
+
+        $this->command->warn('▶ Menjalankan Master Data Mandiri...');
+        $this->call(SemesterSeeder::class);
+        $this->call(RuangSeeder::class);
+        $this->call(LokasiSeeder::class);
+        $this->call(DosenSeeder::class);
+        $this->call(AdminSeeder::class);
+        $this->command->info('------------------------------------------------------');
+
+        $this->command->warn('▶ Menjalankan Master Data Berelasi Level 1...');
+        $this->call(GolonganSeeder::class);
+        $this->call(MataKuliahSeeder::class);
+        $this->command->info('------------------------------------------------------');
+
+        $this->command->warn('▶ Menjalankan Data Mahasiswa dan Akun Relasi...');
+        $this->call(MahasiswaSeeder::class);
+        
+        $this->command->info('======================================================');
+        $this->command->info('🎉 SEMUA DATA SEEDER BERHASIL DISUNTIKKAN KE DATABASE 🎉');
+        $this->command->info('======================================================');
+
     }
 }

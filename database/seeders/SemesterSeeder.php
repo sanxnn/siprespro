@@ -27,5 +27,7 @@ class SemesterSeeder extends Seeder
         foreach ($semesters as $semester) {
             Semester::create($semester);
         }
+
+        $this->command->info('✓ ' . count($semesters) . ' semester berhasil dibuat');
     }
 }

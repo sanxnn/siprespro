@@ -34,5 +34,8 @@ class GolonganSeeder extends Seeder
                 'semester_id' => $semester->id,
             ]);
         }
+
+        $this->command->info('✓ ' . count($golongans) . ' golongan berhasil dibuat untuk ' . $semester->nama);
+
     }
 }

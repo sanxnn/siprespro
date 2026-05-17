@@ -16,28 +16,16 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $admins = [
-            [
-                'email' => 'admin@polije.ac.id',
-                'password' => Hash::make('admin123'),
-                'role' => 'admin',
-            ],
-            [
-                'email' => 'admin.prodi@polije.ac.id',
-                'password' => Hash::make('admin123'),
-                'role' => 'admin',
-            ],
-            [
-                'email' => 'superadmin@polije.ac.id',
-                'password' => Hash::make('admin123'),
-                'role' => 'admin',
-            ],
+            ['email' => 'admin@polije.ac.id'],
+            ['email' => 'admin.prodi@polije.ac.id'],
+            ['email' => 'superadmin@polije.ac.id'],
         ];
 
         foreach ($admins as $admin) {
             User::create([
                 'email' => $admin['email'],
-                'password' => $admin['password'],
-                'role' => $admin['role'],
+                'password' => Hash::make('admin123'), // Di-hash langsung di sini agar array di atas lebih bersih
+                'role' => 'admin',
                 'mahasiswa_id' => null,
                 'dosen_id' => null,
                 'is_active' => true,
@@ -45,6 +33,6 @@ class AdminSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ 3 admin created with default password: admin123');
+        $this->command->info('✓ ' . count($admins) . ' admin created with default password: admin123');
     }
 }

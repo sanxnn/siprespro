@@ -78,7 +78,7 @@ class MahasiswaController extends Controller
     }
     public function update(Request $request, Mahasiswa $mahasiswa)
     {
-        $generatedEmail = strtolower($request->nim ?? $mahasiswa->nim) . '@polije.ac.id';
+        $generatedEmail = strtolower($request->nim ?? $mahasiswa->nim) . '@student.polije.ac.id';
         $request->merge(['email' => $generatedEmail]);
         $messages = [
             'nama.required' => 'Nama mahasiswa tidak boleh kosong.',

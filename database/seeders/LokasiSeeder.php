@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Lokasi;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,31 +13,31 @@ class LokasiSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Lokasi::insert([
+        $lokasis = [
             [
-                'nama' => 'Gedung Produksi Pertanian (PP)',
+                'nama' => 'Gedung Production Pertanian (PP)',
                 'latitude' => -8.15783300,
                 'longitude' => 113.72252800,
                 'radius_meter' => 50,
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'nama' => 'Lingkungan Kampus Polije',
                 'latitude' => -8.15848200,
                 'longitude' => 113.72082200,
                 'radius_meter' => 500,
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'nama' => 'Umum / Dimana Saja',
                 'latitude' => -8.15848200,
                 'longitude' => 113.72082200,
                 'radius_meter' => 100000,
-                'created_at' => now(),
-                'updated_at' => now(),
             ]
-        ]);
+        ];
+
+        foreach ($lokasis as $lokasi) {
+            Lokasi::create($lokasi);
+        }
+
+        $this->command->info('✓ ' . count($lokasis) . ' data lokasi presensi berhasil dibuat.');
     }
 }
