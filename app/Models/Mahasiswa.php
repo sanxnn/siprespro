@@ -19,7 +19,6 @@ class Mahasiswa extends Model
         'alamat',
     ];
     protected $casts = [
-        'tanggal_lahir' => 'date',
         'angkatan' => 'integer',
     ];
     public function user()

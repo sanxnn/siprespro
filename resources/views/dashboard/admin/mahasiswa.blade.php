@@ -72,11 +72,8 @@
                                             {{ substr($mhs->nama, 0, 1) }}
                                         </div>
                                         <div class="min-w-0">
-                                            <p
-                                                class="font-black text-slate-800 dark:text-slate-100 leading-tight truncate max-w-[180px]">
-                                                {{ $mhs->nama }}</p>
-                                            <p class="text-[11px] text-slate-400 font-mono mt-0.5 truncate max-w-[200px]">
-                                                {{ $mhs->user->email ?? '-' }}</p>
+                                            <p class="font-black text-slate-800 dark:text-slate-100 leading-tight truncate max-w-[180px]">{{ $mhs->nama }}</p>
+                                            <p class="text-[11px] text-slate-400 font-mono mt-0.5 truncate max-w-[200px]">{{ $mhs->user->email ?? '-' }}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -205,6 +202,19 @@
                                 class="text-[10px] font-black uppercase tracking-widest text-primary-600 dark:text-primary-400">
                                 Data Login & Identitas</h4>
                             <div>
+                                <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Email Institusi
+                                </label>
+                                <!-- Komponen Informasi Statis (Read-Only) -->
+                                <div class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm rounded-xl border border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-medium select-none">
+                                    <!-- Icon Informasi (Optional, biar makin cakep) -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-blue-500 shrink-0">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.028M12 13.5h.008v.008H12v-.008zM12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.364l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Email otomatis dibuat sesuai NIM: <span class="font-bold text-slate-700 dark:text-slate-300">nim@student.polije.ac.id</span></span>
+                                </div>
+                            </div>
+                            <div>
                                 <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">NIM <span
                                         class="text-red-500">*</span></label>
                                 <input type="text" name="nim" required placeholder="Contoh: E4122144"
@@ -214,12 +224,6 @@
                                 <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">Nama
                                     Lengkap <span class="text-red-500">*</span></label>
                                 <input type="text" name="nama" required placeholder="Nama sesuai ijazah"
-                                    class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">Email
-                                    Institusi <span class="text-red-500">*</span></label>
-                                <input type="email" name="email" required placeholder="user@polije.ac.id"
                                     class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
                             </div>
                             <div class="grid grid-cols-2 gap-3">
@@ -305,21 +309,33 @@
                     </header>
                     <form action="{{ route('admin.mahasiswa.update', $mhs->id) }}" method="POST">
                         @csrf @method('PUT')
-                        <input type="hidden" name="nim" value="{{ $mhs->nim }}">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 text-left">
                             <div class="space-y-4">
                                 <h4 class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">
                                     Data Akademik</h4>
                                 <div>
-                                    <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">Nama
-                                        Lengkap</label>
-                                    <input type="text" name="nama" value="{{ $mhs->nama }}" required
+                                    <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">
+                                        Email Institusi
+                                    </label>
+                                    <!-- Komponen Informasi Statis (Read-Only) -->
+                                    <div class="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm rounded-xl border border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-medium select-none">
+                                        <!-- Icon Informasi (Optional, biar makin cakep) -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-blue-500 shrink-0">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.028M12 13.5h.008v.008H12v-.008zM12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M6.343 6.364l.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Email otomatis dibuat sesuai NIM: <span class="font-bold text-slate-700 dark:text-slate-300">nim@student.polije.ac.id</span></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">NIM <span
+                                            class="text-red-500">*</span></label>
+                                    <input type="text" name="nim" required value="{{ $mhs->nim }}" placeholder="Contoh: E4122144"
                                         class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">Email
-                                        Akun</label>
-                                    <input type="email" name="email" value="{{ $mhs->user->email ?? '' }}" required
+                                    <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">Nama
+                                        Lengkap</label>
+                                    <input type="text" name="nama" value="{{ $mhs->nama }}" required
                                         class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
@@ -351,6 +367,12 @@
                                         WA</label>
                                     <input type="text" name="no_hp" value="{{ $mhs->no_hp }}"
                                         class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
+                                </div>
+                                <div>
+                                <label class="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">Tgl
+                                    Lahir</label>
+                                <input type="date" value="{{ $mhs->tanggal_lahir }}" name="tanggal_lahir"
+                                    class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-medium outline-none">
                                 </div>
                                 <div>
                                     <label

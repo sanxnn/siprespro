@@ -40,6 +40,7 @@ class MahasiswaController extends Controller
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $generatedEmail = strtolower($request->nim) . '@student.polije.ac.id';
         $request->merge(['email' => $generatedEmail]);
         $messages = [
@@ -80,34 +81,47 @@ class MahasiswaController extends Controller
     {
         $generatedEmail = strtolower($request->nim ?? $mahasiswa->nim) . '@student.polije.ac.id';
         $request->merge(['email' => $generatedEmail]);
+
         $messages = [
             'nama.required' => 'Nama mahasiswa tidak boleh kosong.',
             'nim.required' => 'NIM wajib diisi.',
             'nim.unique' => 'NIM ini sudah digunakan mahasiswa lain.',
             'email.unique' => 'Email (NIM) sudah terdaftar di sistem.',
         ];
+
+        $userId = $mahasiswa->user ? $mahasiswa->user->id : null;
+
         $request->validate([
             'nim' => "required|unique:mahasiswa,nim,{$mahasiswa->id}",
             'nama' => 'required',
-            'email' => "required|email|unique:users,email,{$mahasiswa->user->id}",
+            'email' => "required|email|unique:mahasiswa,email,{$mahasiswa->id}|unique:users,email,{$userId}",
             'angkatan' => 'required|numeric',
         ], $messages);
+
         try {
             DB::transaction(function () use ($request, $mahasiswa) {
-                $mahasiswa->update($request->only([
-                    'nim',
-                    'nama',
-                    'angkatan',
-                    'semester_id',
-                    'golongan_id',
-                    'nik',
-                    'no_hp',
-                    'alamat'
-                ]));
-                $mahasiswa->user->update([
-                    'email' => $request->email,
-                ]);
+                $mahasiswa->update(array_merge(
+                    $request->only([
+                        'nim',
+                        'nama',
+                        'angkatan',
+                        'semester_id',
+                        'golongan_id',
+                        'nik',
+                        'tanggal_lahir',
+                        'no_hp',
+                        'alamat'
+                    ]),
+                    ['email' => $request->email]
+                ));
+
+                if ($mahasiswa->user) {
+                    $mahasiswa->user->update([
+                        'email' => $request->email,
+                    ]);
+                }
             });
+
             return back()->with('success', "Data mahasiswa {$mahasiswa->nama} berhasil diperbarui.");
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());

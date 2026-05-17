@@ -50,8 +50,7 @@
     </form>
 
     <!-- Main Output Data Area -->
-    <div
-      class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-4xl sm:rounded-[2.5rem] overflow-hidden shadow-xs">
+    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-4xl sm:rounded-[2.5rem] overflow-hidden shadow-xs">
 
       <!-- DESKTOP DISPLAY LAYOUT TABLE (hidden md:block) -->
       <div class="hidden md:block overflow-x-auto p-4 sm:p-6">
@@ -170,7 +169,22 @@
             </div>
           </div>
         @empty
-          <div class="p-8 text-center text-slate-400 italic text-xs">Tidak ada log aktivitas absensi yang tercatat.</div>
+          <div class="flex flex-col items-center justify-center p-12 text-center bg-slate-50/40 dark:bg-slate-800/20 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 m-4">
+        <!-- Icon Log Aktivitas / Jam Pasir Menandakan Riwayat -->
+        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 dark:text-slate-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-amber-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+            </svg>
+        </div>
+        
+        <!-- Teks Informasi Utama -->
+        <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-1">
+            Belum Ada Riwayat Presensi
+        </h3>
+        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm font-medium leading-relaxed">
+            Tidak ada log aktivitas absensi mahasiswa atau dosen yang tercatat pada hari ini. Data akan otomatis muncul setelah kelas dimulai.
+        </p>
+    </div>
         @endforelse
       </div>
 

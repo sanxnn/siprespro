@@ -17,9 +17,6 @@ class Dosen extends Model
         'no_hp',
         'alamat',
     ];
-    protected $casts = [
-        'tanggal_lahir' => 'date',
-    ];
     public function user()
     {
         return $this->hasOne(User::class, 'dosen_id');

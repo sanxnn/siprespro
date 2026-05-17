@@ -156,7 +156,7 @@
             </header>
             <div class="space-y-4 sm:space-y-5 text-left">
                 <div class="flex items-center gap-3 sm:gap-4 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-150 dark:border-slate-800">
-                    <div class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-linear-to-tr from-primary-600 to-indigo-600 flex items-center justify-center text-white text-xl sm:text-2xl font-black shadow-lg shadow-primary-500/10">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-2xl bg-linear-to-tr from-primary-600 to-indigo-600 flex items-center justify-center dark:text-white text-xl sm:text-2xl font-black shadow-lg shadow-primary-500/10">
                         {{ strtoupper(substr($user->email, 0, 1)) }}
                     </div>
                     <div class="min-w-0">
