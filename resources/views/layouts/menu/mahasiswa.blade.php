@@ -32,11 +32,6 @@
         <i class="fas fa-history w-5 text-center shrink-0"></i>
         <span class="ml-2">Riwayat Kehadiran</span>
       </a>
-      <a href="#"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-chart-pie w-5 text-center shrink-0"></i>
-        <span class="ml-2">Statistik Saya</span>
-      </a>
     </div>
   </div>
 </div>
@@ -67,32 +62,10 @@
   </div>
 </div>
 
-<!-- 🎓 Akademik -->
-<div>
-  <button @click="setActiveMenu('mhs_akademik')"
-    class="w-full group flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600 dark:hover:text-primary-400">
-    <div class="flex items-center gap-3">
-      <i class="fas fa-graduation-cap w-5 text-center shrink-0"></i>
-      <span class="whitespace-nowrap transition-opacity duration-200 text-left" x-show="sidebarOpen || !sidebarCollapse"
-        x-transition.opacity.duration.200ms>Akademik</span>
-    </div>
-    <i class="fas fa-chevron-down text-xs transition-transform duration-200" x-show="sidebarOpen || !sidebarCollapse"
-      :class="activeMenu === 'mhs_akademik' ? 'rotate-180' : ''"></i>
-  </button>
-
-  <!-- Submenu -->
-  <div x-show="activeMenu === 'mhs_akademik' && (sidebarOpen || !sidebarCollapse)" x-collapse class="overflow-hidden">
-    <div class="ml-4 pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-1 py-2">
-      <a href="{{ route('mahasiswa.profil.index') }}"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-user-circle w-5 text-center shrink-0"></i>
-        <span class="ml-2">Profil Saya</span>
-      </a>
-      <a href="#"
-        class="block px-4 py-2 text-sm rounded-lg transition-colors text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400">
-        <i class="fas fa-file-alt w-5 text-center shrink-0"></i>
-        <span class="ml-2">KHS / Transkrip</span>
-      </a>
-    </div>
-  </div>
-</div>
+<!-- 🎓 Profil Saya -->
+<a href="{{ route('mahasiswa.profil.index') }}"
+  class="w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:text-primary-600 dark:hover:text-primary-400">
+  <i class="fas fa-user-circle w-5 text-center shrink-0"></i>
+  <span class="whitespace-nowrap transition-opacity duration-200 text-left" x-show="sidebarOpen || !sidebarCollapse"
+    x-transition.opacity.duration.200ms>Profil Saya</span>
+</a>

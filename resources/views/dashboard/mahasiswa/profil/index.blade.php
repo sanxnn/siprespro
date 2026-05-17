@@ -7,12 +7,6 @@
 
 <div class="space-y-6">
 
-    @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-100 text-emerald-700 font-semibold">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="bg-gradient-to-r from-indigo-600 to-blue-500 rounded-3xl p-6 text-white shadow-sm">
         <h1 class="text-2xl font-bold">Profil Mahasiswa</h1>
         <p class="text-sm opacity-90 mt-2">
