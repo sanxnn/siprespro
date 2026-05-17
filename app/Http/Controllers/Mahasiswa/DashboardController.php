@@ -10,9 +10,10 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $mahasiswa = DB::table('mahasiswa')
-            ->join('semester', 'mahasiswa.semester_id', '=', 'semester.id')
-            ->join('golongan', 'mahasiswa.golongan_id', '=', 'golongan.id')
-            ->where('mahasiswa.id', $user->mahasiswa_id)
+            ->join('users', 'users.mahasiswa_id', '=', 'mahasiswa.id')
+            ->leftJoin('semester', 'mahasiswa.semester_id', '=', 'semester.id')
+            ->leftJoin('golongan', 'mahasiswa.golongan_id', '=', 'golongan.id')
+            ->where('users.id', $user->id)
             ->select(
                 'mahasiswa.*',
                 'semester.nama as nama_semester',
