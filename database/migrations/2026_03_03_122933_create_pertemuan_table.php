@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignId('lokasi_id')->constrained('lokasi'); 
             $table->text('materi')->nullable();
             $table->enum('status', ['dibuka', 'ditutup'])->default('ditutup');
+            $table->boolean('is_manual')->default(false);
             $table->timestamps();
             $table->unique(['kelas_perkuliahan_id', 'pertemuan_ke']);
         });

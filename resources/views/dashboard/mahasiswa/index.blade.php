@@ -152,24 +152,58 @@
                 <div
                   class="sm:text-right flex items-center sm:flex-col justify-between sm:justify-center gap-2 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100 dark:border-slate-700">
                   <span class="block text-[10px] text-slate-400 uppercase font-semibold sm:hidden">Status Presensi</span>
+
+                  {{-- JIKA MAHASISWA SUDAH MELAKUKAN ABSENSI --}}
                   @if($jadwal->status_absen_mhs)
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold 
-                                                                    @if($jadwal->status_absen_mhs == 'Hadir') bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400
-                                                                    @elseif(in_array($jadwal->status_absen_mhs, ['Sakit', 'Izin'])) bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400
+                          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold 
+                                                                    @if($jadwal->status_absen_mhs == 'hadir') bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400
+                                                                    @elseif(in_array($jadwal->status_absen_mhs, ['sakit', 'izin'])) bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400
                                                                     @else @endif">
                       <i class="fas fa-check-circle mr-1 text-[10px]"></i> {{ $jadwal->status_absen_mhs }}
                     </span>
+
                   @else
+                    @php
+                      $sekarang = \Carbon\Carbon::now();
+                      $tglPertemuan = \Carbon\Carbon::parse($jadwal->tanggal)->format('Y-m-d');
+                      $hariIni = \Carbon\Carbon::today()->format('Y-m-d');
+
+                      $jamSelesai = \Carbon\Carbon::parse($tglPertemuan . ' ' . $jadwal->jam_selesai);
+                      $jamMulai = \Carbon\Carbon::parse($tglPertemuan . ' ' . $jadwal->jam_mulai);
+                    @endphp
+
                     @if($jadwal->status_buka_absen == 'dibuka')
                       <a href="{{ route('mahasiswa.presensi.show', $jadwal->pertemuan_id) }}"
-                        class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold shadow-sm shadow-primary-200 dark:shadow-none transition-colors duration-150">
+                        class="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold shadow-sm shadow-primary-200 dark:shadow-none transition-colors">
                         <i class="fas fa-fingerprint mr-1.5 text-sm"></i> Isi Presensi
                       </a>
+
                     @else
-                      <span
-                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
-                        <i class="fas fa-lock mr-1 text-[10px]"></i> Belum Dibuka
-                      </span>
+                      @if($tglPertemuan < $hariIni || ($tglPertemuan === $hariIni && $sekarang->greaterThan($jamSelesai)))
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400">
+                          <i class="fas fa-times-circle mr-1 text-[10px]"></i> Alpa / Selesai
+                        </span>
+
+                      @elseif($tglPertemuan === $hariIni && $sekarang->lessThan($jamMulai))
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
+                          <i class="fas fa-lock mr-1 text-[10px]"></i> Belum Dibuka
+                        </span>
+
+                      @elseif($tglPertemuan === $hariIni)
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 animate-pulse">
+                          <i class="fas fa-clock mr-1 text-[10px]"></i> Menunggu Dosen
+                        </span>
+
+                      @else
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
+                          <i class="fas fa-calendar mr-1 text-[10px]"></i> Belum Mulai
+                        </span>
+                      @endif
+
                     @endif
                   @endif
                 </div>

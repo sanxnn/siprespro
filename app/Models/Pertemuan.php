@@ -16,11 +16,13 @@ class Pertemuan extends Model
         'lokasi_id',   
         'materi',
         'status',
+        'is_manual',
     ];
     protected $casts = [
         'tanggal' => 'date',
         'status' => 'string',
         'pertemuan_ke' => 'integer',
+        'is_manual' => 'boolean',
     ];
     public function kelasPerkuliahan()
     {
@@ -52,22 +54,30 @@ class Pertemuan extends Model
         return "Pertemuan {$this->pertemuan_ke} - {$tanggal}";
     }
     public function getStatusAbsensiAttribute()
-    {
-        $sekarang = now();
-        $hariIni = $sekarang->format('Y-m-d');
-        $jamSekarang = $sekarang->format('H:i:s');
-        $tanggalPertemuan = Carbon::parse($this->tanggal)->format('Y-m-d');
-        if ($tanggalPertemuan < $hariIni)
-            return 'Selesai';
-        if ($tanggalPertemuan > $hariIni)
-            return 'Belum Mulai';
-        if ($jamSekarang < $this->jam_mulai)
-            return 'Belum Mulai';
-        if ($jamSekarang > $this->jam_selesai)
-            return 'Terlambat/Selesai';
-        if ($this->status === 'dibuka') {
-            return 'Aktif';
-        }
-        return 'Ditutup (Manual)';
+{
+    $sekarang = now();
+    $hariIni = $sekarang->format('Y-m-d');
+    $jamSekarang = $sekarang->format('H:i:s');
+    $tanggalPertemuan = Carbon::parse($this->tanggal)->format('Y-m-d');
+
+    if ($tanggalPertemuan < $hariIni) {
+        return 'Selesai';
     }
+    if ($tanggalPertemuan > $hariIni) {
+        return 'Belum Mulai';
+    }
+
+    if ($this->status === 'dibuka') {
+        return 'Aktif';
+    }
+
+    if ($jamSekarang < $this->jam_mulai) {
+        return 'Belum Mulai';
+    }
+    if ($jamSekarang > $this->jam_selesai) {
+        return 'Selesai';
+    }
+
+    return 'Ditutup (Manual)';
+}
 }

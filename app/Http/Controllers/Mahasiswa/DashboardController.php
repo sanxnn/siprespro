@@ -60,6 +60,7 @@ class DashboardController extends Controller
                 'pertemuan.pertemuan_ke',
                 'pertemuan.jam_mulai',
                 'pertemuan.jam_selesai',
+                'pertemuan.tanggal',
                 'pertemuan.status as status_buka_absen',
                 'mata_kuliah.nama as nama_mk',
                 'mata_kuliah.kode_mk',
